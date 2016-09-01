@@ -79,6 +79,14 @@ export default function register(config) {
           page
         })
       ),
+    setPageSize: (size) => dispatch =>
+      dispatch(
+        execute({
+          type: actionTypes.SET_PAGE_SIZE,
+          id,
+          size
+        })
+      ),
     toggleFilterItem: (field, value) => dispatch =>
       dispatch(
         execute({

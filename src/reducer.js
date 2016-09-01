@@ -44,6 +44,12 @@ function goToPage(state, action) {
   )
 }
 
+function setPageSize(state, action) {
+  return updateListItem(state, action.id, p =>
+    p.merge({ pageSize: action.size })
+  )
+}
+
 function fetching(state, action) {
   return updateListItem(state, action.id, p =>
     p.merge({ isLoading: true })
@@ -128,6 +134,7 @@ export default resolveEach(initialState, {
   [actionTypes.PREVIOUS_PAGE]: prev,
   [actionTypes.NEXT_PAGE]: next,
   [actionTypes.GO_TO_PAGE]: goToPage,
+  [actionTypes.SET_PAGE_SIZE]: setPageSize,
   [actionTypes.FETCH_RECORDS]: fetching,
   [actionTypes.RESULTS_UPDATED]: updateResults,
   [actionTypes.RESULTS_UPDATED_ERROR]: error,
