@@ -114,6 +114,12 @@ export default function register(config) {
           reverse
         })
       ),
+    updatingItem: (itemId) => dispatch =>
+      dispatch({
+        type: actionTypes.UPDATING_ITEM,
+        id,
+        itemId
+      }),
     updateItem: (itemId, data) => dispatch =>
       dispatch({
         type: actionTypes.UPDATE_ITEM,

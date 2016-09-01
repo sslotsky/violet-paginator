@@ -1,10 +1,11 @@
 import React, { PropTypes } from 'react'
 import FontAwesome from 'react-fontawesome'
+import classNames from 'classnames'
 import { SortLink } from './SortLink'
 import paginate from './PaginationWrapper'
 
 export function DataTable(props) {
-  const { results, headers, isLoading } = props
+  const { results, headers, isLoading, updating } = props
 
   if (isLoading) {
     return (
@@ -40,8 +41,9 @@ export function DataTable(props) {
       )
     })
 
+    const classes = classNames({ updating: updating === r.get('id') })
     return (
-      <tr key={`results-${i}`}>
+      <tr className={classes} key={`results-${i}`}>
         {columns}
       </tr>
     )
@@ -64,7 +66,8 @@ export function DataTable(props) {
 DataTable.propTypes = {
   headers: PropTypes.array.isRequired,
   isLoading: PropTypes.bool,
-  results: PropTypes.object
+  results: PropTypes.object,
+  updating: PropTypes.number
 }
 
 export default paginate(DataTable)

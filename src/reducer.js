@@ -13,6 +13,7 @@ export const defaultPaginator = Map({
   sortReverse: false,
   isLoading: false,
   results: List(),
+  updating: null,
   loadError: null,
   filters: Map()
 })
@@ -28,31 +29,31 @@ function initialize(state, action) {
 
 function next(state, action) {
   return updateListItem(state, action.id, p =>
-    p.merge({ page: p.get('page') + 1 })
+    p.set('page', p.get('page') + 1)
   )
 }
 
 function prev(state, action) {
   return updateListItem(state, action.id, p =>
-    p.merge({ page: p.get('page') - 1 })
+    p.set('page', p.get('page') - 1)
   )
 }
 
 function goToPage(state, action) {
   return updateListItem(state, action.id, p =>
-    p.merge({ page: action.page })
+    p.set('page', action.page)
   )
 }
 
 function setPageSize(state, action) {
   return updateListItem(state, action.id, p =>
-    p.merge({ pageSize: action.size })
+    p.set('pageSize', action.size)
   )
 }
 
 function fetching(state, action) {
   return updateListItem(state, action.id, p =>
-    p.merge({ isLoading: true })
+    p.set('isLoading', true)
   )
 }
 
@@ -87,13 +88,11 @@ function setFilter(state, action) {
 
 function sortChanged(state, action) {
   return updateListItem(state, action.id, p =>
-    p.set(
-      'sort',
-      action.field
-    ).set(
-      'sortReverse',
-      action.reverse
-    ).set('page', 1)
+    p.merge({
+      sort: action.field,
+      sortReverse: action.reverse,
+      page: 1
+    })
   )
 }
 
@@ -106,26 +105,29 @@ function error(state, action) {
   )
 }
 
+function updatingItem(state, action) {
+  return updateListItem(state, action.id, p =>
+    p.set('updating', action.itemId)
+  )
+}
+
 function updateItem(state, action) {
   return updateListItem(state, action.id, p =>
-    p.set(
-      'results',
-      updateListItem(p.get('results'), action.itemId, item =>
+    p.merge({
+      updating: null,
+      results: updateListItem(p.get('results'), action.itemId, item =>
         item.merge(action.data)
       )
-    )
+    })
   )
 }
 
 function removeItem(state, action) {
   return updateListItem(state, action.id, p =>
-    p.set(
-      'results',
-      p.get('results').filter(item => item.get('id') !== action.itemId)
-    ).set(
-      'totalCount',
-      p.get('totalCount') - 1
-    )
+    p.merge({
+      results: p.get('results').filter(item => item.get('id') !== action.itemId),
+      totalCount: p.get('totalCount') - 1
+    })
   )
 }
 
@@ -141,6 +143,7 @@ export default resolveEach(initialState, {
   [actionTypes.TOGGLE_FILTER_ITEM]: toggleFilterItem,
   [actionTypes.SET_FILTER]: setFilter,
   [actionTypes.SORT_CHANGED]: sortChanged,
+  [actionTypes.UPDATING_ITEM]: updatingItem,
   [actionTypes.UPDATE_ITEM]: updateItem,
   [actionTypes.REMOVE_ITEM]: removeItem
 })

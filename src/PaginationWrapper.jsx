@@ -40,6 +40,7 @@ export default function paginate(ComponentClass) {
           currentPage: paginator.get('page'),
           results: paginator.get('results'),
           isLoading: paginator.get('isLoading'),
+          updating: paginator.get('updating'),
           totalPages
         }
       }
