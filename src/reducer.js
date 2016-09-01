@@ -1,6 +1,7 @@
 import Immutable, { Map, List, Set } from 'immutable'
 import { resolveEach, updateListItem } from './lib/reduxResolver'
 import * as actionTypes from './actionTypes'
+import { recordProps } from './pageInfoTranslator'
 
 const initialState = List()
 
@@ -115,8 +116,10 @@ function updateItem(state, action) {
   return updateListItem(state, action.id, p =>
     p.merge({
       updating: null,
-      results: updateListItem(p.get('results'), action.itemId, item =>
-        item.merge(action.data)
+      results: updateListItem(
+        p.get('results'), action.itemId,
+        item => item.merge(action.data),
+        recordProps().identifier
       )
     })
   )
@@ -125,7 +128,7 @@ function updateItem(state, action) {
 function removeItem(state, action) {
   return updateListItem(state, action.id, p =>
     p.merge({
-      results: p.get('results').filter(item => item.get('id') !== action.itemId),
+      results: p.get('results').filter(item => item.get(recordProps().identifier) !== action.itemId),
       totalCount: p.get('totalCount') - 1
     })
   )

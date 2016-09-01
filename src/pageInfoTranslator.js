@@ -5,7 +5,8 @@ let [
   sortOrderParam,
   useBooleanOrdering,
   totalCountProp,
-  resultsProp
+  resultsProp,
+  idProp
 ] = [
   'page',
   'pageSize',
@@ -13,11 +14,16 @@ let [
   'sortOrder',
   false,
   'total_count',
-  'results'
+  'results',
+  'id'
 ]
 
 export function responseProps() {
   return [totalCountProp, resultsProp]
+}
+
+export function recordProps() {
+  return { identifier: idProp }
 }
 
 export function configurePageParams({
@@ -27,7 +33,8 @@ export function configurePageParams({
   sortOrder,
   sortReverse,
   totalCount,
-  results
+  results,
+  id
 }) {
   if (page) {
     pageParam = page
@@ -51,6 +58,10 @@ export function configurePageParams({
 
   if (results) {
     resultsProp = results
+  }
+
+  if (id) {
+    idProp = id
   }
 
   useBooleanOrdering = !!sortReverse

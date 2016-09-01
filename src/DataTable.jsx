@@ -3,6 +3,7 @@ import FontAwesome from 'react-fontawesome'
 import classNames from 'classnames'
 import { SortLink } from './SortLink'
 import paginate from './PaginationWrapper'
+import { recordProps } from './pageInfoTranslator'
 
 export function DataTable(props) {
   const { results, headers, isLoading, updating } = props
@@ -41,7 +42,7 @@ export function DataTable(props) {
       )
     })
 
-    const classes = classNames({ updating: updating === r.get('id') })
+    const classes = classNames({ updating: updating === r.get(recordProps().identifier) })
     return (
       <tr className={classes} key={`results-${i}`}>
         {columns}
