@@ -1,6 +1,6 @@
 {
   "name": "violet-paginator",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Easily display, paginate, and filter lists of records from the server",
   "main": "lib/index.js",
   "scripts": {
@@ -44,9 +44,8 @@
     "expect": "^1.20.2",
     "mocha": "^3.0.2",
     "react": "^15.1.0",
-    "react-redux": "^4.4.4",
-    "react-addons-test-utils": "^15.3.1",
     "react-redux": "^4.4.5",
+    "react-addons-test-utils": "^15.3.1",
     "redux": "^3.4.0",
     "redux-mock-store": "^1.1.4",
     "redux-thunk": "^2.1.0",
