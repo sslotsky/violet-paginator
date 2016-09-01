@@ -42,7 +42,9 @@ export function DataTable(props) {
       )
     })
 
-    const classes = classNames({ updating: updating === r.get(recordProps().identifier) })
+    const classes = classNames({
+      updating: updating.get('id') === r.get(recordProps().identifier)
+    })
     return (
       <tr className={classes} key={`results-${i}`}>
         {columns}
@@ -68,7 +70,7 @@ DataTable.propTypes = {
   headers: PropTypes.array.isRequired,
   isLoading: PropTypes.bool,
   results: PropTypes.object,
-  updating: PropTypes.number
+  updating: PropTypes.object
 }
 
 export default paginate(DataTable)

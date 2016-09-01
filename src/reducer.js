@@ -14,7 +14,7 @@ export const defaultPaginator = Map({
   sortReverse: false,
   isLoading: false,
   results: List(),
-  updating: null,
+  updating: Map(),
   loadError: null,
   filters: Map()
 })
@@ -108,14 +108,14 @@ function error(state, action) {
 
 function updatingItem(state, action) {
   return updateListItem(state, action.id, p =>
-    p.set('updating', action.itemId)
+    p.setIn(['updating', 'id'], action.itemId)
   )
 }
 
 function updateItem(state, action) {
   return updateListItem(state, action.id, p =>
     p.merge({
-      updating: null,
+      updating: Map(),
       results: updateListItem(
         p.get('results'), action.itemId,
         item => item.merge(action.data),
@@ -128,8 +128,10 @@ function updateItem(state, action) {
 function removeItem(state, action) {
   return updateListItem(state, action.id, p =>
     p.merge({
-      results: p.get('results').filter(item => item.get(recordProps().identifier) !== action.itemId),
-      totalCount: p.get('totalCount') - 1
+      totalCount: p.get('totalCount') - 1,
+      results: p.get('results').filter(
+        item => item.get(recordProps().identifier) !== action.itemId
+      )
     })
   )
 }
