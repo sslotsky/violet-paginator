@@ -4,10 +4,10 @@
   "description": "Easily display, paginate, and filter lists of records from the server",
   "main": "lib/index.js",
   "scripts": {
-    "test": "mocha './spec/**/*.spec.js' --compilers js:babel-register --recursive",
+    "spec": "mocha './spec/**/*.spec.js' --compilers js:babel-register --recursive",
     "lint": "eslint ./src/** ./spec/**/* --ext=js,jsx",
-    "compile": "babel -d lib/ src/",
-    "prepublish": "npm run compile"
+    "test": "npm run lint && npm run spec",
+    "compile": "babel -d lib/ src/"
   },
   "keywords": [
     "react",
