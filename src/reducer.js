@@ -15,6 +15,7 @@ export const defaultPaginator = Map({
   isLoading: false,
   results: List(),
   updating: Map(),
+  requestId: null,
   loadError: null,
   filters: Map()
 })
@@ -54,18 +55,25 @@ function setPageSize(state, action) {
 
 function fetching(state, action) {
   return updateListItem(state, action.id, p =>
-    p.set('isLoading', true)
+    p.merge({
+      isLoading: true,
+      requestId: action.requestId
+    })
   )
 }
 
 function updateResults(state, action) {
-  return updateListItem(state, action.id, p =>
-    p.merge({
+  return updateListItem(state, action.id, p => {
+    if (action.requestId !== p.get('requestId')) {
+      return p
+    }
+
+    return p.merge({
       results: Immutable.fromJS(action.results),
       totalCount: action.totalCount,
       isLoading: false
     })
-  )
+  })
 }
 
 function toggleFilterItem(state, action) {

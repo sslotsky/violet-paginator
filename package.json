@@ -21,7 +21,8 @@
     "babel-regenerator-runtime": "^6.5.0",
     "classnames": "^2.2.5",
     "immutable": "^3.8.1",
-    "react-fontawesome": "^1.1.0"
+    "react-fontawesome": "^1.1.0",
+    "uuid": "^2.0.2"
   },
   "peerDependencies": {
     "react": "^15.1.0",

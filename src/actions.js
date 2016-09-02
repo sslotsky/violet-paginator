@@ -1,3 +1,4 @@
+import uuid from 'uuid'
 import * as actionTypes from './actionTypes'
 import { translate, responseProps } from './pageInfoTranslator'
 
@@ -12,8 +13,9 @@ const fetcher = customConfig =>
     const config = { ...defaultConfig, ...customConfig }
     const id = config.listId
     const pageInfo = getState().pagination.find(p => p.get('id') === id)
+    const requestId = uuid.v1()
 
-    dispatch({ type: actionTypes.FETCH_RECORDS, id })
+    dispatch({ type: actionTypes.FETCH_RECORDS, id, requestId })
 
     const promise = config.isBoundToDispatch ?
       config.fetch(translate(pageInfo)) :
@@ -24,7 +26,8 @@ const fetcher = customConfig =>
         type: actionTypes.RESULTS_UPDATED,
         results: resp.data[resultsProp],
         totalCount: resp.data[totalCountProp],
-        id
+        id,
+        requestId
       })
     ).catch(error =>
       dispatch({
