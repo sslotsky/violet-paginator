@@ -81,17 +81,17 @@ https://www.example.com/v1/users?page=6&page_size=15&sort=name&direction=asc
 
 The complete list of configuration options and their defaults can be found in the [pageInfoTranslator](https://github.com/sslotsky/violet-paginator/blob/master/src/pageInfoTranslator.js):
 
-```javascript
-export function configurePageParams({
-  page,         // The page number being requested
-  perPage,      // The page size being requested
-  sort,         // The field to sort by when requesting a page
-  sortOrder,    // The sort direction for the requested page
-  sortReverse,  // Use a boolean to indicate sort direction
-  totalCount,   // The name of the property on the server response that indicates total record count
-  results       // The name of the property on the server that contains the page of results
-}) {
-```
+Property Name | Default Value | Description
+---|:---:|---
+pageParam | `'page'` | The page number being requested
+pageSizeParam | `'pageSize'` | The page size being requested
+sortParam | `'sort'` | The field to sort by when requesting a page
+sortOrderParam | `'sortOrder'` | The sort direction for the requested page
+useBooleanOrdering | `false` | Use a boolean to indicate sort direction
+totalCountProp | `'total_count'` | The name of the property on the server response that indicates total record count
+resultsProp | `'results'` | The name of the property on the server that contains the page of results
+idProp | `'id'` | The name of the property on the record to be used as the unique identifer
+
 ### Using Premade VioletPaginator Components
 
 The following will display a 3 column data table with full pagination controls above and below the table.
@@ -301,7 +301,7 @@ Then we can redefine the `activeColumn` method like this:
 
 ### Building Custom Components
 
-We understand that every product team could potentially want something different, and our premade components simply won't fit that mold. We want to make it painless
+We understand that every product team could potentially want something different, and our premade components sometimes just won't fit that mold. We want to make it painless
 to write your own components, so to accomplish that, we made sure that it was every bit as painless to write ours. The best way to see how to build a custom component
 is to look at some of the simpler premade components. For example, here's a link that retrieves the next page of records:
 
