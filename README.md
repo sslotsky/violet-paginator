@@ -82,7 +82,7 @@ https://www.example.com/v1/users?page=6&page_size=15&sort=name&direction=asc
 The complete list of configuration options and their defaults can be found in the [pageInfoTranslator](https://github.com/sslotsky/violet-paginator/blob/master/src/pageInfoTranslator.js):
 
 Property Name | Default Value | Description
----|:---:|---
+---|:---:|:---
 pageParam | `'page'` | The page number being requested
 pageSizeParam | `'pageSize'` | The page size being requested
 sortParam | `'sort'` | The field to sort by when requesting a page
