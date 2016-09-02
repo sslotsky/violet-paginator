@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/sslotsky/violet-paginator.svg?branch=master)](https://travis-ci.org/sslotsky/violet-paginator)
+
 # violet-paginator
 
 VioletPaginator is a react-redux package allowing users to manage arbitrarily many filtered, paginated lists
