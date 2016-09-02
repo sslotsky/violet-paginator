@@ -381,5 +381,4 @@ key points:
 
 ### Testing
 
-This package is tested with mocha. There are currently only a few tests and more will be added in the near future. There is also currently no CI, so until that is turned
-on, contributors will need to run their tests manually with `npm test`. Please make sure to write tests for any new pull requests.
+This package is tested with mocha. There are currently only a few tests and more will be added in the near future. The project uses CI through Travis which includes running tests and linting. Please make sure to write tests for any new pull requests.
