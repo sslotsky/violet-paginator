@@ -83,14 +83,14 @@ The complete list of configuration options and their defaults can be found in th
 
 Property Name | Default Value | Description
 ---|:---:|:---
-pageParam | `'page'` | The page number being requested
-pageSizeParam | `'pageSize'` | The page size being requested
-sortParam | `'sort'` | The field to sort by when requesting a page
-sortOrderParam | `'sortOrder'` | The sort direction for the requested page
+page | `'page'` | The page number being requested
+perPage | `'pageSize'` | The page size being requested
+sort | `'sort'` | The field to sort by when requesting a page
+sortOrder | `'sortOrder'` | The sort direction for the requested page
 sortReverse | `false` | Use a boolean to indicate sort direction
-totalCountProp | `'total_count'` | The name of the property on the server response that indicates total record count
-resultsProp | `'results'` | The name of the property on the server that contains the page of results
-idProp | `'id'` | The name of the property on the record to be used as the unique identifer
+totalCount | `'total_count'` | The name of the property on the server response that indicates total record count
+results | `'results'` | The name of the property on the server that contains the page of results
+id | `'id'` | The name of the property on the record to be used as the unique identifer
 
 ### Using Premade VioletPaginator Components
 
