@@ -87,7 +87,7 @@ pageParam | `'page'` | The page number being requested
 pageSizeParam | `'pageSize'` | The page size being requested
 sortParam | `'sort'` | The field to sort by when requesting a page
 sortOrderParam | `'sortOrder'` | The sort direction for the requested page
-useBooleanOrdering | `false` | Use a boolean to indicate sort direction
+sortReverse | `false` | Use a boolean to indicate sort direction
 totalCountProp | `'total_count'` | The name of the property on the server response that indicates total record count
 resultsProp | `'results'` | The name of the property on the server that contains the page of results
 idProp | `'id'` | The name of the property on the record to be used as the unique identifer
