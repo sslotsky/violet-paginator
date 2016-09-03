@@ -1,0 +1,7 @@
+ul.pagination li:hover a {
+  background-color: #7e69c6;
+}
+
+table th a {
+  cursor: pointer;
+}
