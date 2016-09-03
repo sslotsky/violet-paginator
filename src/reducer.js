@@ -49,7 +49,10 @@ function goToPage(state, action) {
 
 function setPageSize(state, action) {
   return updateListItem(state, action.id, p =>
-    p.set('pageSize', action.size)
+    p.merge({
+      pageSize: action.size,
+      page: 1
+    })
   )
 }
 
