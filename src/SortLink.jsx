@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react'
+import { Map } from 'immutable'
 import FontAwesome from 'react-fontawesome'
 import paginate from './PaginationWrapper'
 
@@ -27,6 +28,10 @@ SortLink.propTypes = {
   field: PropTypes.string.isRequired,
   text: PropTypes.string.isRequired,
   sortable: PropTypes.bool
+}
+
+SortLink.defaultProps = {
+  paginator: Map()
 }
 
 export default paginate(SortLink)
