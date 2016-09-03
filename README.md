@@ -7,6 +7,10 @@ of records. We provide a set of premade components including both simple and rob
 sort links, and data tables. We also make it ridiculously easy to write your own components and configure
 and extend VioletPaginator's default behavior by composing actions.
 
+## Demo
+
+https://sslotsky.github.io/violet-paginator/
+
 ## Installation
 
 ```
