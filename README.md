@@ -14,7 +14,7 @@ https://sslotsky.github.io/violet-paginator/
 ## Installation
 
 ```
-npm i violet-paginator
+npm i --save violet-paginator
 ```
 
 ### Dependencies
