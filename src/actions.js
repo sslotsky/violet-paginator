@@ -59,7 +59,7 @@ export default function register(config) {
         dispatch(execute(action))
       }
     },
-    reload: () => dispatch => dispatch(fetch),
+    reload: fetch,
     next: () => dispatch =>
       dispatch(
         execute({

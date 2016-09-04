@@ -45,7 +45,7 @@ describe('pageActions.reload', () => {
       const { pageActions, store } = setup()
 
       let rejected = false
-      store.dispatch(pageActions.reload()).then(() => {
+      store.dispatch(pageActions.reload).then(() => {
         const actions = store.getActions()
         const types = actions.map(a => a.type)
         expect(types).toEqual([actionTypes.FETCH_RECORDS, actionTypes.RESULTS_UPDATED])
@@ -63,7 +63,7 @@ describe('pageActions.reload', () => {
       const { pageActions, store } = setup(false)
 
       let rejected = false
-      store.dispatch(pageActions.reload()).then(() => {
+      store.dispatch(pageActions.reload).then(() => {
         const actions = store.getActions()
         const types = actions.map(a => a.type)
         expect(types).toEqual([actionTypes.FETCH_RECORDS, actionTypes.RESULTS_UPDATED_ERROR])
