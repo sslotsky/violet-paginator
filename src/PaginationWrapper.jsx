@@ -41,6 +41,7 @@ export default function paginate(ComponentClass) {
           results: paginator.get('results'),
           isLoading: paginator.get('isLoading'),
           updating: paginator.get('updating'),
+          removing: paginator.get('removing'),
           totalPages
         }
       }

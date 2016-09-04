@@ -14,7 +14,8 @@ export const defaultPaginator = Map({
   sortReverse: false,
   isLoading: false,
   results: List(),
-  updating: Map(),
+  updating: Set(),
+  removing: Set(),
   requestId: null,
   loadError: null,
   filters: Map()
@@ -119,14 +120,14 @@ function error(state, action) {
 
 function updatingItem(state, action) {
   return updateListItem(state, action.id, p =>
-    p.setIn(['updating', 'id'], action.itemId)
+    p.set('updating', p.get('updating').add(action.itemId))
   )
 }
 
 function updateItem(state, action) {
   return updateListItem(state, action.id, p =>
     p.merge({
-      updating: Map(),
+      updating: p.get('updating').toSet().delete(action.itemId),
       results: updateListItem(
         p.get('results'), action.itemId,
         item => item.merge(action.data),
@@ -136,10 +137,17 @@ function updateItem(state, action) {
   )
 }
 
+function removingItem(state, action) {
+  return updateListItem(state, action.id, p =>
+    p.set('removing', p.get('removing').add(action.itemId))
+  )
+}
+
 function removeItem(state, action) {
   return updateListItem(state, action.id, p =>
     p.merge({
       totalCount: p.get('totalCount') - 1,
+      updating: p.get('removing').toSet().delete(action.itemId),
       results: p.get('results').filter(
         item => item.get(recordProps().identifier) !== action.itemId
       )
@@ -161,5 +169,6 @@ export default resolveEach(initialState, {
   [actionTypes.SORT_CHANGED]: sortChanged,
   [actionTypes.UPDATING_ITEM]: updatingItem,
   [actionTypes.UPDATE_ITEM]: updateItem,
+  [actionTypes.REMOVING_ITEM]: removingItem,
   [actionTypes.REMOVE_ITEM]: removeItem
 })

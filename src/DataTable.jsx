@@ -6,7 +6,7 @@ import paginate from './PaginationWrapper'
 import { recordProps } from './pageInfoTranslator'
 
 export function DataTable(props) {
-  const { results, headers, isLoading, updating } = props
+  const { results, headers, isLoading, updating, removing } = props
 
   if (isLoading) {
     return (
@@ -43,8 +43,10 @@ export function DataTable(props) {
     })
 
     const classes = classNames({
-      updating: updating.get('id') === r.get(recordProps().identifier)
+      updating: updating.includes(r.get(recordProps().identifier)),
+      removing: removing.includes(r.get(recordProps().identifier))
     })
+
     return (
       <tr className={classes} key={`results-${i}`}>
         {columns}
@@ -70,7 +72,8 @@ DataTable.propTypes = {
   headers: PropTypes.array.isRequired,
   isLoading: PropTypes.bool,
   results: PropTypes.object,
-  updating: PropTypes.object
+  updating: PropTypes.object,
+  removing: PropTypes.object
 }
 
 export default paginate(DataTable)

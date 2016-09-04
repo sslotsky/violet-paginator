@@ -130,6 +130,12 @@ export default function register(config) {
         itemId,
         data
       }),
+    removingItem: (itemId) => dispatch =>
+      dispatch({
+        type: actionTypes.REMOVING_ITEM,
+        id,
+        itemId
+      }),
     removeItem: (itemId) => dispatch =>
       dispatch({
         type: actionTypes.REMOVE_ITEM,
