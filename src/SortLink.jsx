@@ -3,7 +3,7 @@ import { Map } from 'immutable'
 import FontAwesome from 'react-fontawesome'
 import paginate from './PaginationWrapper'
 
-export function SortLink({ paginator, actions, field, text, sortable=true }) {
+export function SortLink({ actions, field, text, paginator=Map(), sortable=true }) {
   if (!sortable) {
     return <span>{text}</span>
   }
@@ -28,10 +28,6 @@ SortLink.propTypes = {
   field: PropTypes.string.isRequired,
   text: PropTypes.string.isRequired,
   sortable: PropTypes.bool
-}
-
-SortLink.defaultProps = {
-  paginator: Map()
 }
 
 export default paginate(SortLink)
