@@ -24,8 +24,8 @@ const fetcher = customConfig =>
     return promise.then(resp =>
       dispatch({
         type: actionTypes.RESULTS_UPDATED,
-        results: resp.data[resultsProp],
-        totalCount: resp.data[totalCountProp],
+        results: resp.data[config.resultsProp || resultsProp],
+        totalCount: resp.data[config.totalCountProp || totalCountProp],
         id,
         requestId
       })
