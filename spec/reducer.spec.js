@@ -165,7 +165,7 @@ describe('pagination reducer', () => {
 
     context('when handling UPDATE_ITEM', () => {
       const itemId = 'someId'
-      const results = [{ id: itemId, name: 'Pouty Stout' }]
+      const results = [{ id: itemId, name: 'Pouty Stout', error: 'Error updating recipe' }]
       const updating = Set.of('someId')
       const paginator = defaultPaginator.merge({ results: Immutable.fromJS(results), updating })
       const { state: initialState } = setup(paginator)
@@ -186,6 +186,10 @@ describe('pagination reducer', () => {
       it('removes the item from the updating list', () => {
         expect(state.get('updating').toJS()).toNotInclude(itemId)
       })
+
+      it('removes the error from the item', () => {
+        expect(state.get('error')).toNotExist()
+      })
     })
 
     it('handles REMOVING_ITEM', () => {
@@ -203,7 +207,7 @@ describe('pagination reducer', () => {
     it('handles REMOVE_ITEM', () => {
       const itemId = 'someId'
       const results = [{ id: itemId, name: 'Pouty Stout' }]
-      const removing = Set.of('someId')
+      const removing = Set.of(itemId)
       const paginator = defaultPaginator.merge({ results: Immutable.fromJS(results), removing })
       const { state: initialState } = setup(paginator)
       const action = {
@@ -220,6 +224,30 @@ describe('pagination reducer', () => {
 
       it('removes the item from the removing list', () => {
         expect(state.get('removing').toJS()).toNotInclude(itemId)
+      })
+    })
+
+    it('handles ITEM_ERROR', () => {
+      const itemId = 'someId'
+      const results = [{ id: itemId, name: 'Pouty Stout' }]
+      const updating = Set.of(itemId)
+      const paginator = defaultPaginator.merge({ results: Immutable.fromJS(results), updating })
+      const { state: initialState } = setup(paginator)
+      const action = {
+        type: actionTypes.ITEM_ERROR,
+        itemId,
+        id,
+        error: 'Error updating item'
+      }
+
+      const state = reducer(initialState, action).find(p => p.get('id') === id)
+
+      it('attaches the error to the item', () => {
+        expect(state.get('error')).toEqual(action.error)
+      })
+
+      it('removes the item from the updating list', () => {
+        expect(state.get('updating').toJS()).toNotInclude(itemId)
       })
     })
 

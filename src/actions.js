@@ -149,6 +149,13 @@ export default function register(config) {
         type: actionTypes.REMOVE_ITEM,
         id,
         itemId
+      }),
+    itemError: (itemId, error) => dispatch =>
+      dispatch({
+        type: actionTypes.ITEM_ERROR,
+        id,
+        itemId,
+        error
       })
   }
 }

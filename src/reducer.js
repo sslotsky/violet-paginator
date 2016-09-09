@@ -130,7 +130,7 @@ function updateItem(state, action) {
       updating: p.get('updating').toSet().delete(action.itemId),
       results: updateListItem(
         p.get('results'), action.itemId,
-        item => item.merge(action.data),
+        item => item.merge(action.data).set('error', null),
         recordProps().identifier
       )
     })
@@ -147,10 +147,20 @@ function removeItem(state, action) {
   return updateListItem(state, action.id, p =>
     p.merge({
       totalCount: p.get('totalCount') - 1,
-      updating: p.get('removing').toSet().delete(action.itemId),
+      removing: p.get('removing').toSet().delete(action.itemId),
       results: p.get('results').filter(
         item => item.get(recordProps().identifier) !== action.itemId
       )
+    })
+  )
+}
+
+function itemError(state, action) {
+  return updateListItem(state, action.id, p =>
+    p.merge({
+      updating: p.get('updating').toSet().delete(action.itemId),
+      removing: p.get('removing').toSet().delete(action.itemId),
+      error: action.error
     })
   )
 }
@@ -170,5 +180,6 @@ export default resolveEach(initialState, {
   [actionTypes.UPDATING_ITEM]: updatingItem,
   [actionTypes.UPDATE_ITEM]: updateItem,
   [actionTypes.REMOVING_ITEM]: removingItem,
-  [actionTypes.REMOVE_ITEM]: removeItem
+  [actionTypes.REMOVE_ITEM]: removeItem,
+  [actionTypes.ITEM_ERROR]: itemError
 })
