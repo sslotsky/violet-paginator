@@ -56,6 +56,51 @@ describe('pageActions.reload', () => {
       Promise.runAll()
       expect(rejected).toBe(false)
     })
+
+    context('when results props are configured', () => {
+      const paginator = defaultPaginator.set('id', listId)
+      const store = mockStore({ pagination: List.of(paginator) })
+      const data = {
+        total_entries: 1,
+        recipes: [{ name: 'Ewe and IPA' }]
+      }
+
+      const fetch = () => () => Promise.resolve({ data })
+
+      const pageActions = register({
+        resultsProp: 'recipes',
+        totalCountProp: 'total_entries',
+        isBoundToDispatch: false,
+        listId,
+        fetch
+      })
+
+      it('is able to read the results', () => {
+        let rejected = false
+        store.dispatch(pageActions.reload).then(() => {
+          const action = store.getActions().find(a => a.type === actionTypes.RESULTS_UPDATED)
+          expect(action.results).toEqual(data.recipes)
+        }).catch(() => {
+          rejected = true
+        })
+
+        Promise.runAll()
+        expect(rejected).toBe(false)
+      })
+
+      it('is able to read the count', () => {
+        let rejected = false
+        store.dispatch(pageActions.reload).then(() => {
+          const action = store.getActions().find(a => a.type === actionTypes.RESULTS_UPDATED)
+          expect(action.totalCount).toEqual(data.total_entries)
+        }).catch(() => {
+          rejected = true
+        })
+
+        Promise.runAll()
+        expect(rejected).toBe(false)
+      })
+    })
   })
 
   context('when fetch fails', () => {
