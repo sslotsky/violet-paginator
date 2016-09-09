@@ -26,8 +26,11 @@ function initialize(state, action) {
     return state
   }
 
-  const { type: _, ...rest } = action
-  return state.push(defaultPaginator.merge({ ...rest }))
+  const { type: _, filters, ...rest } = action
+  return state.push(defaultPaginator.merge({
+    filters: Immutable.fromJS(filters || {}),
+    ...rest
+  }))
 }
 
 function next(state, action) {
