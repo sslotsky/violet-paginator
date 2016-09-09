@@ -32,7 +32,7 @@ describe('pagination reducer', () => {
       })
     })
 
-    it('handles SET_FILTER', () => {
+    context('when handling SET_FILTER', () => {
       const { state: initialState } = setup()
       const field = 'foo'
       const value = { eq: 'bar' }
@@ -44,7 +44,86 @@ describe('pagination reducer', () => {
       }
 
       const state = reducer(initialState, action).find(p => p.get('id') === id)
-      expect(state.getIn(['filters', field]).toJS()).toEqual(value)
+
+      it('sets the specified filter', () => {
+        expect(state.getIn(['filters', field]).toJS()).toEqual(value)
+      })
+
+      it('returns to the first page', () => {
+        expect(state.get('page')).toEqual(1)
+      })
+    })
+
+    context('when handling SET_FILTERS', () => {
+      const initialFilters = {
+        name: { like: 'IPA' },
+        show_inactive: { eq: true }
+      }
+
+      const paginator = defaultPaginator.merge({
+        filters: Immutable.fromJS(initialFilters)
+      })
+
+      const { state: initialState } = setup(paginator)
+      const updatedFilters = {
+        show_inactive: { eq: false },
+        fermentation_temperature: { lt: 60 }
+      }
+
+      const action = {
+        type: actionTypes.SET_FILTERS,
+        filters: updatedFilters,
+        id
+      }
+
+      const expectedFilters = {
+        name: initialFilters.name,
+        show_inactive: updatedFilters.show_inactive,
+        fermentation_temperature: updatedFilters.fermentation_temperature
+      }
+
+      const state = reducer(initialState, action).find(p => p.get('id') === id)
+
+      it('merges the specified filters', () => {
+        expect(state.get('filters').toJS()).toEqual(expectedFilters)
+      })
+
+      it('returns to the first page', () => {
+        expect(state.get('page')).toEqual(1)
+      })
+    })
+
+    context('when handling RESET_FILTERS', () => {
+      const initialFilters = {
+        name: { like: 'IPA' },
+        show_inactive: { eq: true }
+      }
+
+      const paginator = defaultPaginator.merge({
+        filters: Immutable.fromJS(initialFilters)
+      })
+
+      const { state: initialState } = setup(paginator)
+      const updatedFilters = {
+        show_inactive: { eq: false },
+        fermentation_temperature: { lt: 60 }
+      }
+
+      const action = {
+        type: actionTypes.RESET_FILTERS,
+        filters: updatedFilters,
+        id
+      }
+
+      const state = reducer(initialState, action).find(p => p.get('id') === id)
+
+      it('resets the filters', () => {
+        expect(state.get('filters').toJS()).toEqual(updatedFilters)
+      })
+
+      it('returns to the first page', () => {
+        expect(state.get('page')).toEqual(1)
+      })
     })
 
     it('handles PREVIOUS_PAGE', () => {

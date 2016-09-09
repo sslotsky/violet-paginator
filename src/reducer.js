@@ -102,6 +102,23 @@ function setFilter(state, action) {
   )
 }
 
+function setFilters(state, action) {
+  return updateListItem(state, action.id, p =>
+    p.mergeDeep({
+      filters: Immutable.fromJS(action.filters)
+    }).set('page', 1)
+  )
+}
+
+function resetFilters(state, action) {
+  return updateListItem(state, action.id, p =>
+    p.set(
+      'filters',
+      Immutable.fromJS(action.filters || {})
+    ).set('page', 1)
+  )
+}
+
 function sortChanged(state, action) {
   return updateListItem(state, action.id, p =>
     p.merge({
@@ -179,6 +196,8 @@ export default resolveEach(initialState, {
   [actionTypes.RESULTS_UPDATED_ERROR]: error,
   [actionTypes.TOGGLE_FILTER_ITEM]: toggleFilterItem,
   [actionTypes.SET_FILTER]: setFilter,
+  [actionTypes.SET_FILTERS]: setFilters,
+  [actionTypes.RESET_FILTERS]: resetFilters,
   [actionTypes.SORT_CHANGED]: sortChanged,
   [actionTypes.UPDATING_ITEM]: updatingItem,
   [actionTypes.UPDATE_ITEM]: updateItem,
