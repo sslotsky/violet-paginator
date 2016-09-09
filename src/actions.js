@@ -24,8 +24,8 @@ const fetcher = customConfig =>
     return promise.then(resp =>
       dispatch({
         type: actionTypes.RESULTS_UPDATED,
-        results: resp.data[config.resultsProp || resultsProp],
-        totalCount: resp.data[config.totalCountProp || totalCountProp],
+        results: resp.data[resultsProp],
+        totalCount: resp.data[totalCountProp],
         id,
         requestId
       })
@@ -48,16 +48,24 @@ export default function register(config) {
 
   return {
     initialize: () => (dispatch, getState) => {
+      if (getState().pagination.some(p => p.get('id') === config.listId)) {
+        return dispatch({ type: actionTypes.FOUND_PAGINATOR, id })
+      }
+
       const action = {
         type: actionTypes.INITIALIZE_PAGINATOR,
         id: config.listId
       }
 
-      if (getState().pagination.some(p => p.get('id') === config.listId)) {
-        dispatch(action)
-      } else {
-        dispatch(execute(action))
+      if (config.pageSize) {
+        action.pageSize = config.pageSize
       }
+
+      if (config.filters) {
+        action.filters = config.filters
+      }
+
+      return dispatch(execute(action))
     },
     reload: fetch,
     next: () => dispatch =>
