@@ -308,6 +308,68 @@ describe('pageActions.setFilter', () => {
   })
 })
 
+describe('pageActions.setFilters', () => {
+  beforeEach(() => {
+    PromiseMock.install()
+  })
+
+  afterEach(() => {
+    PromiseMock.uninstall()
+  })
+
+  it('dispatches SET_FILTERS', () => {
+    const { pageActions, store } = setup()
+    const filters = { name: { like: 'IPA' } }
+    const expectedAction = {
+      type: actionTypes.SET_FILTERS,
+      id: listId,
+      filters
+    }
+
+    let rejected = false
+    store.dispatch(pageActions.setFilters(filters)).then(() => {
+      const actions = store.getActions()
+      expect(actions).toInclude(expectedAction)
+    }).catch(() => {
+      rejected = true
+    })
+
+    Promise.runAll()
+    expect(rejected).toBe(false)
+  })
+})
+
+describe('pageActions.resetFilters', () => {
+  beforeEach(() => {
+    PromiseMock.install()
+  })
+
+  afterEach(() => {
+    PromiseMock.uninstall()
+  })
+
+  it('dispatches RESET_FILTERS', () => {
+    const { pageActions, store } = setup()
+    const filters = { name: { like: 'IPA' } }
+    const expectedAction = {
+      type: actionTypes.RESET_FILTERS,
+      id: listId,
+      filters
+    }
+
+    let rejected = false
+    store.dispatch(pageActions.resetFilters(filters)).then(() => {
+      const actions = store.getActions()
+      expect(actions).toInclude(expectedAction)
+    }).catch(() => {
+      rejected = true
+    })
+
+    Promise.runAll()
+    expect(rejected).toBe(false)
+  })
+})
+
 describe('pageActions.sort', () => {
   beforeEach(() => {
     PromiseMock.install()

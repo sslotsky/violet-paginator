@@ -116,6 +116,22 @@ export default function register(config) {
           value
         })
       ),
+    setFilters: (filters) => dispatch =>
+      dispatch(
+        execute({
+          type: actionTypes.SET_FILTERS,
+          id,
+          filters
+        })
+      ),
+    resetFilters: (filters) => dispatch =>
+      dispatch(
+        execute({
+          type: actionTypes.RESET_FILTERS,
+          id,
+          filters
+        })
+      ),
     sort: (field, reverse) => dispatch =>
       dispatch(
         execute({
