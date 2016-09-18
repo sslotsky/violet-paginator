@@ -9,4 +9,5 @@ export VioletPageSizeDropdown, { PageSizeDropdown } from './PageSizeDropdown'
 export pagination from './reducer'
 export paginate from './PaginationWrapper'
 export { configurePageParams } from './pageInfoTranslator'
+export getPaginator from './lib/stateManagement'
 
