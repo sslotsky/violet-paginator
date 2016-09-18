@@ -3,7 +3,7 @@ import { resolveEach, updateListItem } from './lib/reduxResolver'
 import * as actionTypes from './actionTypes'
 import { recordProps } from './pageInfoTranslator'
 
-const initialState = List()
+export const initialState = List()
 
 export const defaultPaginator = Map({
   id: null,
@@ -31,6 +31,14 @@ function initialize(state, action) {
     filters: Immutable.fromJS(filters || {}),
     ...rest
   }))
+}
+
+function destroy(state, action) {
+  return state.filter(p => p.get('id') !== action.id)
+}
+
+function destroyAll() {
+  return initialState
 }
 
 function next(state, action) {
@@ -187,6 +195,8 @@ function itemError(state, action) {
 
 export default resolveEach(initialState, {
   [actionTypes.INITIALIZE_PAGINATOR]: initialize,
+  [actionTypes.DESTROY_PAGINATOR]: destroy,
+  [actionTypes.DESTROY_ALL]: destroyAll,
   [actionTypes.PREVIOUS_PAGE]: prev,
   [actionTypes.NEXT_PAGE]: next,
   [actionTypes.GO_TO_PAGE]: goToPage,

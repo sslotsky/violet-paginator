@@ -38,6 +38,12 @@ const fetcher = customConfig =>
     )
   }
 
+export function destroyAll() {
+  return {
+    type: actionTypes.DESTROY_ALL
+  }
+}
+
 export default function register(config) {
   const fetch = fetcher(config)
   const id = config.listId
@@ -67,6 +73,10 @@ export default function register(config) {
 
       return dispatch(execute(action))
     },
+    destroy: () => ({
+      type: actionTypes.DESTROY_PAGINATOR,
+      id
+    }),
     reload: fetch,
     next: () => execute({
       type: actionTypes.NEXT_PAGE,

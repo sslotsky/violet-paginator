@@ -1,6 +1,7 @@
 import Immutable, { Map, Set } from 'immutable'
 import expect from 'expect'
-import reducer, { defaultPaginator } from '../src/reducer'
+import reducer, { defaultPaginator, initialState as defaultState } from '../src/reducer'
+import getPaginator from '../src/lib/stateManagement'
 import * as actionTypes from '../src/actionTypes'
 
 const id = 'test-list'
@@ -124,6 +125,28 @@ describe('pagination reducer', () => {
       it('returns to the first page', () => {
         expect(state.get('page')).toEqual(1)
       })
+    })
+
+    it('handles DESTROY_PAGINATOR', () => {
+      const { state: initialState } = setup()
+      const action = {
+        type: actionTypes.DESTROY_PAGINATOR,
+        id
+      }
+
+      const state = getPaginator({
+        pagination: reducer(initialState, action)
+      }, id)
+      expect(state.size).toEqual(0)
+    })
+
+    it('handles DESTROY_ALL', () => {
+      const { state: initialState } = setup()
+      const action = {
+        type: actionTypes.DESTROY_ALL
+      }
+
+      expect(reducer(initialState, action)).toEqual(defaultState)
     })
 
     it('handles PREVIOUS_PAGE', () => {

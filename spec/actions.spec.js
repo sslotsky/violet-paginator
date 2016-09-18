@@ -3,7 +3,7 @@ import expect from 'expect'
 import PromiseMock from 'promise-mock'
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
-import register from '../src/actions'
+import register, { destroyAll } from '../src/actions'
 import { defaultPaginator } from '../src/reducer'
 import * as actionTypes from '../src/actionTypes'
 
@@ -458,5 +458,28 @@ describe('removeItem', () => {
     }
 
     expect(store.dispatch(pageActions.removeItem(itemId))).toEqual(expectedAction)
+  })
+})
+
+describe('destroy', () => {
+  it('dispatches DESTROY_PAGINATOR', () => {
+    const { pageActions, store } = setup()
+    const expectedAction = {
+      type: actionTypes.DESTROY_PAGINATOR,
+      id: listId
+    }
+
+    expect(store.dispatch(pageActions.destroy())).toEqual(expectedAction)
+  })
+})
+
+describe('destroyAll', () => {
+  it('dispatches DESTROY_ALL', () => {
+    const { store } = setup()
+    const expectedAction = {
+      type: actionTypes.DESTROY_ALL
+    }
+
+    expect(store.dispatch(destroyAll())).toEqual(expectedAction)
   })
 })
