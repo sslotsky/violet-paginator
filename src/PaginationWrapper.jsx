@@ -38,6 +38,7 @@ export default function paginate(ComponentClass) {
           hasPreviousPage: paginator.get('page') > 1,
           hasNextPage: paginator.get('page') < totalPages,
           currentPage: paginator.get('page'),
+          pageSize: paginator.get('pageSize'),
           results: paginator.get('results'),
           isLoading: paginator.get('isLoading'),
           updating: paginator.get('updating'),
