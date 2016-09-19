@@ -1,6 +1,6 @@
 import expect from 'expect'
 import getPaginator from '../src/lib/stateManagement'
-import reducer from '../src/reducer'
+import reducer, { defaultPaginator } from '../src/reducer'
 import * as actionTypes from '../src/actionTypes'
 
 describe('getPaginator', () => {
@@ -22,7 +22,7 @@ describe('getPaginator', () => {
   context('when the paginator does not exit', () => {
     it('returns a blank Map', () => {
       const paginator = getPaginator(state, 'otherId')
-      expect(paginator.size).toEqual(0)
+      expect(paginator).toEqual(defaultPaginator)
     })
   })
 })

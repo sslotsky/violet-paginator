@@ -137,7 +137,7 @@ describe('pagination reducer', () => {
       const state = getPaginator({
         pagination: reducer(initialState, action)
       }, id)
-      expect(state.size).toEqual(0)
+      expect(state).toEqual(defaultPaginator)
     })
 
     it('handles DESTROY_ALL', () => {
