@@ -3,7 +3,7 @@ import expect from 'expect'
 import PromiseMock from 'promise-mock'
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
-import register, { destroyAll } from '../src/actions'
+import register, { destroyAll, expireAll } from '../src/actions'
 import { defaultPaginator } from '../src/reducer'
 import * as actionTypes from '../src/actionTypes'
 
@@ -45,7 +45,7 @@ describe('pageActions.reload', () => {
       const { pageActions, store } = setup()
 
       let rejected = false
-      store.dispatch(pageActions.reload).then(() => {
+      store.dispatch(pageActions.reload()).then(() => {
         const actions = store.getActions()
         const types = actions.map(a => a.type)
         expect(types).toEqual([actionTypes.FETCH_RECORDS, actionTypes.RESULTS_UPDATED])
@@ -77,7 +77,7 @@ describe('pageActions.reload', () => {
 
       it('is able to read the results', () => {
         let rejected = false
-        store.dispatch(pageActions.reload).then(() => {
+        store.dispatch(pageActions.reload()).then(() => {
           const action = store.getActions().find(a => a.type === actionTypes.RESULTS_UPDATED)
           expect(action.results).toEqual(data.recipes)
         }).catch(() => {
@@ -90,7 +90,7 @@ describe('pageActions.reload', () => {
 
       it('is able to read the count', () => {
         let rejected = false
-        store.dispatch(pageActions.reload).then(() => {
+        store.dispatch(pageActions.reload()).then(() => {
           const action = store.getActions().find(a => a.type === actionTypes.RESULTS_UPDATED)
           expect(action.totalCount).toEqual(data.total_entries)
         }).catch(() => {
@@ -108,7 +108,7 @@ describe('pageActions.reload', () => {
       const { pageActions, store } = setup(false)
 
       let rejected = false
-      store.dispatch(pageActions.reload).then(() => {
+      store.dispatch(pageActions.reload()).then(() => {
         const actions = store.getActions()
         const types = actions.map(a => a.type)
         expect(types).toEqual([actionTypes.FETCH_RECORDS, actionTypes.RESULTS_UPDATED_ERROR])
@@ -481,5 +481,28 @@ describe('destroyAll', () => {
     }
 
     expect(store.dispatch(destroyAll())).toEqual(expectedAction)
+  })
+})
+
+describe('expire', () => {
+  it('dispatches EXPIRE_PAGINATOR', () => {
+    const { pageActions, store } = setup()
+    const expectedAction = {
+      type: actionTypes.EXPIRE_PAGINATOR,
+      id: listId
+    }
+
+    expect(store.dispatch(pageActions.expire())).toEqual(expectedAction)
+  })
+})
+
+describe('expireAll', () => {
+  it('dispatches EXPIRE_ALL', () => {
+    const { store } = setup()
+    const expectedAction = {
+      type: actionTypes.EXPIRE_ALL
+    }
+
+    expect(store.dispatch(expireAll())).toEqual(expectedAction)
   })
 })

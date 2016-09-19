@@ -149,6 +149,29 @@ describe('pagination reducer', () => {
       expect(reducer(initialState, action)).toEqual(defaultState)
     })
 
+    it('handles EXPIRE_PAGINATOR', () => {
+      const { state: initialState } = setup()
+      const action = {
+        type: actionTypes.EXPIRE_PAGINATOR,
+        id
+      }
+
+      const state = getPaginator({
+        pagination: reducer(initialState, action)
+      }, id)
+      expect(state.get('stale')).toEqual(true)
+    })
+
+    it('handles EXPIRE_ALL', () => {
+      const { state: initialState } = setup()
+      const action = {
+        type: actionTypes.EXPIRE_ALL
+      }
+
+      const state = reducer(initialState, action)
+      expect(state.every(p => p.get('stale'))).toBe(true)
+    })
+
     it('handles PREVIOUS_PAGE', () => {
       const paginator = defaultPaginator.set('page', 2)
       const { state: initialState } = setup(paginator)

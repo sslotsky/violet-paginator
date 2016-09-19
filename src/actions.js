@@ -44,6 +44,12 @@ export function destroyAll() {
   }
 }
 
+export function expireAll() {
+  return {
+    type: actionTypes.EXPIRE_ALL
+  }
+}
+
 export default function register(config) {
   const fetch = fetcher(config)
   const id = config.listId
@@ -77,7 +83,11 @@ export default function register(config) {
       type: actionTypes.DESTROY_PAGINATOR,
       id
     }),
-    reload: fetch,
+    expire: () => ({
+      type: actionTypes.EXPIRE_PAGINATOR,
+      id
+    }),
+    reload: () => fetch,
     next: () => execute({
       type: actionTypes.NEXT_PAGE,
       id

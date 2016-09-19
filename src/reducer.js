@@ -13,6 +13,7 @@ export const defaultPaginator = Map({
   sort: null,
   sortReverse: false,
   isLoading: false,
+  stale: false,
   results: List(),
   updating: Set(),
   removing: Set(),
@@ -39,6 +40,16 @@ function destroy(state, action) {
 
 function destroyAll() {
   return initialState
+}
+
+function expire(state, action) {
+  return updateListItem(state, action.id, p =>
+    p.set('stale', true)
+  )
+}
+
+function expireAll(state) {
+  return state.map(p => p.set('stale', true))
 }
 
 function next(state, action) {
@@ -86,7 +97,8 @@ function updateResults(state, action) {
     return p.merge({
       results: Immutable.fromJS(action.results),
       totalCount: action.totalCount,
-      isLoading: false
+      isLoading: false,
+      stale: false
     })
   })
 }
@@ -197,6 +209,8 @@ export default resolveEach(initialState, {
   [actionTypes.INITIALIZE_PAGINATOR]: initialize,
   [actionTypes.DESTROY_PAGINATOR]: destroy,
   [actionTypes.DESTROY_ALL]: destroyAll,
+  [actionTypes.EXPIRE_PAGINATOR]: expire,
+  [actionTypes.EXPIRE_ALL]: expireAll,
   [actionTypes.PREVIOUS_PAGE]: prev,
   [actionTypes.NEXT_PAGE]: next,
   [actionTypes.GO_TO_PAGE]: goToPage,

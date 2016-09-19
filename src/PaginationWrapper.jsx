@@ -25,8 +25,20 @@ export default function paginate(ComponentClass) {
         paginator: defaultPaginator
       }
 
+      reloadIfStale(props) {
+        const { paginator, actions } = props
+        if (paginator.get('stale') && !paginator.get('isLoading')) {
+          actions.reload()
+        }
+      }
+
       componentDidMount() {
         this.props.actions.initialize()
+        this.reloadIfStale(this.props)
+      }
+
+      componentWillReceiveProps(nextProps) {
+        this.reloadIfStale(nextProps)
       }
 
       info() {
