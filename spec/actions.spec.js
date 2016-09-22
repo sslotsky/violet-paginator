@@ -1,4 +1,4 @@
-import { List } from 'immutable'
+import Immutable, { List } from 'immutable'
 import expect from 'expect'
 import PromiseMock from 'promise-mock'
 import configureMockStore from 'redux-mock-store'
@@ -10,8 +10,11 @@ import * as actionTypes from '../src/actionTypes'
 const listId = 'someId'
 const mockStore = configureMockStore([thunk])
 
-const setup = (pass=true) => {
-  const paginator = defaultPaginator.set('id', listId)
+const setup = (pass=true, results=[]) => {
+  const paginator = defaultPaginator
+    .set('id', listId)
+    .set('results', Immutable.fromJS(results))
+
   const store = mockStore({ pagination: List.of(paginator) })
   const data = {
     total_count: 1,
@@ -504,5 +507,103 @@ describe('expireAll', () => {
     }
 
     expect(store.dispatch(expireAll())).toEqual(expectedAction)
+  })
+})
+
+describe('updateAsync', () => {
+  const itemId = 'itemId'
+
+  beforeEach(() => {
+    PromiseMock.install()
+  })
+
+  afterEach(() => {
+    PromiseMock.uninstall()
+  })
+
+  context('on update success', () => {
+    it('updates the item', () => {
+      let rejected = false
+      const { pageActions, store } = setup()
+      const updateData = { active: true }
+      const serverVersion = { active: false }
+      const update = () =>
+        Promise.resolve(serverVersion)
+
+      const expectedActions = [{
+        type: actionTypes.UPDATE_ITEM,
+        id: listId,
+        data: updateData,
+        itemId
+      }, {
+        type: actionTypes.UPDATING_ITEM,
+        id: listId,
+        itemId
+      }, {
+        type: actionTypes.UPDATE_ITEM,
+        id: listId,
+        data: serverVersion,
+        itemId
+      }]
+
+      store.dispatch(pageActions.updateAsync(itemId, updateData, update)).then(() => {
+        expect(store.getActions()).toEqual(expectedActions)
+      }).catch(() => {
+        rejected = true
+      })
+
+      Promise.runAll()
+      expect(rejected).toBe(false)
+    })
+  })
+
+  context('on update failure', () => {
+    it('reverts the item', () => {
+      let rejected = false
+
+      const record = {
+        id: itemId,
+        name: 'Ewe and IPA'
+      }
+
+      const results = [record]
+
+      const { pageActions, store } = setup(true, results)
+      const updateData = { name: 'Pouty Stout' }
+      const error = 'server error'
+      const update = () =>
+        Promise.reject(error)
+
+      const expectedActions = [{
+        type: actionTypes.UPDATE_ITEM,
+        id: listId,
+        data: updateData,
+        itemId
+      }, {
+        type: actionTypes.UPDATING_ITEM,
+        id: listId,
+        itemId
+      }, {
+        type: actionTypes.UPDATE_ITEM,
+        id: listId,
+        data: record,
+        itemId
+      }, {
+        type: actionTypes.ITEM_ERROR,
+        id: listId,
+        error,
+        itemId
+      }]
+
+      store.dispatch(pageActions.updateAsync(itemId, updateData, update)).then(() => {
+        const actions = store.getActions()
+        expect(actions).toEqual(expectedActions)
+      }).catch(() => {
+        rejected = true
+      })
+
+      Promise.runAll()
+      expect(rejected).toBe(false)
+    })
   })
 })

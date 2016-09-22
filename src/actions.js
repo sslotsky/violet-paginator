@@ -1,8 +1,10 @@
 import uuid from 'uuid'
 import * as actionTypes from './actionTypes'
-import { translate, responseProps } from './pageInfoTranslator'
+import { translate, responseProps, recordProps } from './pageInfoTranslator'
+import getPaginator from './lib/stateManagement'
 
 const [totalCountProp, resultsProp] = responseProps()
+const { identifier } = recordProps()
 
 const defaultConfig = {
   isBoundToDispatch: true
@@ -170,9 +172,26 @@ function fetchingComposables(config) {
 }
 
 export default function register(config) {
+  const simple = simpleComposables(config.listId)
+  const updateAsync = (id, data, update) =>
+    (dispatch, getState) => {
+      const item = getPaginator(getState(), config.listId).get('results')
+        .find(r => r.get(identifier) === id)
+
+      dispatch(simple.updateItem(id, data))
+      dispatch(simple.updatingItem(id))
+      return update().then(serverUpdate =>
+        dispatch(simple.updateItem(id, serverUpdate))
+      ).catch(err => {
+        dispatch(simple.updateItem(id, item.toJS()))
+        return dispatch(simple.itemError(id, err))
+      })
+    }
+
   return {
     ...fetchingComposables(config),
-    ...simpleComposables(config.listId)
+    ...simpleComposables(config.listId),
+    updateAsync
   }
 }
 
