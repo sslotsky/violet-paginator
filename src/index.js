@@ -1,4 +1,4 @@
-export register, { destroyAll, expireAll } from './actions'
+export register, { simpleComposables, composables, destroyAll, expireAll } from './actions'
 export VioletDataTable, { DataTable } from './DataTable'
 export VioletFlipper, { Flipper } from './Flipper'
 export VioletPaginator, { Paginator } from './Paginator'

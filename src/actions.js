@@ -50,7 +50,47 @@ export function expireAll() {
   }
 }
 
-export default function register(config) {
+export function simpleComposables(id) {
+  return {
+    destroy: () => ({
+      type: actionTypes.DESTROY_PAGINATOR,
+      id
+    }),
+    expire: () => ({
+      type: actionTypes.EXPIRE_PAGINATOR,
+      id
+    }),
+    updatingItem: (itemId) => ({
+      type: actionTypes.UPDATING_ITEM,
+      id,
+      itemId
+    }),
+    updateItem: (itemId, data) => ({
+      type: actionTypes.UPDATE_ITEM,
+      id,
+      itemId,
+      data
+    }),
+    removingItem: (itemId) => ({
+      type: actionTypes.REMOVING_ITEM,
+      id,
+      itemId
+    }),
+    removeItem: (itemId) => ({
+      type: actionTypes.REMOVE_ITEM,
+      id,
+      itemId
+    }),
+    itemError: (itemId, error) => ({
+      type: actionTypes.ITEM_ERROR,
+      id,
+      itemId,
+      error
+    })
+  }
+}
+
+function fetchingComposables(config) {
   const fetch = fetcher(config)
   const id = config.listId
   const execute = action => dispatch => {
@@ -79,14 +119,6 @@ export default function register(config) {
 
       return dispatch(execute(action))
     },
-    destroy: () => ({
-      type: actionTypes.DESTROY_PAGINATOR,
-      id
-    }),
-    expire: () => ({
-      type: actionTypes.EXPIRE_PAGINATOR,
-      id
-    }),
     reload: () => fetch,
     next: () => execute({
       type: actionTypes.NEXT_PAGE,
@@ -133,33 +165,20 @@ export default function register(config) {
       id,
       field,
       reverse
-    }),
-    updatingItem: (itemId) => ({
-      type: actionTypes.UPDATING_ITEM,
-      id,
-      itemId
-    }),
-    updateItem: (itemId, data) => ({
-      type: actionTypes.UPDATE_ITEM,
-      id,
-      itemId,
-      data
-    }),
-    removingItem: (itemId) => ({
-      type: actionTypes.REMOVING_ITEM,
-      id,
-      itemId
-    }),
-    removeItem: (itemId) => ({
-      type: actionTypes.REMOVE_ITEM,
-      id,
-      itemId
-    }),
-    itemError: (itemId, error) => ({
-      type: actionTypes.ITEM_ERROR,
-      id,
-      itemId,
-      error
     })
   }
+}
+
+export default function register(config) {
+  return {
+    ...fetchingComposables(config),
+    ...simpleComposables(config.listId)
+  }
+}
+
+export function composables(config) {
+  return register({
+    ...config,
+    isBoundToDispatch: false
+  })
 }
