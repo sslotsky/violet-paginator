@@ -378,10 +378,11 @@ describe('pagination reducer', () => {
         error: 'Error updating item'
       }
 
-      const state = reducer(initialState, action).find(p => p.get('id') === id)
+      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
+      const item = state.get('results').find(r => r.get('id') === itemId)
 
       it('attaches the error to the item', () => {
-        expect(state.get('error')).toEqual(action.error)
+        expect(item.get('error')).toEqual(action.error)
       })
 
       it('removes the item from the updating list', () => {

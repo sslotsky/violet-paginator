@@ -200,7 +200,12 @@ function itemError(state, action) {
     p.merge({
       updating: p.get('updating').toSet().delete(action.itemId),
       removing: p.get('removing').toSet().delete(action.itemId),
-      error: action.error
+      results: updateListItem(
+        p.get('results'),
+        action.itemId,
+        item => item.set('error', action.error),
+        recordProps().identifier
+      )
     })
   )
 }
