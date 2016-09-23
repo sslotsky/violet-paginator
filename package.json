@@ -1,6 +1,6 @@
 {
   "name": "violet-paginator",
-  "version": "1.5.1",
+  "version": "1.6.0",
   "description": "Easily display, paginate, and filter lists of records from the server",
   "main": "lib/index.js",
   "scripts": {
