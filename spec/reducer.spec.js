@@ -28,7 +28,7 @@ describe('pagination reducer', () => {
           filters: { custom_filter: true }
         }
 
-        const state = reducer(undefined, action).find(p => p.get('id') === id)
+        const state = getPaginator({ pagination: reducer(undefined, action) }, id)
         expect(state.get('filters').toJS()).toEqual(action.filters)
       })
     })
@@ -44,7 +44,7 @@ describe('pagination reducer', () => {
         id
       }
 
-      const state = reducer(initialState, action).find(p => p.get('id') === id)
+      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
 
       it('sets the specified filter', () => {
         expect(state.getIn(['filters', field]).toJS()).toEqual(value)
@@ -83,7 +83,7 @@ describe('pagination reducer', () => {
         fermentation_temperature: updatedFilters.fermentation_temperature
       }
 
-      const state = reducer(initialState, action).find(p => p.get('id') === id)
+      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
 
       it('merges the specified filters', () => {
         expect(state.get('filters').toJS()).toEqual(expectedFilters)
@@ -116,7 +116,7 @@ describe('pagination reducer', () => {
         id
       }
 
-      const state = reducer(initialState, action).find(p => p.get('id') === id)
+      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
 
       it('resets the filters', () => {
         expect(state.get('filters').toJS()).toEqual(updatedFilters)
@@ -176,7 +176,7 @@ describe('pagination reducer', () => {
       const paginator = defaultPaginator.set('page', 2)
       const { state: initialState } = setup(paginator)
       const action = { type: actionTypes.PREVIOUS_PAGE, id }
-      const state = reducer(initialState, action).find(p => p.get('id') === id)
+      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
 
       expect(state.get('page')).toEqual(1)
     })
@@ -184,7 +184,7 @@ describe('pagination reducer', () => {
     it('handles NEXT_PAGE', () => {
       const { state: initialState } = setup()
       const action = { type: actionTypes.NEXT_PAGE, id }
-      const state = reducer(initialState, action).find(p => p.get('id') === id)
+      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
 
       expect(state.get('page')).toEqual(2)
     })
@@ -192,7 +192,7 @@ describe('pagination reducer', () => {
     it('handles GO_TO_PAGE', () => {
       const { state: initialState } = setup()
       const action = { type: actionTypes.GO_TO_PAGE, size: 100, id }
-      const state = reducer(initialState, action).find(p => p.get('id') === id)
+      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
 
       expect(state.get('page')).toEqual(action.page)
     })
@@ -200,7 +200,7 @@ describe('pagination reducer', () => {
     it('handles SET_PAGE_SIZE', () => {
       const { state: initialState } = setup()
       const action = { type: actionTypes.SET_PAGE_SIZE, page: 2, id }
-      const state = reducer(initialState, action).find(p => p.get('id') === id)
+      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
 
       expect(state).toEqual(defaultPaginator.merge({
         page: 1,
@@ -212,7 +212,7 @@ describe('pagination reducer', () => {
     it('handles FETCH_RECORDS', () => {
       const { state: initialState } = setup()
       const action = { type: actionTypes.FETCH_RECORDS, id }
-      const state = reducer(initialState, action).find(p => p.get('id') === id)
+      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
 
       expect(state.get('isLoading')).toBe(true)
     })
@@ -230,7 +230,7 @@ describe('pagination reducer', () => {
         requestId
       }
 
-      const state = reducer(initialState, action).find(p => p.get('id') === id)
+      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
       expect(state.toJS()).toEqual(defaultPaginator.merge({
         results: Immutable.fromJS(records),
         isLoading: false,
@@ -250,7 +250,7 @@ describe('pagination reducer', () => {
         id
       }
 
-      const state = reducer(initialState, action).find(p => p.get('id') === id)
+      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
       expect(state.toJS()).toEqual(defaultPaginator.merge({
         isLoading: false,
         loadError: error,
@@ -267,7 +267,7 @@ describe('pagination reducer', () => {
         id
       }
 
-      const state = reducer(initialState, action).find(p => p.get('id') === id)
+      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
       expect(state.getIn(['filters', action.field])).toEqual(Immutable.fromJS(action.value))
     })
 
@@ -281,12 +281,87 @@ describe('pagination reducer', () => {
         id
       }
 
-      const state = reducer(initialState, action).find(p => p.get('id') === id)
+      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
       expect(state.toJS()).toEqual(defaultPaginator.merge({
         sort: action.field,
         sortReverse: action.reverse,
         id
       }).toJS())
+    })
+
+    it('handles UPDATING_ALL', () => {
+      const { state: initialState } = setup()
+      const action = {
+        type: actionTypes.UPDATING_ALL,
+        id
+      }
+
+      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
+      expect(state.get('bulkUpdating')).toBe(true)
+    })
+
+    it('handles RESET_RESULTS', () => {
+      const { state: initialState } = setup()
+      const results = [1, 2, 3]
+      const action = {
+        type: actionTypes.RESET_RESULTS,
+        results,
+        id
+      }
+
+      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
+      expect(state.get('results').toJS()).toEqual(results)
+    })
+
+    context('when handling BULK_ERROR', () => {
+      const { state: initialState } = setup()
+      const error = 'server error'
+      const action = {
+        type: actionTypes.BULK_ERROR,
+        error,
+        id
+      }
+
+      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
+      it('sets the bulkUpdateError', () => {
+        expect(state.get('bulkUpdateError')).toEqual(error)
+      })
+
+      it('clears the bulkUpdating flag', () => {
+        expect(state.get('bulkUpdating')).toBe(false)
+      })
+    })
+
+    context('when handling UPDATE_ALL', () => {
+      const itemId = 'someId'
+      const results = [{ id: itemId, name: 'Pouty Stout' }]
+      const paginator = defaultPaginator.merge({
+        results: Immutable.fromJS(results),
+        bulkUpdating: true,
+        bulkUpdateError: 'server error'
+      })
+
+      const { state: initialState } = setup(paginator)
+      const action = {
+        type: actionTypes.UPDATE_ALL,
+        data: { active: true },
+        id
+      }
+
+      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
+
+      it('updates all items', () => {
+        const items = state.get('results')
+        expect(items.every(i => i.get('active'))).toBe(true)
+      })
+
+      it('clears the bulkUpdating flag', () => {
+        expect(state.get('bulkUpdating')).toBe(false)
+      })
+
+      it('clears the bulkUpdateError', () => {
+        expect(state.get('bulkUpdateError')).toNotExist()
+      })
     })
 
     it('handles UPDATING_ITEM', () => {
@@ -297,7 +372,7 @@ describe('pagination reducer', () => {
         id
       }
 
-      const state = reducer(initialState, action).find(p => p.get('id') === id)
+      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
       expect(state.get('updating').toJS()).toInclude(action.itemId)
     })
 
@@ -314,7 +389,7 @@ describe('pagination reducer', () => {
         id
       }
 
-      const state = reducer(initialState, action).find(p => p.get('id') === id)
+      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
 
       it('updates the item', () => {
         const item = state.get('results').toJS()[0]
@@ -338,7 +413,7 @@ describe('pagination reducer', () => {
         id
       }
 
-      const state = reducer(initialState, action).find(p => p.get('id') === id)
+      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
       expect(state.get('removing').toJS()).toInclude(action.itemId)
     })
 
@@ -354,7 +429,7 @@ describe('pagination reducer', () => {
         id
       }
 
-      const state = reducer(initialState, action).find(p => p.get('id') === id)
+      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
 
       it('removes the item', () => {
         expect(state.get('results').count()).toEqual(0)
@@ -403,7 +478,7 @@ describe('pagination reducer', () => {
             id
           }
 
-          const state = reducer(initialState, action).find(p => p.get('id') === id)
+          const state = getPaginator({ pagination: reducer(initialState, action) }, id)
           expect(state.getIn(['filters', 'myArray']).toArray()).toExclude('myItem')
         })
       })
@@ -421,7 +496,7 @@ describe('pagination reducer', () => {
             id
           }
 
-          const state = reducer(initialState, action).find(p => p.get('id') === id)
+          const state = getPaginator({ pagination: reducer(initialState, action) }, id)
           expect(state.getIn(['filters', 'myArray']).toArray()).toInclude('myItem')
         })
       })

@@ -527,8 +527,7 @@ describe('updateAsync', () => {
       const { pageActions, store } = setup()
       const updateData = { active: true }
       const serverVersion = { active: false }
-      const update = () =>
-        Promise.resolve(serverVersion)
+      const update = Promise.resolve(serverVersion)
 
       const expectedActions = [{
         type: actionTypes.UPDATE_ITEM,
@@ -571,8 +570,7 @@ describe('updateAsync', () => {
       const { pageActions, store } = setup(true, results)
       const updateData = { name: 'Pouty Stout' }
       const error = 'server error'
-      const update = () =>
-        Promise.reject(error)
+      const update = Promise.reject(error)
 
       const expectedActions = [{
         type: actionTypes.UPDATE_ITEM,
@@ -596,6 +594,96 @@ describe('updateAsync', () => {
       }]
 
       store.dispatch(pageActions.updateAsync(itemId, updateData, update)).then(() => {
+        const actions = store.getActions()
+        expect(actions).toEqual(expectedActions)
+      }).catch(() => {
+        rejected = true
+      })
+
+      Promise.runAll()
+      expect(rejected).toBe(false)
+    })
+  })
+})
+
+describe('updateAllAsync', () => {
+  const itemId = 'itemId'
+
+  beforeEach(() => {
+    PromiseMock.install()
+  })
+
+  afterEach(() => {
+    PromiseMock.uninstall()
+  })
+
+  context('on update success', () => {
+    it('updates the item', () => {
+      let rejected = false
+      const { pageActions, store } = setup()
+      const updateData = { active: true }
+      const serverVersion = { active: false }
+      const update = Promise.resolve(serverVersion)
+
+      const expectedActions = [{
+        type: actionTypes.UPDATE_ALL,
+        id: listId,
+        data: updateData
+      }, {
+        type: actionTypes.UPDATING_ALL,
+        id: listId
+      }, {
+        type: actionTypes.UPDATE_ALL,
+        id: listId,
+        data: serverVersion
+      }]
+
+      store.dispatch(pageActions.updateAllAsync(updateData, update)).then(() => {
+        expect(store.getActions()).toEqual(expectedActions)
+      }).catch(() => {
+        rejected = true
+      })
+
+      Promise.runAll()
+      expect(rejected).toBe(false)
+    })
+  })
+
+  context('on update failure', () => {
+    it('reverts the results', () => {
+      let rejected = false
+
+      const record = {
+        id: itemId,
+        name: 'Ewe and IPA',
+        active: true
+      }
+
+      const results = [record]
+
+      const { pageActions, store } = setup(true, results)
+      const updateData = { active: false }
+      const error = 'server error'
+      const update = Promise.reject(error)
+
+      const expectedActions = [{
+        type: actionTypes.UPDATE_ALL,
+        id: listId,
+        data: updateData
+      }, {
+        type: actionTypes.UPDATING_ALL,
+        id: listId
+      }, {
+        type: actionTypes.RESET_RESULTS,
+        id: listId,
+        results
+      }, {
+        type: actionTypes.BULK_ERROR,
+        id: listId,
+        error
+      }]
+
+      store.dispatch(pageActions.updateAllAsync(updateData, update)).then(() => {
         const actions = store.getActions()
         expect(actions).toEqual(expectedActions)
       }).catch(() => {

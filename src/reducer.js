@@ -13,6 +13,8 @@ export const defaultPaginator = Map({
   sort: null,
   sortReverse: false,
   isLoading: false,
+  bulkUpdating: false,
+  bulkUpdateError: null,
   stale: false,
   results: List(),
   updating: Set(),
@@ -103,6 +105,12 @@ function updateResults(state, action) {
   })
 }
 
+function resetResults(state, action) {
+  return updateListItem(state, action.id, p =>
+    p.set('results', Immutable.fromJS(action.results))
+  )
+}
+
 function toggleFilterItem(state, action) {
   return updateListItem(state, action.id, p => {
     const items = (p.getIn(['filters', action.field]) || Set()).toSet()
@@ -177,6 +185,29 @@ function updateItem(state, action) {
   )
 }
 
+function updatingAll(state, action) {
+  return updateListItem(state, action.id, p =>
+    p.set('bulkUpdating', true)
+  )
+}
+
+function updateAll(state, action) {
+  return updateListItem(state, action.id, p => p
+    .set('bulkUpdateError', null)
+    .set('bulkUpdating', false)
+    .set('results', p.get('results').map(r =>
+      r.merge(action.data)
+    ))
+  )
+}
+
+function bulkError(state, action) {
+  return updateListItem(state, action.id, p => p
+    .set('bulkUpdateError', action.error)
+    .set('bulkUpdating', false)
+  )
+}
+
 function removingItem(state, action) {
   return updateListItem(state, action.id, p =>
     p.set('removing', p.get('removing').add(action.itemId))
@@ -230,6 +261,10 @@ export default resolveEach(initialState, {
   [actionTypes.SORT_CHANGED]: sortChanged,
   [actionTypes.UPDATING_ITEM]: updatingItem,
   [actionTypes.UPDATE_ITEM]: updateItem,
+  [actionTypes.UPDATING_ALL]: updatingAll,
+  [actionTypes.BULK_ERROR]: bulkError,
+  [actionTypes.RESET_RESULTS]: resetResults,
+  [actionTypes.UPDATE_ALL]: updateAll,
   [actionTypes.REMOVING_ITEM]: removingItem,
   [actionTypes.REMOVE_ITEM]: removeItem,
   [actionTypes.ITEM_ERROR]: itemError

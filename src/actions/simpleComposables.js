@@ -25,6 +25,25 @@ export default function simpleComposables(id) {
       itemId,
       data
     }),
+    updatingAll: () => ({
+      type: actionTypes.UPDATING_ALL,
+      id
+    }),
+    updateAll: (data) => ({
+      type: actionTypes.UPDATE_ALL,
+      id,
+      data
+    }),
+    bulkError: (error) => ({
+      type: actionTypes.BULK_ERROR,
+      id,
+      error
+    }),
+    resetResults: (results) => ({
+      type: actionTypes.RESET_RESULTS,
+      id,
+      results
+    }),
     removingItem: (itemId) => ({
       type: actionTypes.REMOVING_ITEM,
       id,
@@ -50,7 +69,7 @@ export default function simpleComposables(id) {
 
       dispatch(basic.updateItem(itemId, data))
       dispatch(basic.updatingItem(itemId))
-      return update().then(serverUpdate =>
+      return update.then(serverUpdate =>
         dispatch(basic.updateItem(itemId, serverUpdate))
       ).catch(err => {
         dispatch(basic.updateItem(itemId, item.toJS()))
@@ -58,9 +77,24 @@ export default function simpleComposables(id) {
       })
     }
 
+  const updateAllAsync = (data, update) =>
+    (dispatch, getState) => {
+      const results = getPaginator(getState(), id).get('results')
+
+      dispatch(basic.updateAll(data))
+      dispatch(basic.updatingAll())
+      return update.then(serverUpdate =>
+        dispatch(basic.updateAll(serverUpdate))
+      ).catch(err => {
+        dispatch(basic.resetResults(results.toJS()))
+        return dispatch(basic.bulkError(err))
+      })
+    }
+
   return {
     ...basic,
-    updateAsync
+    updateAsync,
+    updateAllAsync
   }
 }
 
