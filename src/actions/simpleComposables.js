@@ -77,15 +77,19 @@ export default function simpleComposables(id) {
       })
     }
 
-  const updateAllAsync = (data, update) =>
+  const updateAllAsync = (data, update, reset=false) =>
     (dispatch, getState) => {
       const results = getPaginator(getState(), id).get('results')
 
       dispatch(basic.updateAll(data))
       dispatch(basic.updatingAll())
-      return update.then(serverUpdate =>
-        dispatch(basic.updateAll(serverUpdate))
-      ).catch(err => {
+      return update.then(serverUpdate => {
+        if (reset) {
+          return dispatch(basic.resetResults(serverUpdate))
+        }
+
+        return dispatch(basic.updateAll(serverUpdate))
+      }).catch(err => {
         dispatch(basic.resetResults(results.toJS()))
         return dispatch(basic.bulkError(err))
       })

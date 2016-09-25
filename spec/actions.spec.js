@@ -618,12 +618,12 @@ describe('updateAllAsync', () => {
   })
 
   context('on update success', () => {
-    it('updates the item', () => {
+    const updateData = { active: true }
+
+    context('with default settings', () => {
       let rejected = false
-      const { pageActions, store } = setup()
-      const updateData = { active: true }
+
       const serverVersion = { active: false }
-      const update = Promise.resolve(serverVersion)
 
       const expectedActions = [{
         type: actionTypes.UPDATE_ALL,
@@ -638,14 +638,50 @@ describe('updateAllAsync', () => {
         data: serverVersion
       }]
 
-      store.dispatch(pageActions.updateAllAsync(updateData, update)).then(() => {
-        expect(store.getActions()).toEqual(expectedActions)
-      }).catch(() => {
-        rejected = true
-      })
+      it('updates all the items', () => {
+        const { pageActions, store } = setup()
+        const update = Promise.resolve(serverVersion)
+        store.dispatch(pageActions.updateAllAsync(updateData, update)).then(() => {
+          expect(store.getActions()).toEqual(expectedActions)
+        }).catch(() => {
+          rejected = true
+        })
 
-      Promise.runAll()
-      expect(rejected).toBe(false)
+        Promise.runAll()
+        expect(rejected).toBe(false)
+      })
+    })
+
+    context('with reset=true', () => {
+      let rejected = false
+
+      const serverVersion = [{ id: 1, name: 'Ewe and IPA', active: false }]
+
+      const expectedActions = [{
+        type: actionTypes.UPDATE_ALL,
+        id: listId,
+        data: updateData
+      }, {
+        type: actionTypes.UPDATING_ALL,
+        id: listId
+      }, {
+        type: actionTypes.RESET_RESULTS,
+        id: listId,
+        results: serverVersion
+      }]
+
+      it('resets the items', () => {
+        const { pageActions, store } = setup()
+        const update = Promise.resolve(serverVersion)
+        store.dispatch(pageActions.updateAllAsync(updateData, update, true)).then(() => {
+          expect(store.getActions()).toEqual(expectedActions)
+        }).catch(() => {
+          rejected = true
+        })
+
+        Promise.runAll()
+        expect(rejected).toBe(false)
+      })
     })
   })
 
