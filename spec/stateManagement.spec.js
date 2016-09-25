@@ -1,5 +1,6 @@
+import { Set } from 'immutable'
 import expect from 'expect'
-import getPaginator from '../src/lib/stateManagement'
+import getPaginator, { isUpdating } from '../src/lib/stateManagement'
 import reducer, { defaultPaginator } from '../src/reducer'
 import * as actionTypes from '../src/actionTypes'
 
@@ -23,6 +24,37 @@ describe('getPaginator', () => {
     it('returns a blank Map', () => {
       const paginator = getPaginator(state, 'otherId')
       expect(paginator).toEqual(defaultPaginator)
+    })
+  })
+})
+
+describe('isUpdating', () => {
+  context('when an item is updating', () => {
+    const [id, itemId] = ['recipes', 1]
+    const initialize = {
+      type: actionTypes.INITIALIZE_PAGINATOR,
+      updating: Set.of(itemId),
+      id
+    }
+
+    const state = { pagination: reducer(undefined, initialize) }
+
+    it('returns true', () => {
+      expect(isUpdating(state, id, itemId)).toBe(true)
+    })
+  })
+
+  context('when an item is not updating', () => {
+    const [id, itemId] = ['recipes', 1]
+    const initialize = {
+      type: actionTypes.INITIALIZE_PAGINATOR,
+      id
+    }
+
+    const state = { pagination: reducer(undefined, initialize) }
+
+    it('returns false', () => {
+      expect(isUpdating(state, id, itemId)).toBe(false)
     })
   })
 })
