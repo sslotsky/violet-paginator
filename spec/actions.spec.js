@@ -6,6 +6,7 @@ import thunk from 'redux-thunk'
 import register, { destroyAll, expireAll } from '../src/actions'
 import { defaultPaginator } from '../src/reducer'
 import * as actionTypes from '../src/actionTypes'
+import expectAsync from './specHelper'
 
 const listId = 'someId'
 const mockStore = configureMockStore([thunk])
@@ -47,17 +48,13 @@ describe('pageActions.reload', () => {
     it('dispatches RESULTS_UPDATED', () => {
       const { pageActions, store } = setup()
 
-      let rejected = false
-      store.dispatch(pageActions.reload()).then(() => {
-        const actions = store.getActions()
-        const types = actions.map(a => a.type)
-        expect(types).toEqual([actionTypes.FETCH_RECORDS, actionTypes.RESULTS_UPDATED])
-      }).catch(() => {
-        rejected = true
-      })
-
-      Promise.runAll()
-      expect(rejected).toBe(false)
+      expectAsync(
+        store.dispatch(pageActions.reload()).then(() => {
+          const actions = store.getActions()
+          const types = actions.map(a => a.type)
+          expect(types).toEqual([actionTypes.FETCH_RECORDS, actionTypes.RESULTS_UPDATED])
+        })
+      )
     })
 
     context('when results props are configured', () => {
@@ -79,29 +76,21 @@ describe('pageActions.reload', () => {
       })
 
       it('is able to read the results', () => {
-        let rejected = false
-        store.dispatch(pageActions.reload()).then(() => {
-          const action = store.getActions().find(a => a.type === actionTypes.RESULTS_UPDATED)
-          expect(action.results).toEqual(data.recipes)
-        }).catch(() => {
-          rejected = true
-        })
-
-        Promise.runAll()
-        expect(rejected).toBe(false)
+        expectAsync(
+          store.dispatch(pageActions.reload()).then(() => {
+            const action = store.getActions().find(a => a.type === actionTypes.RESULTS_UPDATED)
+            expect(action.results).toEqual(data.recipes)
+          })
+        )
       })
 
       it('is able to read the count', () => {
-        let rejected = false
-        store.dispatch(pageActions.reload()).then(() => {
-          const action = store.getActions().find(a => a.type === actionTypes.RESULTS_UPDATED)
-          expect(action.totalCount).toEqual(data.total_entries)
-        }).catch(() => {
-          rejected = true
-        })
-
-        Promise.runAll()
-        expect(rejected).toBe(false)
+        expectAsync(
+          store.dispatch(pageActions.reload()).then(() => {
+            const action = store.getActions().find(a => a.type === actionTypes.RESULTS_UPDATED)
+            expect(action.totalCount).toEqual(data.total_entries)
+          })
+        )
       })
     })
   })
@@ -110,17 +99,13 @@ describe('pageActions.reload', () => {
     it('dispatches RESULTS_UPDATED_ERROR', () => {
       const { pageActions, store } = setup(false)
 
-      let rejected = false
-      store.dispatch(pageActions.reload()).then(() => {
-        const actions = store.getActions()
-        const types = actions.map(a => a.type)
-        expect(types).toEqual([actionTypes.FETCH_RECORDS, actionTypes.RESULTS_UPDATED_ERROR])
-      }).catch(() => {
-        rejected = true
-      })
-
-      Promise.runAll()
-      expect(rejected).toBe(false)
+      expectAsync(
+        store.dispatch(pageActions.reload()).then(() => {
+          const actions = store.getActions()
+          const types = actions.map(a => a.type)
+          expect(types).toEqual([actionTypes.FETCH_RECORDS, actionTypes.RESULTS_UPDATED_ERROR])
+        })
+      )
     })
   })
 })
@@ -141,16 +126,12 @@ describe('pageActions.next', () => {
       id: listId
     }
 
-    let rejected = false
-    store.dispatch(pageActions.next()).then(() => {
-      const actions = store.getActions()
-      expect(actions).toInclude(expectedAction)
-    }).catch(() => {
-      rejected = true
-    })
-
-    Promise.runAll()
-    expect(rejected).toBe(false)
+    expectAsync(
+      store.dispatch(pageActions.next()).then(() => {
+        const actions = store.getActions()
+        expect(actions).toInclude(expectedAction)
+      })
+    )
   })
 })
 
@@ -170,16 +151,12 @@ describe('pageActions.prev', () => {
       id: listId
     }
 
-    let rejected = false
-    store.dispatch(pageActions.prev()).then(() => {
-      const actions = store.getActions()
-      expect(actions).toInclude(expectedAction)
-    }).catch(() => {
-      rejected = true
-    })
-
-    Promise.runAll()
-    expect(rejected).toBe(false)
+    expectAsync(
+      store.dispatch(pageActions.prev()).then(() => {
+        const actions = store.getActions()
+        expect(actions).toInclude(expectedAction)
+      })
+    )
   })
 })
 
@@ -201,16 +178,12 @@ describe('pageActions.goTo', () => {
       id: listId
     }
 
-    let rejected = false
-    store.dispatch(pageActions.goTo(page)).then(() => {
-      const actions = store.getActions()
-      expect(actions).toInclude(expectedAction)
-    }).catch(() => {
-      rejected = true
-    })
-
-    Promise.runAll()
-    expect(rejected).toBe(false)
+    expectAsync(
+      store.dispatch(pageActions.goTo(page)).then(() => {
+        const actions = store.getActions()
+        expect(actions).toInclude(expectedAction)
+      })
+    )
   })
 })
 
@@ -232,16 +205,12 @@ describe('pageActions.setPageSize', () => {
       id: listId
     }
 
-    let rejected = false
-    store.dispatch(pageActions.setPageSize(size)).then(() => {
-      const actions = store.getActions()
-      expect(actions).toInclude(expectedAction)
-    }).catch(() => {
-      rejected = true
-    })
-
-    Promise.runAll()
-    expect(rejected).toBe(false)
+    expectAsync(
+      store.dispatch(pageActions.setPageSize(size)).then(() => {
+        const actions = store.getActions()
+        expect(actions).toInclude(expectedAction)
+      })
+    )
   })
 })
 
@@ -265,16 +234,12 @@ describe('pageActions.toggleFilterItem', () => {
       id: listId
     }
 
-    let rejected = false
-    store.dispatch(pageActions.toggleFilterItem(field, value)).then(() => {
-      const actions = store.getActions()
-      expect(actions).toInclude(expectedAction)
-    }).catch(() => {
-      rejected = true
-    })
-
-    Promise.runAll()
-    expect(rejected).toBe(false)
+    expectAsync(
+      store.dispatch(pageActions.toggleFilterItem(field, value)).then(() => {
+        const actions = store.getActions()
+        expect(actions).toInclude(expectedAction)
+      })
+    )
   })
 })
 
@@ -298,16 +263,12 @@ describe('pageActions.setFilter', () => {
       id: listId
     }
 
-    let rejected = false
-    store.dispatch(pageActions.setFilter(field, value)).then(() => {
-      const actions = store.getActions()
-      expect(actions).toInclude(expectedAction)
-    }).catch(() => {
-      rejected = true
-    })
-
-    Promise.runAll()
-    expect(rejected).toBe(false)
+    expectAsync(
+      store.dispatch(pageActions.setFilter(field, value)).then(() => {
+        const actions = store.getActions()
+        expect(actions).toInclude(expectedAction)
+      })
+    )
   })
 })
 
@@ -329,16 +290,12 @@ describe('pageActions.setFilters', () => {
       filters
     }
 
-    let rejected = false
-    store.dispatch(pageActions.setFilters(filters)).then(() => {
-      const actions = store.getActions()
-      expect(actions).toInclude(expectedAction)
-    }).catch(() => {
-      rejected = true
-    })
-
-    Promise.runAll()
-    expect(rejected).toBe(false)
+    expectAsync(
+      store.dispatch(pageActions.setFilters(filters)).then(() => {
+        const actions = store.getActions()
+        expect(actions).toInclude(expectedAction)
+      })
+    )
   })
 })
 
@@ -360,16 +317,12 @@ describe('pageActions.resetFilters', () => {
       filters
     }
 
-    let rejected = false
-    store.dispatch(pageActions.resetFilters(filters)).then(() => {
-      const actions = store.getActions()
-      expect(actions).toInclude(expectedAction)
-    }).catch(() => {
-      rejected = true
-    })
-
-    Promise.runAll()
-    expect(rejected).toBe(false)
+    expectAsync(
+      store.dispatch(pageActions.resetFilters(filters)).then(() => {
+        const actions = store.getActions()
+        expect(actions).toInclude(expectedAction)
+      })
+    )
   })
 })
 
@@ -393,16 +346,12 @@ describe('pageActions.sort', () => {
       id: listId
     }
 
-    let rejected = false
-    store.dispatch(pageActions.sort(field, reverse)).then(() => {
-      const actions = store.getActions()
-      expect(actions).toInclude(expectedAction)
-    }).catch(() => {
-      rejected = true
-    })
-
-    Promise.runAll()
-    expect(rejected).toBe(false)
+    expectAsync(
+      store.dispatch(pageActions.sort(field, reverse)).then(() => {
+        const actions = store.getActions()
+        expect(actions).toInclude(expectedAction)
+      })
+    )
   })
 })
 
@@ -523,7 +472,6 @@ describe('updateAsync', () => {
 
   context('on update success', () => {
     it('updates the item', () => {
-      let rejected = false
       const { pageActions, store } = setup()
       const updateData = { active: true }
       const serverVersion = { active: false }
@@ -545,21 +493,16 @@ describe('updateAsync', () => {
         itemId
       }]
 
-      store.dispatch(pageActions.updateAsync(itemId, updateData, update)).then(() => {
-        expect(store.getActions()).toEqual(expectedActions)
-      }).catch(() => {
-        rejected = true
-      })
-
-      Promise.runAll()
-      expect(rejected).toBe(false)
+      expectAsync(
+        store.dispatch(pageActions.updateAsync(itemId, updateData, update)).then(() => {
+          expect(store.getActions()).toEqual(expectedActions)
+        })
+      )
     })
   })
 
   context('on update failure', () => {
     it('reverts the item', () => {
-      let rejected = false
-
       const record = {
         id: itemId,
         name: 'Ewe and IPA'
@@ -593,15 +536,12 @@ describe('updateAsync', () => {
         itemId
       }]
 
-      store.dispatch(pageActions.updateAsync(itemId, updateData, update)).then(() => {
-        const actions = store.getActions()
-        expect(actions).toEqual(expectedActions)
-      }).catch(() => {
-        rejected = true
-      })
-
-      Promise.runAll()
-      expect(rejected).toBe(false)
+      expectAsync(
+        store.dispatch(pageActions.updateAsync(itemId, updateData, update)).then(() => {
+          const actions = store.getActions()
+          expect(actions).toEqual(expectedActions)
+        })
+      )
     })
   })
 })
@@ -621,8 +561,6 @@ describe('updateAllAsync', () => {
     const updateData = { active: true }
 
     context('with default settings', () => {
-      let rejected = false
-
       const serverVersion = { active: false }
 
       const expectedActions = [{
@@ -641,20 +579,15 @@ describe('updateAllAsync', () => {
       it('updates all the items', () => {
         const { pageActions, store } = setup()
         const update = Promise.resolve(serverVersion)
-        store.dispatch(pageActions.updateAllAsync(updateData, update)).then(() => {
-          expect(store.getActions()).toEqual(expectedActions)
-        }).catch(() => {
-          rejected = true
-        })
-
-        Promise.runAll()
-        expect(rejected).toBe(false)
+        expectAsync(
+          store.dispatch(pageActions.updateAllAsync(updateData, update)).then(() => {
+            expect(store.getActions()).toEqual(expectedActions)
+          })
+        )
       })
     })
 
     context('with reset=true', () => {
-      let rejected = false
-
       const serverVersion = [{ id: 1, name: 'Ewe and IPA', active: false }]
 
       const expectedActions = [{
@@ -673,22 +606,17 @@ describe('updateAllAsync', () => {
       it('resets the items', () => {
         const { pageActions, store } = setup()
         const update = Promise.resolve(serverVersion)
-        store.dispatch(pageActions.updateAllAsync(updateData, update, true)).then(() => {
-          expect(store.getActions()).toEqual(expectedActions)
-        }).catch(() => {
-          rejected = true
-        })
-
-        Promise.runAll()
-        expect(rejected).toBe(false)
+        expectAsync(
+          store.dispatch(pageActions.updateAllAsync(updateData, update, true)).then(() => {
+            expect(store.getActions()).toEqual(expectedActions)
+          })
+        )
       })
     })
   })
 
   context('on update failure', () => {
     it('reverts the results', () => {
-      let rejected = false
-
       const record = {
         id: itemId,
         name: 'Ewe and IPA',
@@ -719,15 +647,12 @@ describe('updateAllAsync', () => {
         error
       }]
 
-      store.dispatch(pageActions.updateAllAsync(updateData, update)).then(() => {
-        const actions = store.getActions()
-        expect(actions).toEqual(expectedActions)
-      }).catch(() => {
-        rejected = true
-      })
-
-      Promise.runAll()
-      expect(rejected).toBe(false)
+      expectAsync(
+        store.dispatch(pageActions.updateAllAsync(updateData, update)).then(() => {
+          const actions = store.getActions()
+          expect(actions).toEqual(expectedActions)
+        })
+      )
     })
   })
 })
