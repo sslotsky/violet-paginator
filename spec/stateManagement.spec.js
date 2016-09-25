@@ -29,6 +29,21 @@ describe('getPaginator', () => {
 })
 
 describe('isUpdating', () => {
+  context('when the list is bulkUpdating', () => {
+    const id = 'recipes'
+    const initialize = {
+      type: actionTypes.INITIALIZE_PAGINATOR,
+      bulkUpdating: true,
+      id
+    }
+
+    const state = { pagination: reducer(undefined, initialize) }
+
+    it('returns true', () => {
+      expect(isUpdating(state, id, 'anyItemId')).toBe(true)
+    })
+  })
+
   context('when an item is updating', () => {
     const [id, itemId] = ['recipes', 1]
     const initialize = {

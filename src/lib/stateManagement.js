@@ -5,7 +5,7 @@ export default function getPaginator(state, listId) {
 }
 
 export function isUpdating(state, listId, itemId) {
-  return getPaginator(state, listId)
-    .get('updating')
-    .includes(itemId)
+  const paginator = getPaginator(state, listId)
+  return paginator.get('updating').includes(itemId) ||
+    paginator.get('bulkUpdating')
 }
