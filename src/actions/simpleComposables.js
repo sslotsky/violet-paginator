@@ -1,7 +1,11 @@
+import getPaginator from '../lib/stateManagement'
+import { recordProps } from '../pageInfoTranslator'
 import * as actionTypes from '../actionTypes'
 
+const { identifier } = recordProps()
+
 export default function simpleComposables(id) {
-  return {
+  const basic = {
     destroy: () => ({
       type: actionTypes.DESTROY_PAGINATOR,
       id
@@ -37,6 +41,26 @@ export default function simpleComposables(id) {
       itemId,
       error
     })
+  }
+
+  const updateAsync = (itemId, data, update) =>
+    (dispatch, getState) => {
+      const item = getPaginator(getState(), id).get('results')
+        .find(r => r.get(identifier) === itemId)
+
+      dispatch(basic.updateItem(itemId, data))
+      dispatch(basic.updatingItem(itemId))
+      return update().then(serverUpdate =>
+        dispatch(basic.updateItem(itemId, serverUpdate))
+      ).catch(err => {
+        dispatch(basic.updateItem(itemId, item.toJS()))
+        return dispatch(basic.itemError(itemId, err))
+      })
+    }
+
+  return {
+    ...basic,
+    updateAsync
   }
 }
 
