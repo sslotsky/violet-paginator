@@ -11,6 +11,10 @@ and extend VioletPaginator's default behavior by composing actions.
 
 https://sslotsky.github.io/violet-paginator/
 
+## Extended Documentation
+
+https://sslotsky.gitbooks.io/violet-paginator/content/
+
 ## Installation
 
 ```
@@ -227,76 +231,40 @@ or a full-fledged react component. Example:
 
 ### Composing Actions
 
-`VioletPaginator` comes with a lot of actions for list management; in addition to fetching, paging, and sorting, we also
-provide actions to update and remove items from the results list, and still more actions for setting additional list filters.
-While we feel that these are sufficient for most list management use cases, consumers may benefit from larger abstractions around
-those core actions. Fortunately, `VioletPaginator` makes it very easy to define action creators that are composed of simpler
-ones exposed by our package.
+`violet-paginator` is a plugin for redux apps, and as such, it dispatches its own actions and stores state in its own reducer. To give you complete control of the pagination state, the API provides access to all of these actions via the [composables](composables.md) and [simpleComposables](simplecomposables.md) functions. This allows you the flexibility to call them directly as part of a more complex operation. The most common use case for this would be [updating an item within the list](updating_items.md). 
 
-As an example, take our `active` field that we added to the table above. What if instead of an icon, we wanted to display a checkbox
-that could change the value of `active` when it's clicked? We can start by making a composed action.
+As an example, consider a datatable where one column has a checkbox that's supposed to mark an item as active or inactive. Assuming that you have a `listId` of `'recipes'`, you could write an action creator like this to toggle the active state of a recipe within the list:
 
 ```javascript
-import api from 'ROOT/api'
-import { register } from 'violet-paginator'
-import * as actionTypes from './actionTypes'
+import { simpleComposables } from 'violet-paginator'
 
-
-export default function fetchRecipes(pageInfo) {
-  return dispatch => {
-    dispatch({ type: actionTypes.FETCH_RECIPES })
-    return api.recipes.index(pageInfo.query)
-  }
-}
-
-const pageActions = register({ // register gives us a set of actions that are tied to the listId and the fetch function
-  listId: 'recipes',
-  fetch: fetchRecipes,
-  // By default, VioletPaginator assumes that your fetch function is already bound to the dispatch.
-  // Set this flag to false if this is not the case.
-  isBoundToDispatch: false
-})
+const pageActions = simpleComposables('recipes')
 
 export function toggleActive(recipe) {
-  return dispatch => {
-    dispatch({ type: actionTypes.RECIPE_UPDATE_REQURESTED })
-    return api.recipes.update(recipe.get('id'), { active: !recipe.get('active') }).then(resp =>
-      dispatch(
-        pageActions.updateItem(
-          resp.data.id,
-          { active: resp.data.active }
-        )
-      )
-    ).catch(error =>
-      dispatch({ type: actionTypes.RECIPE_UPDATED_ERROR, error })
-    )
-  }
+  return pageActions.updateItem(
+    recipe.get('id'),
+    { active: !recipe.get('active') }
+  )
 }
 ```
 
-Now that we have our composed action, let's render a checkbox as our formatted column and fire our action when it toggles. Assuming that we've imported and injected
-our `toggleActive` function:
+Now you can bring this action creator into your connected component using `connect` and `mapDispatchToProps`:
 
 ```javascript
-import fetchRecipes, { toggleActive } from './actions'
-
-...
-
-
 export default connect(
   () => ({}),
   { fetch: fetchRecipes, toggle: toggleActive }
-)(Index)
+)(Recipes)
 ```
 
-Then we can redefine the `activeColumn` method like this:
+Finally, the `format` function for the `active` column in your data table might look like this:
 
 ```javascript
   activeColumn(recipe) {
     return (
       <input
         type="checkbox"
-        checked={recipe.get('active')}
+        checked={!!recipe.get('active')}
         onClick={() => this.props.toggle(recipe)}
       />
     )
