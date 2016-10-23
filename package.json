@@ -17,8 +17,13 @@
   "keywords": [
     "react",
     "redux",
-    "violet",
-    "pagination"
+    "pagination",
+    "paginate",
+    "paginator",
+    "list management",
+    "filter",
+    "sort",
+    "violet"
   ],
   "author": "Sam Slotsky",
   "license": "MIT",
