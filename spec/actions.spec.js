@@ -477,21 +477,11 @@ describe('updateAsync', () => {
       const serverVersion = { active: false }
       const update = Promise.resolve(serverVersion)
 
-      const expectedActions = [{
-        type: actionTypes.UPDATE_ITEM,
-        id: listId,
-        data: updateData,
-        itemId
-      }, {
-        type: actionTypes.UPDATING_ITEM,
-        id: listId,
-        itemId
-      }, {
-        type: actionTypes.UPDATE_ITEM,
-        id: listId,
-        data: serverVersion,
-        itemId
-      }]
+      const expectedActions = [
+        pageActions.updateItem(itemId, updateData),
+        pageActions.updatingItem(itemId),
+        pageActions.updateItem(itemId, serverVersion)
+      ]
 
       expectAsync(
         store.dispatch(pageActions.updateAsync(itemId, updateData, update)).then(() => {
@@ -507,34 +497,23 @@ describe('updateAsync', () => {
         id: itemId,
         name: 'Ewe and IPA'
       }
-
       const results = [record]
-
       const { pageActions, store } = setup(true, results)
-      const updateData = { name: 'Pouty Stout' }
+
+      const updateData = {
+        name: 'Pouty Stout',
+        extraProp: 'To be removed'
+      }
+
       const error = 'server error'
       const update = Promise.reject(error)
 
-      const expectedActions = [{
-        type: actionTypes.UPDATE_ITEM,
-        id: listId,
-        data: updateData,
-        itemId
-      }, {
-        type: actionTypes.UPDATING_ITEM,
-        id: listId,
-        itemId
-      }, {
-        type: actionTypes.UPDATE_ITEM,
-        id: listId,
-        data: record,
-        itemId
-      }, {
-        type: actionTypes.ITEM_ERROR,
-        id: listId,
-        error,
-        itemId
-      }]
+      const expectedActions = [
+        pageActions.updateItem(itemId, updateData),
+        pageActions.updatingItem(itemId),
+        pageActions.resetItem(itemId, record),
+        pageActions.itemError(itemId, error)
+      ]
 
       expectAsync(
         store.dispatch(pageActions.updateAsync(itemId, updateData, update)).then(() => {
@@ -649,6 +628,63 @@ describe('updateAllAsync', () => {
 
       expectAsync(
         store.dispatch(pageActions.updateAllAsync(updateData, update)).then(() => {
+          const actions = store.getActions()
+          expect(actions).toEqual(expectedActions)
+        })
+      )
+    })
+  })
+})
+
+describe('removeAsync', () => {
+  const itemId = 'itemId'
+
+  beforeEach(() => {
+    PromiseMock.install()
+  })
+
+  afterEach(() => {
+    PromiseMock.uninstall()
+  })
+
+  context('on remove success', () => {
+    it('removes the item', () => {
+      const { pageActions, store } = setup()
+      const remove = Promise.resolve()
+
+      const expectedActions = [
+        pageActions.removingItem(itemId),
+        pageActions.removeItem(itemId)
+      ]
+
+      expectAsync(
+        store.dispatch(pageActions.removeAsync(itemId, remove)).then(() => {
+          expect(store.getActions()).toEqual(expectedActions)
+        })
+      )
+    })
+  })
+
+  context('on remove failure', () => {
+    it('reverts the item', () => {
+      const record = {
+        id: itemId,
+        name: 'Ewe and IPA'
+      }
+      const results = [record]
+      const { pageActions, store } = setup(true, results)
+
+      const error = 'server error'
+      const remove = Promise.reject(error)
+
+      const expectedActions = [
+        pageActions.removingItem(itemId),
+        pageActions.resetItem(itemId, record),
+        pageActions.itemError(itemId, error)
+      ]
+
+      expectAsync(
+        store.dispatch(pageActions.removeAsync(itemId, remove)).then(() => {
           const actions = store.getActions()
           expect(actions).toEqual(expectedActions)
         })

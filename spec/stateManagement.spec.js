@@ -1,6 +1,6 @@
 import { Set } from 'immutable'
 import expect from 'expect'
-import getPaginator, { isUpdating } from '../src/lib/stateManagement'
+import getPaginator, { isUpdating, isRemoving } from '../src/lib/stateManagement'
 import reducer, { defaultPaginator } from '../src/reducer'
 import * as actionTypes from '../src/actionTypes'
 
@@ -70,6 +70,37 @@ describe('isUpdating', () => {
 
     it('returns false', () => {
       expect(isUpdating(state, id, itemId)).toBe(false)
+    })
+  })
+})
+
+describe('isRemoving', () => {
+  context('when an item is being removed', () => {
+    const [id, itemId] = ['recipes', 1]
+    const initialize = {
+      type: actionTypes.INITIALIZE_PAGINATOR,
+      removing: Set.of(itemId),
+      id
+    }
+
+    const state = { pagination: reducer(undefined, initialize) }
+
+    it('returns true', () => {
+      expect(isRemoving(state, id, itemId)).toBe(true)
+    })
+  })
+
+  context('when an item is not being removed', () => {
+    const [id, itemId] = ['recipes', 1]
+    const initialize = {
+      type: actionTypes.INITIALIZE_PAGINATOR,
+      id
+    }
+
+    const state = { pagination: reducer(undefined, initialize) }
+
+    it('returns false', () => {
+      expect(isRemoving(state, id, itemId)).toBe(false)
     })
   })
 })
