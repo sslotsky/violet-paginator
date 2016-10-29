@@ -185,6 +185,19 @@ function updateItem(state, action) {
   )
 }
 
+function resetItem(state, action) {
+  return updateListItem(state, action.id, p =>
+    p.merge({
+      updating: p.get('updating').toSet().delete(action.itemId),
+      results: updateListItem(
+        p.get('results'), action.itemId,
+        () => Immutable.fromJS(action.data),
+        recordProps().identifier
+      )
+    })
+  )
+}
+
 function updatingAll(state, action) {
   return updateListItem(state, action.id, p =>
     p.set('bulkUpdating', true)
@@ -261,6 +274,7 @@ export default resolveEach(initialState, {
   [actionTypes.SORT_CHANGED]: sortChanged,
   [actionTypes.UPDATING_ITEM]: updatingItem,
   [actionTypes.UPDATE_ITEM]: updateItem,
+  [actionTypes.RESET_ITEM]: resetItem,
   [actionTypes.UPDATING_ALL]: updatingAll,
   [actionTypes.BULK_ERROR]: bulkError,
   [actionTypes.RESET_RESULTS]: resetResults,

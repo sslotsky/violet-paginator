@@ -25,6 +25,12 @@ export default function simpleComposables(id) {
       itemId,
       data
     }),
+    resetItem: (itemId, data) => ({
+      type: actionTypes.RESET_ITEM,
+      id,
+      itemId,
+      data
+    }),
     updatingAll: () => ({
       type: actionTypes.UPDATING_ALL,
       id
@@ -72,7 +78,7 @@ export default function simpleComposables(id) {
       return update.then(serverUpdate =>
         dispatch(basic.updateItem(itemId, serverUpdate))
       ).catch(err => {
-        dispatch(basic.updateItem(itemId, item.toJS()))
+        dispatch(basic.resetItem(itemId, item.toJS()))
         return dispatch(basic.itemError(itemId, err))
       })
     }
