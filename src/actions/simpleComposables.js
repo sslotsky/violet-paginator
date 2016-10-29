@@ -101,10 +101,25 @@ export default function simpleComposables(id) {
       })
     }
 
+  const removeAsync = (itemId, remove) =>
+    (dispatch, getState) => {
+      const item = getPaginator(getState(), id).get('results')
+        .find(r => r.get(identifier) === itemId)
+
+      dispatch(basic.removingItem(itemId))
+      return remove.then(() =>
+        dispatch(basic.removeItem(itemId))
+      ).catch(err => {
+        dispatch(basic.resetItem(itemId, item.toJS()))
+        return dispatch(basic.itemError(itemId, err))
+      })
+    }
+
   return {
     ...basic,
     updateAsync,
-    updateAllAsync
+    updateAllAsync,
+    removeAsync
   }
 }
 

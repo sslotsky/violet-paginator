@@ -635,3 +635,60 @@ describe('updateAllAsync', () => {
     })
   })
 })
+
+describe('removeAsync', () => {
+  const itemId = 'itemId'
+
+  beforeEach(() => {
+    PromiseMock.install()
+  })
+
+  afterEach(() => {
+    PromiseMock.uninstall()
+  })
+
+  context('on remove success', () => {
+    it('removes the item', () => {
+      const { pageActions, store } = setup()
+      const remove = Promise.resolve()
+
+      const expectedActions = [
+        pageActions.removingItem(itemId),
+        pageActions.removeItem(itemId)
+      ]
+
+      expectAsync(
+        store.dispatch(pageActions.removeAsync(itemId, remove)).then(() => {
+          expect(store.getActions()).toEqual(expectedActions)
+        })
+      )
+    })
+  })
+
+  context('on remove failure', () => {
+    it('reverts the item', () => {
+      const record = {
+        id: itemId,
+        name: 'Ewe and IPA'
+      }
+      const results = [record]
+      const { pageActions, store } = setup(true, results)
+
+      const error = 'server error'
+      const remove = Promise.reject(error)
+
+      const expectedActions = [
+        pageActions.removingItem(itemId),
+        pageActions.resetItem(itemId, record),
+        pageActions.itemError(itemId, error)
+      ]
+
+      expectAsync(
+        store.dispatch(pageActions.removeAsync(itemId, remove)).then(() => {
+          const actions = store.getActions()
+          expect(actions).toEqual(expectedActions)
+        })
+      )
+    })
+  })
+})
