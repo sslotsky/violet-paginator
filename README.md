@@ -41,9 +41,7 @@ and `font-awesome` stylesheets as described later in this document.
 
 ## Usage
 
-`VioletPaginator` is inteded to be flexible so that it can be used in many ways without much fuss. We provide premade components,
-but our library is broken down into small, exposed pieces that allow you to easily configure our behavior, abstract our functionality,
-and create your own components.
+`VioletPaginator` is intended to be flexible so that it can be used in many ways without much fuss. We provide premade components, but our library is broken down into small, exposed pieces that allow you to easily override default settings, abstract core functionality, and create your own components.
 
 ### Configuration
 
