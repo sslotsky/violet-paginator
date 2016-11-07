@@ -43,6 +43,21 @@ and `font-awesome` stylesheets as described later in this document.
 
 `VioletPaginator` is intended to be flexible so that it can be used in many ways without much fuss. We provide premade components, but our library is broken down into small, exposed pieces that allow you to easily override default settings, abstract core functionality, and create your own components.
 
+### Mounting the reducer
+
+As with many redux based packages, `violet-paginator` comes with a reducer that must be imported and added to your state via `combineReducers`:
+
+```javascript
+import { pagination } from 'violet-paginator'
+import { combineReducers } from 'redux'
+import users from './users/reducer'
+
+export default combineReducers({
+  users,
+  pagination
+})
+```
+
 ### Configuration
 
 VioletPaginator aims to make client-server communication painless. For us, usability means:
