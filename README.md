@@ -175,10 +175,7 @@ hooked up that allows action creators to return promises. Below is an example fe
 
 ```javascript
 export default function fetchRecipes(pageInfo) {
-  return dispatch => {
-    dispatch({ type: actionTypes.FETCH_RECIPES })
-    return api.recipes.index(pageInfo.query)
-  }
+  return dispatch => api.recipes.index(pageInfo.query);
 }
 ```
 
