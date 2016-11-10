@@ -72,7 +72,7 @@ export default function simpleComposables(id) {
   const updateAsync = (itemId, data, update) =>
     (dispatch, getState) => {
       const item = getPaginator(getState(), id).get('results')
-        .find(r => r.get(identifier) === itemId)
+        .find(r => r.get(identifier) === itemId) || Map()
 
       dispatch(basic.updateItem(itemId, data))
       dispatch(basic.updatingItem(itemId))
