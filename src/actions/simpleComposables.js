@@ -1,3 +1,4 @@
+import { Map } from 'immutable'
 import getPaginator from '../lib/stateManagement'
 import { recordProps } from '../pageInfoTranslator'
 import * as actionTypes from '../actionTypes'
@@ -104,7 +105,7 @@ export default function simpleComposables(id) {
   const removeAsync = (itemId, remove) =>
     (dispatch, getState) => {
       const item = getPaginator(getState(), id).get('results')
-        .find(r => r.get(identifier) === itemId)
+        .find(r => r.get(identifier) === itemId) || Map()
 
       dispatch(basic.removingItem(itemId))
       return remove.then(() =>
