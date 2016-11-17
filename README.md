@@ -1,4 +1,5 @@
 [![npm version](https://badge.fury.io/js/violet-paginator.svg)](https://badge.fury.io/js/violet-paginator)
+[![npm](https://img.shields.io/npm/dt/violet-paginator.svg)](https://github.com/sslotsky/violet-paginator)
 [![npm](https://img.shields.io/npm/dm/violet-paginator.svg)](https://github.com/sslotsky/violet-paginator)
 [![Build Status](https://travis-ci.org/sslotsky/violet-paginator.svg?branch=master)](https://travis-ci.org/sslotsky/violet-paginator)
 [![npm](https://img.shields.io/npm/l/express.svg)](https://github.com/sslotsky/violet-paginator)
