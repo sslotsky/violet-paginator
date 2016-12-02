@@ -210,9 +210,9 @@ and [Font Awesome](http://fontawesome.io/). We don't expose these stylesheets fr
 include those in your project however you see fit. The easiest way is with CDN links:
 
 ```html
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Work+Sans:400,500">
-<link rel="stylesheet" href="http://kestell.org/violet/build/violet.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/violet/0.0.1/violet.min.css">
 ```
 
 If Violet isn't for you but you still want to use our components, just write your own CSS. Our components
