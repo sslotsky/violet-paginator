@@ -58,7 +58,8 @@ describe('pagination reducer', () => {
     context('when handling SET_FILTERS', () => {
       const initialFilters = {
         name: { like: 'IPA' },
-        show_inactive: { eq: true }
+        show_inactive: { eq: true },
+        containers: ['can', 'bottle']
       }
 
       const paginator = defaultPaginator.merge({
@@ -68,7 +69,8 @@ describe('pagination reducer', () => {
       const { state: initialState } = setup(paginator)
       const updatedFilters = {
         show_inactive: { eq: false },
-        fermentation_temperature: { lt: 60 }
+        fermentation_temperature: { lt: 60 },
+        containers: ['growler']
       }
 
       const action = {
@@ -80,7 +82,8 @@ describe('pagination reducer', () => {
       const expectedFilters = {
         name: initialFilters.name,
         show_inactive: updatedFilters.show_inactive,
-        fermentation_temperature: updatedFilters.fermentation_temperature
+        fermentation_temperature: updatedFilters.fermentation_temperature,
+        containers: ['growler']
       }
 
       const state = getPaginator({ pagination: reducer(initialState, action) }, id)

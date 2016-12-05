@@ -132,9 +132,10 @@ function setFilter(state, action) {
 
 function setFilters(state, action) {
   return updateListItem(state, action.id, p =>
-    p.mergeDeep({
-      filters: Immutable.fromJS(action.filters)
-    }).set('page', 1)
+    p.set(
+      'filters',
+      p.get('filters').merge(action.filters)
+    ).set('page', 1)
   )
 }
 
