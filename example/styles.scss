@@ -1,0 +1,20 @@
+$alert-danger: rgb(202, 60, 60);
+
+a:hover {
+  cursor: pointer;
+}
+
+form.pure-form-brewed {
+  div.has-error {
+    color: $alert-danger;
+
+    input, input:focus {
+      border-color: $alert-danger;
+    }
+  }
+}
+
+ul.pagination {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
