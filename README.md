@@ -31,7 +31,8 @@ The current version of this package includes the following peer dependencies:
 
 ```javascript
   "peerDependencies": {
-    "react": "^15.1.0",
+    "immutable": "^3.7.6",
+    "react": "^0.14.8 || ^15.1.0",
     "react-redux": "^4.4.4",
     "redux": "^3.4.0"
   },
