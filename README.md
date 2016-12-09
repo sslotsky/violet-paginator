@@ -2,6 +2,7 @@
 [![npm](https://img.shields.io/npm/dt/violet-paginator.svg)](https://www.npmjs.com/package/violet-paginator)
 [![npm](https://img.shields.io/npm/dm/violet-paginator.svg)](https://www.npmjs.com/package/violet-paginator)
 [![Build Status](https://travis-ci.org/sslotsky/violet-paginator.svg?branch=master)](https://travis-ci.org/sslotsky/violet-paginator)
+[![codecov](https://codecov.io/gh/sslotsky/violet-paginator/branch/master/graph/badge.svg)](https://codecov.io/gh/sslotsky/violet-paginator)
 [![npm](https://img.shields.io/npm/l/express.svg)](https://github.com/sslotsky/violet-paginator)
 
 # violet-paginator
