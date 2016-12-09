@@ -5,8 +5,9 @@
   "main": "lib/index.js",
   "scripts": {
     "spec": "mocha './spec/**/*.spec.js*' --compilers js:babel-register --recursive",
+    "spec-coverage": "nyc --require babel-core/register mocha --recursive './spec/**/*.spec.js*'",
     "lint": "eslint ./src/** ./spec/**/* --ext=js,jsx",
-    "test": "npm run lint && npm run spec",
+    "test": "npm run lint && npm run spec-coverage",
     "compile": "babel -d lib/ src/",
     "prepublish": "npm run compile"
   },
@@ -25,6 +26,15 @@
     "sort",
     "violet"
   ],
+  "nyc": {
+    "extension": [
+      ".jsx"
+    ],
+    "reporter": [
+      "lcov",
+      "text-summary"
+    ]
+  },
   "author": "Sam Slotsky",
   "license": "MIT",
   "dependencies": {
@@ -56,7 +66,9 @@
     "eslint-plugin-react": "6.0.0",
     "expect": "^1.20.2",
     "immutable": "^3.7.6",
+    "istanbul": "^0.4.5",
     "mocha": "^3.0.2",
+    "nyc": "^10.0.0",
     "promise-mock": "^1.1.0",
     "react": "^15.1.0",
     "react-addons-test-utils": "^15.3.1",
