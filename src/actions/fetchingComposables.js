@@ -66,6 +66,11 @@ export default function fetchingComposables(config) {
         action.filters = config.filters
       }
 
+      if (config.preloaded) {
+        action.preloaded = config.preloaded
+        return dispatch(action)
+      }
+
       return dispatch(execute(action))
     },
     reload: () => fetch,
