@@ -1,14 +1,15 @@
-import Immutable, { List } from 'immutable'
+import Immutable from 'immutable'
 import expect from 'expect'
 import PromiseMock from 'promise-mock'
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
-import register, { destroyAll, expireAll } from '../src/actions'
+import register, { expireAll } from '../src/actions'
 import { defaultPaginator } from '../src/reducer'
-import * as actionTypes from '../src/actionTypes'
+import actionType, * as actionTypes from '../src/actionTypes'
 import expectAsync from './specHelper'
 
-const listId = 'someId'
+const listId = 'recipesList'
+const resolve = t => actionType(t, listId)
 const mockStore = configureMockStore([thunk])
 
 const setup = (pass=true, results=[]) => {
@@ -16,7 +17,7 @@ const setup = (pass=true, results=[]) => {
     .set('id', listId)
     .set('results', Immutable.fromJS(results))
 
-  const store = mockStore({ pagination: List.of(paginator) })
+  const store = mockStore({ recipesList: paginator })
   const data = {
     total_count: 1,
     results: [{ name: 'Ewe and IPA' }]
@@ -43,7 +44,7 @@ describe('pageActions', () => {
           totalCount: 1
         }
 
-        const store = mockStore({ pagination: List() })
+        const store = mockStore({ [listId]: defaultPaginator })
         const pageActions = register({
           isBoundToDispatch: false,
           listId,
@@ -52,8 +53,7 @@ describe('pageActions', () => {
         })
 
         const expectedAction = {
-          type: actionTypes.INITIALIZE_PAGINATOR,
-          id: listId,
+          type: resolve(actionTypes.INITIALIZE_PAGINATOR),
           preloaded
         }
 
@@ -80,14 +80,18 @@ describe('pageActions', () => {
           store.dispatch(pageActions.reload()).then(() => {
             const actions = store.getActions()
             const types = actions.map(a => a.type)
-            expect(types).toEqual([actionTypes.FETCH_RECORDS, actionTypes.RESULTS_UPDATED])
+
+            expect(types).toEqual([
+              resolve(actionTypes.FETCH_RECORDS),
+              resolve(actionTypes.RESULTS_UPDATED)
+            ])
           })
         )
       })
 
       context('when results props are configured', () => {
-        const paginator = defaultPaginator.set('id', listId)
-        const store = mockStore({ pagination: List.of(paginator) })
+        const paginator = defaultPaginator
+        const store = mockStore({ recipesList: paginator })
         const data = {
           total_entries: 1,
           recipes: [{ name: 'Ewe and IPA' }]
@@ -106,7 +110,8 @@ describe('pageActions', () => {
         it('is able to read the results', () => {
           expectAsync(
             store.dispatch(pageActions.reload()).then(() => {
-              const action = store.getActions().find(a => a.type === actionTypes.RESULTS_UPDATED)
+              const t = resolve(actionTypes.RESULTS_UPDATED)
+              const action = store.getActions().find(a => a.type === t)
               expect(action.results).toEqual(data.recipes)
             })
           )
@@ -115,7 +120,8 @@ describe('pageActions', () => {
         it('is able to read the count', () => {
           expectAsync(
             store.dispatch(pageActions.reload()).then(() => {
-              const action = store.getActions().find(a => a.type === actionTypes.RESULTS_UPDATED)
+              const t = resolve(actionTypes.RESULTS_UPDATED)
+              const action = store.getActions().find(a => a.type === t)
               expect(action.totalCount).toEqual(data.total_entries)
             })
           )
@@ -131,7 +137,10 @@ describe('pageActions', () => {
           store.dispatch(pageActions.reload()).then(() => {
             const actions = store.getActions()
             const types = actions.map(a => a.type)
-            expect(types).toEqual([actionTypes.FETCH_RECORDS, actionTypes.RESULTS_UPDATED_ERROR])
+            expect(types).toEqual([
+              resolve(actionTypes.FETCH_RECORDS),
+              resolve(actionTypes.RESULTS_UPDATED_ERROR)
+            ])
           })
         )
       })
@@ -150,8 +159,7 @@ describe('pageActions', () => {
     it('dispatches NEXT_PAGE', () => {
       const { pageActions, store } = setup()
       const expectedAction = {
-        type: actionTypes.NEXT_PAGE,
-        id: listId
+        type: resolve(actionTypes.NEXT_PAGE)
       }
 
       expectAsync(
@@ -175,8 +183,7 @@ describe('pageActions', () => {
     it('dispatches PREV_PAGE', () => {
       const { pageActions, store } = setup()
       const expectedAction = {
-        type: actionTypes.PREVIOUS_PAGE,
-        id: listId
+        type: resolve(actionTypes.PREVIOUS_PAGE)
       }
 
       expectAsync(
@@ -201,9 +208,8 @@ describe('pageActions', () => {
       const { pageActions, store } = setup()
       const page = 2
       const expectedAction = {
-        type: actionTypes.GO_TO_PAGE,
-        page,
-        id: listId
+        type: resolve(actionTypes.GO_TO_PAGE),
+        page
       }
 
       expectAsync(
@@ -228,9 +234,8 @@ describe('pageActions', () => {
       const { pageActions, store } = setup()
       const size = 25
       const expectedAction = {
-        type: actionTypes.SET_PAGE_SIZE,
-        size,
-        id: listId
+        type: resolve(actionTypes.SET_PAGE_SIZE),
+        size
       }
 
       expectAsync(
@@ -256,10 +261,9 @@ describe('pageActions', () => {
       const field = 'status_types'
       const value = 'inactive'
       const expectedAction = {
-        type: actionTypes.TOGGLE_FILTER_ITEM,
+        type: resolve(actionTypes.TOGGLE_FILTER_ITEM),
         field,
-        value,
-        id: listId
+        value
       }
 
       expectAsync(
@@ -285,10 +289,9 @@ describe('pageActions', () => {
       const field = 'name'
       const value = { like: 'IPA' }
       const expectedAction = {
-        type: actionTypes.SET_FILTER,
+        type: resolve(actionTypes.SET_FILTER),
         field,
-        value,
-        id: listId
+        value
       }
 
       expectAsync(
@@ -313,8 +316,7 @@ describe('pageActions', () => {
       const { pageActions, store } = setup()
       const filters = { name: { like: 'IPA' } }
       const expectedAction = {
-        type: actionTypes.SET_FILTERS,
-        id: listId,
+        type: resolve(actionTypes.SET_FILTERS),
         filters
       }
 
@@ -340,8 +342,7 @@ describe('pageActions', () => {
       const { pageActions, store } = setup()
       const filters = { name: { like: 'IPA' } }
       const expectedAction = {
-        type: actionTypes.RESET_FILTERS,
-        id: listId,
+        type: resolve(actionTypes.RESET_FILTERS),
         filters
       }
 
@@ -368,10 +369,9 @@ describe('pageActions', () => {
       const field = 'name'
       const reverse = false
       const expectedAction = {
-        type: actionTypes.SORT_CHANGED,
+        type: resolve(actionTypes.SORT_CHANGED),
         field,
-        reverse,
-        id: listId
+        reverse
       }
 
       expectAsync(
@@ -388,8 +388,7 @@ describe('pageActions', () => {
       const { pageActions, store } = setup()
       const itemId = 42
       const expectedAction = {
-        type: actionTypes.UPDATING_ITEM,
-        id: listId,
+        type: resolve(actionTypes.UPDATING_ITEM),
         itemId
       }
 
@@ -402,8 +401,7 @@ describe('pageActions', () => {
       const { pageActions, store } = setup()
       const itemIds = [42, 43]
       const expectedAction = {
-        type: actionTypes.UPDATING_ITEMS,
-        id: listId,
+        type: resolve(actionTypes.UPDATING_ITEMS),
         itemIds
       }
 
@@ -416,8 +414,7 @@ describe('pageActions', () => {
       const { pageActions, store } = setup()
       const itemId = 42
       const expectedAction = {
-        type: actionTypes.REMOVING_ITEM,
-        id: listId,
+        type: resolve(actionTypes.REMOVING_ITEM),
         itemId
       }
 
@@ -431,8 +428,7 @@ describe('pageActions', () => {
       const itemId = 42
       const data = { name: 'Ewe and IPA' }
       const expectedAction = {
-        type: actionTypes.UPDATE_ITEM,
-        id: listId,
+        type: resolve(actionTypes.UPDATE_ITEM),
         itemId,
         data
       }
@@ -447,8 +443,7 @@ describe('pageActions', () => {
       const itemIds = [42, 43]
       const data = { active: false }
       const expectedAction = {
-        type: actionTypes.UPDATE_ITEMS,
-        id: listId,
+        type: resolve(actionTypes.UPDATE_ITEMS),
         itemIds,
         data
       }
@@ -462,8 +457,7 @@ describe('pageActions', () => {
       const { pageActions, store } = setup()
       const itemId = 42
       const expectedAction = {
-        type: actionTypes.REMOVE_ITEM,
-        id: listId,
+        type: resolve(actionTypes.REMOVE_ITEM),
         itemId
       }
 
@@ -471,35 +465,11 @@ describe('pageActions', () => {
     })
   })
 
-  describe('destroy', () => {
-    it('dispatches DESTROY_PAGINATOR', () => {
-      const { pageActions, store } = setup()
-      const expectedAction = {
-        type: actionTypes.DESTROY_PAGINATOR,
-        id: listId
-      }
-
-      expect(store.dispatch(pageActions.destroy())).toEqual(expectedAction)
-    })
-  })
-
-  describe('destroyAll', () => {
-    it('dispatches DESTROY_ALL', () => {
-      const { store } = setup()
-      const expectedAction = {
-        type: actionTypes.DESTROY_ALL
-      }
-
-      expect(store.dispatch(destroyAll())).toEqual(expectedAction)
-    })
-  })
-
   describe('expire', () => {
     it('dispatches EXPIRE_PAGINATOR', () => {
       const { pageActions, store } = setup()
       const expectedAction = {
-        type: actionTypes.EXPIRE_PAGINATOR,
-        id: listId
+        type: resolve(actionTypes.EXPIRE_PAGINATOR)
       }
 
       expect(store.dispatch(pageActions.expire())).toEqual(expectedAction)
