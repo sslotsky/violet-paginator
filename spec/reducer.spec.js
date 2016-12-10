@@ -1,16 +1,15 @@
 import Immutable, { Map, Set } from 'immutable'
 import expect from 'expect'
-import reducer, { defaultPaginator, initialState as defaultState } from '../src/reducer'
-import getPaginator from '../src/lib/stateManagement'
-import * as actionTypes from '../src/actionTypes'
+import createPaginator, { defaultPaginator } from '../src/reducer'
+import actionType, * as actionTypes from '../src/actionTypes'
 
 const id = 'test-list'
+const reducer = createPaginator(id)
 
 function setup(testPaginator=Map()) {
   const action = {
     ...testPaginator.toJS(),
-    type: actionTypes.INITIALIZE_PAGINATOR,
-    id
+    type: actionType(actionTypes.INITIALIZE_PAGINATOR, id)
   }
 
   const state = reducer(undefined, action)
@@ -23,12 +22,11 @@ describe('pagination reducer', () => {
     context('with some initial filters', () => {
       it('persists the filter', () => {
         const action = {
-          type: actionTypes.INITIALIZE_PAGINATOR,
-          id,
+          type: actionType(actionTypes.INITIALIZE_PAGINATOR, id),
           filters: { custom_filter: true }
         }
 
-        const state = getPaginator({ pagination: reducer(undefined, action) }, id)
+        const state = reducer(undefined, action)
         expect(state.get('filters').toJS()).toEqual(action.filters)
       })
     })
@@ -38,13 +36,12 @@ describe('pagination reducer', () => {
       const field = 'foo'
       const value = { eq: 'bar' }
       const action = {
-        type: actionTypes.SET_FILTER,
+        type: actionType(actionTypes.SET_FILTER, id),
         field,
-        value,
-        id
+        value
       }
 
-      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
+      const state = reducer(initialState, action)
 
       it('sets the specified filter', () => {
         expect(state.getIn(['filters', field]).toJS()).toEqual(value)
@@ -74,9 +71,8 @@ describe('pagination reducer', () => {
       }
 
       const action = {
-        type: actionTypes.SET_FILTERS,
-        filters: updatedFilters,
-        id
+        type: actionType(actionTypes.SET_FILTERS, id),
+        filters: updatedFilters
       }
 
       const expectedFilters = {
@@ -86,7 +82,7 @@ describe('pagination reducer', () => {
         containers: ['growler']
       }
 
-      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
+      const state = reducer(initialState, action)
 
       it('merges the specified filters', () => {
         expect(state.get('filters').toJS()).toEqual(expectedFilters)
@@ -114,12 +110,11 @@ describe('pagination reducer', () => {
       }
 
       const action = {
-        type: actionTypes.RESET_FILTERS,
-        filters: updatedFilters,
-        id
+        type: actionType(actionTypes.RESET_FILTERS, id),
+        filters: updatedFilters
       }
 
-      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
+      const state = reducer(initialState, action)
 
       it('resets the filters', () => {
         expect(state.get('filters').toJS()).toEqual(updatedFilters)
@@ -130,38 +125,13 @@ describe('pagination reducer', () => {
       })
     })
 
-    it('handles DESTROY_PAGINATOR', () => {
-      const { state: initialState } = setup()
-      const action = {
-        type: actionTypes.DESTROY_PAGINATOR,
-        id
-      }
-
-      const state = getPaginator({
-        pagination: reducer(initialState, action)
-      }, id)
-      expect(state).toEqual(defaultPaginator)
-    })
-
-    it('handles DESTROY_ALL', () => {
-      const { state: initialState } = setup()
-      const action = {
-        type: actionTypes.DESTROY_ALL
-      }
-
-      expect(reducer(initialState, action)).toEqual(defaultState)
-    })
-
     it('handles EXPIRE_PAGINATOR', () => {
       const { state: initialState } = setup()
       const action = {
-        type: actionTypes.EXPIRE_PAGINATOR,
-        id
+        type: actionType(actionTypes.EXPIRE_PAGINATOR, id)
       }
 
-      const state = getPaginator({
-        pagination: reducer(initialState, action)
-      }, id)
+      const state = reducer(initialState, action)
       expect(state.get('stale')).toEqual(true)
     })
 
@@ -172,50 +142,49 @@ describe('pagination reducer', () => {
       }
 
       const state = reducer(initialState, action)
-      expect(state.every(p => p.get('stale'))).toBe(true)
+      expect(state.get('stale')).toBe(true)
     })
 
     it('handles PREVIOUS_PAGE', () => {
       const paginator = defaultPaginator.set('page', 2)
       const { state: initialState } = setup(paginator)
-      const action = { type: actionTypes.PREVIOUS_PAGE, id }
-      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
+      const action = { type: actionType(actionTypes.PREVIOUS_PAGE, id) }
+      const state = reducer(initialState, action)
 
       expect(state.get('page')).toEqual(1)
     })
 
     it('handles NEXT_PAGE', () => {
       const { state: initialState } = setup()
-      const action = { type: actionTypes.NEXT_PAGE, id }
-      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
+      const action = { type: actionType(actionTypes.NEXT_PAGE, id) }
+      const state = reducer(initialState, action)
 
       expect(state.get('page')).toEqual(2)
     })
 
     it('handles GO_TO_PAGE', () => {
       const { state: initialState } = setup()
-      const action = { type: actionTypes.GO_TO_PAGE, size: 100, id }
-      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
+      const action = { type: actionType(actionTypes.GO_TO_PAGE, id), size: 100 }
+      const state = reducer(initialState, action)
 
       expect(state.get('page')).toEqual(action.page)
     })
 
     it('handles SET_PAGE_SIZE', () => {
       const { state: initialState } = setup()
-      const action = { type: actionTypes.SET_PAGE_SIZE, page: 2, id }
-      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
+      const action = { type: actionType(actionTypes.SET_PAGE_SIZE, id), page: 2 }
+      const state = reducer(initialState, action)
 
       expect(state).toEqual(defaultPaginator.merge({
         page: 1,
-        pageSize: action.size,
-        id
+        pageSize: action.size
       }))
     })
 
     it('handles FETCH_RECORDS', () => {
       const { state: initialState } = setup()
-      const action = { type: actionTypes.FETCH_RECORDS, id }
-      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
+      const action = { type: actionType(actionTypes.FETCH_RECORDS, id) }
+      const state = reducer(initialState, action)
 
       expect(state.get('isLoading')).toBe(true)
     })
@@ -226,20 +195,18 @@ describe('pagination reducer', () => {
       const { state: initialState } = setup(paginator)
       const records = [{ name: 'Pouty Stout' }, { name: 'Ewe and IPA' }]
       const action = {
-        type: actionTypes.RESULTS_UPDATED,
+        type: actionType(actionTypes.RESULTS_UPDATED, id),
         results: records,
         totalCount: 2,
-        id,
         requestId
       }
 
-      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
+      const state = reducer(initialState, action)
       expect(state.toJS()).toEqual(defaultPaginator.merge({
         results: Immutable.fromJS(records),
         isLoading: false,
         totalCount: action.totalCount,
-        requestId,
-        id
+        requestId
       }).toJS())
     })
 
@@ -248,29 +215,26 @@ describe('pagination reducer', () => {
       const { state: initialState } = setup(paginator)
       const error = 'error'
       const action = {
-        type: actionTypes.RESULTS_UPDATED_ERROR,
-        error,
-        id
+        type: actionType(actionTypes.RESULTS_UPDATED_ERROR, id),
+        error
       }
 
-      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
+      const state = reducer(initialState, action)
       expect(state.toJS()).toEqual(defaultPaginator.merge({
         isLoading: false,
-        loadError: error,
-        id
+        loadError: error
       }).toJS())
     })
 
     it('handles SET_FILTER', () => {
       const { state: initialState } = setup()
       const action = {
-        type: actionTypes.SET_FILTER,
+        type: actionType(actionTypes.SET_FILTER, id),
         field: 'base_salary',
-        value: { lt: 2000 },
-        id
+        value: { lt: 2000 }
       }
 
-      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
+      const state = reducer(initialState, action)
       expect(state.getIn(['filters', action.field])).toEqual(Immutable.fromJS(action.value))
     })
 
@@ -278,17 +242,15 @@ describe('pagination reducer', () => {
       const paginator = defaultPaginator.merge({ sort: 'name', page: 2 })
       const { state: initialState } = setup(paginator)
       const action = {
-        type: actionTypes.SORT_CHANGED,
+        type: actionType(actionTypes.SORT_CHANGED, id),
         field: 'fermentation_temperature',
-        reverse: true,
-        id
+        reverse: true
       }
 
-      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
+      const state = reducer(initialState, action)
       expect(state.toJS()).toEqual(defaultPaginator.merge({
         sort: action.field,
-        sortReverse: action.reverse,
-        id
+        sortReverse: action.reverse
       }).toJS())
     })
 
@@ -300,11 +262,10 @@ describe('pagination reducer', () => {
       const { state: initialState } = setup(paginator)
 
       const action = {
-        type: actionTypes.UPDATING_ALL,
-        id
+        type: actionType(actionTypes.UPDATING_ALL, id)
       }
 
-      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
+      const state = reducer(initialState, action)
       expect(state.get('updating').toArray()).toInclude(1)
     })
 
@@ -312,12 +273,11 @@ describe('pagination reducer', () => {
       const { state: initialState } = setup()
       const results = [1, 2, 3]
       const action = {
-        type: actionTypes.RESET_RESULTS,
-        results,
-        id
+        type: actionType(actionTypes.RESET_RESULTS, id),
+        results
       }
 
-      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
+      const state = reducer(initialState, action)
       expect(state.get('results').toJS()).toEqual(results)
     })
 
@@ -329,12 +289,11 @@ describe('pagination reducer', () => {
       const { state: initialState } = setup(paginator)
       const error = 'server error'
       const action = {
-        type: actionTypes.BULK_ERROR,
-        error,
-        id
+        type: actionType(actionTypes.BULK_ERROR, id),
+        error
       }
 
-      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
+      const state = reducer(initialState, action)
       const item = state.get('results').find(r => r.get('id') === 1)
 
       it('sets the error on all items', () => {
@@ -356,12 +315,11 @@ describe('pagination reducer', () => {
 
       const { state: initialState } = setup(paginator)
       const action = {
-        type: actionTypes.UPDATE_ALL,
-        data: { active: true },
-        id
+        type: actionType(actionTypes.UPDATE_ALL, id),
+        data: { active: true }
       }
 
-      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
+      const state = reducer(initialState, action)
 
       it('updates all items', () => {
         const items = state.get('results')
@@ -380,12 +338,11 @@ describe('pagination reducer', () => {
     it('handles UPDATING_ITEM', () => {
       const { state: initialState } = setup()
       const action = {
-        type: actionTypes.UPDATING_ITEM,
-        itemId: 'someId',
-        id
+        type: actionType(actionTypes.UPDATING_ITEM, id),
+        itemId: 'someId'
       }
 
-      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
+      const state = reducer(initialState, action)
       expect(state.get('updating').toJS()).toInclude(action.itemId)
     })
 
@@ -396,13 +353,12 @@ describe('pagination reducer', () => {
       const paginator = defaultPaginator.merge({ results: Immutable.fromJS(results), updating })
       const { state: initialState } = setup(paginator)
       const action = {
-        type: actionTypes.UPDATE_ITEM,
+        type: actionType(actionTypes.UPDATE_ITEM, id),
         data: { name: 'Ewe and IPA' },
-        itemId,
-        id
+        itemId
       }
 
-      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
+      const state = reducer(initialState, action)
 
       it('updates the item', () => {
         const item = state.get('results').toJS()[0]
@@ -421,12 +377,11 @@ describe('pagination reducer', () => {
     it('handles REMOVING_ITEM', () => {
       const { state: initialState } = setup()
       const action = {
-        type: actionTypes.REMOVING_ITEM,
-        itemId: 'someId',
-        id
+        type: actionType(actionTypes.REMOVING_ITEM, id),
+        itemId: 'someId'
       }
 
-      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
+      const state = reducer(initialState, action)
       expect(state.get('removing').toJS()).toInclude(action.itemId)
     })
 
@@ -437,12 +392,11 @@ describe('pagination reducer', () => {
       const paginator = defaultPaginator.merge({ results: Immutable.fromJS(results), removing })
       const { state: initialState } = setup(paginator)
       const action = {
-        type: actionTypes.REMOVE_ITEM,
-        itemId,
-        id
+        type: actionType(actionTypes.REMOVE_ITEM, id),
+        itemId
       }
 
-      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
+      const state = reducer(initialState, action)
 
       it('removes the item', () => {
         expect(state.get('results').count()).toEqual(0)
@@ -460,13 +414,12 @@ describe('pagination reducer', () => {
       const paginator = defaultPaginator.merge({ results: Immutable.fromJS(results), updating })
       const { state: initialState } = setup(paginator)
       const action = {
-        type: actionTypes.ITEM_ERROR,
+        type: actionType(actionTypes.ITEM_ERROR, id),
         itemId,
-        id,
         error: 'Error updating item'
       }
 
-      const state = getPaginator({ pagination: reducer(initialState, action) }, id)
+      const state = reducer(initialState, action)
       const item = state.get('results').find(r => r.get('id') === itemId)
 
       it('attaches the error to the item', () => {
@@ -485,13 +438,12 @@ describe('pagination reducer', () => {
       context('when the filter item is toggled', () => {
         it('is deleted', () => {
           const action = {
-            type: actionTypes.TOGGLE_FILTER_ITEM,
+            type: actionType(actionTypes.TOGGLE_FILTER_ITEM, id),
             field: 'myArray',
-            value: 'myItem',
-            id
+            value: 'myItem'
           }
 
-          const state = getPaginator({ pagination: reducer(initialState, action) }, id)
+          const state = reducer(initialState, action)
           expect(state.getIn(['filters', 'myArray']).toArray()).toExclude('myItem')
         })
       })
@@ -503,13 +455,12 @@ describe('pagination reducer', () => {
       context('when the filter item is toggled', () => {
         it('is added', () => {
           const action = {
-            type: actionTypes.TOGGLE_FILTER_ITEM,
+            type: actionType(actionTypes.TOGGLE_FILTER_ITEM, id),
             field: 'myArray',
-            value: 'myItem',
-            id
+            value: 'myItem'
           }
 
-          const state = getPaginator({ pagination: reducer(initialState, action) }, id)
+          const state = reducer(initialState, action)
           expect(state.getIn(['filters', 'myArray']).toArray()).toInclude('myItem')
         })
       })
