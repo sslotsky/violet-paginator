@@ -1,4 +1,3 @@
-import Immutable from 'immutable'
 import { defaultPaginator } from '../reducer'
 
 export default function getPaginator(state, listId) {
