@@ -71,6 +71,7 @@
     "expect": "^1.20.2",
     "immutable": "^3.7.6",
     "istanbul": "^0.4.5",
+    "jsdom": "^9.8.3",
     "mocha": "^3.0.2",
     "nyc": "^10.0.0",
     "promise-mock": "^1.1.0",
