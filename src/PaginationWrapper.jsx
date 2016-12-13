@@ -14,55 +14,61 @@ const connector = connect(
   })
 )
 
-export default function paginate(ComponentClass) {
-  return connector(
-    class extends Component {
-      static propTypes = {
-        actions: PropTypes.object.isRequired,
-        paginator: PropTypes.object
-      }
+export class PaginationWrapper extends Component {
+  static propTypes = {
+    actions: PropTypes.object.isRequired,
+    paginator: PropTypes.object,
+    children: PropTypes.element.isRequired
+  }
 
-      static defaultProps = {
-        paginator: defaultPaginator
-      }
+  static defaultProps = {
+    paginator: defaultPaginator
+  }
 
-      reloadIfStale(props) {
-        const { paginator, actions } = props
-        if (paginator.get('stale') && !paginator.get('isLoading')) {
-          actions.reload()
-        }
-      }
+  componentDidMount() {
+    this.props.actions.initialize()
+    this.reloadIfStale(this.props)
+  }
 
-      componentDidMount() {
-        this.props.actions.initialize()
-        this.reloadIfStale(this.props)
-      }
+  componentWillReceiveProps(nextProps) {
+    this.reloadIfStale(nextProps)
+  }
 
-      componentWillReceiveProps(nextProps) {
-        this.reloadIfStale(nextProps)
-      }
-
-      info() {
-        const { paginator } = this.props
-        const totalPages =
-          Math.ceil(paginator.get('totalCount') / paginator.get('pageSize'))
-
-        return {
-          hasPreviousPage: paginator.get('page') > 1,
-          hasNextPage: paginator.get('page') < totalPages,
-          currentPage: paginator.get('page'),
-          pageSize: paginator.get('pageSize'),
-          results: paginator.get('results'),
-          isLoading: paginator.get('isLoading'),
-          updating: paginator.get('updating'),
-          removing: paginator.get('removing'),
-          totalPages
-        }
-      }
-
-      render() {
-        return <ComponentClass {...this.props} {...this.info()} />
-      }
+  reloadIfStale(props) {
+    const { paginator, actions } = props
+    if (paginator.get('stale') && !paginator.get('isLoading') && !paginator.get('loadError')) {
+      actions.reload()
     }
-  )
+  }
+
+  info() {
+    const { paginator } = this.props
+    const totalPages =
+      Math.ceil(paginator.get('totalCount') / paginator.get('pageSize'))
+
+    return {
+      hasPreviousPage: paginator.get('page') > 1,
+      hasNextPage: paginator.get('page') < totalPages,
+      currentPage: paginator.get('page'),
+      pageSize: paginator.get('pageSize'),
+      results: paginator.get('results'),
+      isLoading: paginator.get('isLoading'),
+      updating: paginator.get('updating'),
+      removing: paginator.get('removing'),
+      totalPages
+    }
+  }
+
+  render() {
+    const { children, ...rest } = this.props
+    return React.cloneElement(children, { ...rest, ...this.info() })
+  }
+}
+
+export default function paginate(ComponentClass) {
+  return connector(props => (
+    <PaginationWrapper {...props}>
+      <ComponentClass {...props} />
+    </PaginationWrapper>
+  ))
 }
