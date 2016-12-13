@@ -29,9 +29,14 @@ function initialize(state, action) {
     return state
   }
 
-  const { type: _, filters, ...rest } = action
+  const { type: _, filters = {}, preloaded = {}, ...rest } = action
+  const { results = [], totalCount = 0, page = 1 } = preloaded
+
   return state.push(defaultPaginator.merge({
-    filters: Immutable.fromJS(filters || {}),
+    filters,
+    results,
+    totalCount,
+    page,
     ...rest
   }))
 }
