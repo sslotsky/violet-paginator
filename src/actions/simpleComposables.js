@@ -26,6 +26,17 @@ export default function simpleComposables(id) {
       itemId,
       data
     }),
+    updatingItems: (itemIds) => ({
+      type: actionTypes.UPDATING_ITEMS,
+      id,
+      itemIds
+    }),
+    updateItems: (itemIds, data) => ({
+      type: actionTypes.UPDATE_ITEMS,
+      id,
+      itemIds,
+      data
+    }),
     resetItem: (itemId, data) => ({
       type: actionTypes.RESET_ITEM,
       id,
@@ -44,6 +55,12 @@ export default function simpleComposables(id) {
     bulkError: (error) => ({
       type: actionTypes.BULK_ERROR,
       id,
+      error
+    }),
+    markItemsErrored: (ids, error) => ({
+      type: actionTypes.MARK_ITEMS_ERRORED,
+      id,
+      ids,
       error
     }),
     resetResults: (results) => ({
@@ -84,21 +101,34 @@ export default function simpleComposables(id) {
       })
     }
 
-  const updateAllAsync = (data, update, reset=false) =>
+  const updateItemsAsync = (itemIds, data, update) =>
     (dispatch, getState) => {
       const results = getPaginator(getState(), id).get('results')
 
-      dispatch(basic.updateAll(data))
-      dispatch(basic.updatingAll())
-      return update.then(serverUpdate => {
-        if (reset) {
-          return dispatch(basic.resetResults(serverUpdate))
+      dispatch(basic.updateItems(itemIds, data))
+      dispatch(basic.updatingItems(itemIds))
+
+      return update.catch(err => {
+        dispatch(basic.resetResults(results.toJS()))
+        return dispatch(basic.markItemsErrored(itemIds, err))
+      })
+    }
+
+  const updateAllAsync = (data, update, reset=false) =>
+    (dispatch, getState) => {
+      const results = getPaginator(getState(), id).get('results')
+      const ids = results.map(r => r.get(identifier)).toArray()
+
+      return dispatch(updateItemsAsync(ids, data, update)).then(resp => {
+        if (resp.type === actionTypes.MARK_ITEMS_ERRORED) {
+          return {}
         }
 
-        return dispatch(basic.updateAll(serverUpdate))
-      }).catch(err => {
-        dispatch(basic.resetResults(results.toJS()))
-        return dispatch(basic.bulkError(err))
+        if (reset) {
+          return dispatch(basic.resetResults(resp))
+        }
+
+        return dispatch(basic.updateItems(ids, resp))
       })
     }
 

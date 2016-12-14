@@ -397,6 +397,20 @@ describe('pageActions', () => {
     })
   })
 
+  describe('updatingItems', () => {
+    it('dispatches UPDATING_ITEMS', () => {
+      const { pageActions, store } = setup()
+      const itemIds = [42, 43]
+      const expectedAction = {
+        type: actionTypes.UPDATING_ITEMS,
+        id: listId,
+        itemIds
+      }
+
+      expect(store.dispatch(pageActions.updatingItems(itemIds))).toEqual(expectedAction)
+    })
+  })
+
   describe('removingItem', () => {
     it('dispatches REMOVING_ITEM', () => {
       const { pageActions, store } = setup()
@@ -424,6 +438,22 @@ describe('pageActions', () => {
       }
 
       expect(store.dispatch(pageActions.updateItem(itemId, data))).toEqual(expectedAction)
+    })
+  })
+
+  describe('updateItems', () => {
+    it('dispatches UPDATE_ITEMS', () => {
+      const { pageActions, store } = setup()
+      const itemIds = [42, 43]
+      const data = { active: false }
+      const expectedAction = {
+        type: actionTypes.UPDATE_ITEMS,
+        id: listId,
+        itemIds,
+        data
+      }
+
+      expect(store.dispatch(pageActions.updateItems(itemIds, data))).toEqual(expectedAction)
     })
   })
 
@@ -569,23 +599,19 @@ describe('pageActions', () => {
 
       context('with default settings', () => {
         const serverVersion = { active: false }
-
-        const expectedActions = [{
-          type: actionTypes.UPDATE_ALL,
-          id: listId,
-          data: updateData
-        }, {
-          type: actionTypes.UPDATING_ALL,
-          id: listId
-        }, {
-          type: actionTypes.UPDATE_ALL,
-          id: listId,
-          data: serverVersion
-        }]
+        const results = [{ id: 1, name: 'Ewe and IPA' }]
 
         it('updates all the items', () => {
-          const { pageActions, store } = setup()
+          const ids = results.map(r => r.id)
+          const { pageActions, store } = setup(true, results)
+          const expectedActions = [
+            pageActions.updateItems(ids, updateData),
+            pageActions.updatingItems(ids),
+            pageActions.updateItems(ids, serverVersion)
+          ]
+
           const update = Promise.resolve(serverVersion)
+
           expectAsync(
             store.dispatch(pageActions.updateAllAsync(updateData, update)).then(() => {
               expect(store.getActions()).toEqual(expectedActions)
@@ -596,23 +622,19 @@ describe('pageActions', () => {
 
       context('with reset=true', () => {
         const serverVersion = [{ id: 1, name: 'Ewe and IPA', active: false }]
-
-        const expectedActions = [{
-          type: actionTypes.UPDATE_ALL,
-          id: listId,
-          data: updateData
-        }, {
-          type: actionTypes.UPDATING_ALL,
-          id: listId
-        }, {
-          type: actionTypes.RESET_RESULTS,
-          id: listId,
-          results: serverVersion
-        }]
+        const results = [{ id: 1, name: 'Ewe and IPA' }]
 
         it('resets the items', () => {
-          const { pageActions, store } = setup()
+          const { pageActions, store } = setup(true, results)
+          const ids = results.map(r => r.id)
+          const expectedActions = [
+            pageActions.updateItems(ids, updateData),
+            pageActions.updatingItems(ids),
+            pageActions.resetResults(serverVersion)
+          ]
+
           const update = Promise.resolve(serverVersion)
+
           expectAsync(
             store.dispatch(pageActions.updateAllAsync(updateData, update, true)).then(() => {
               expect(store.getActions()).toEqual(expectedActions)
@@ -631,28 +653,19 @@ describe('pageActions', () => {
         }
 
         const results = [record]
+        const ids = [record.id]
 
         const { pageActions, store } = setup(true, results)
         const updateData = { active: false }
         const error = 'server error'
         const update = Promise.reject(error)
 
-        const expectedActions = [{
-          type: actionTypes.UPDATE_ALL,
-          id: listId,
-          data: updateData
-        }, {
-          type: actionTypes.UPDATING_ALL,
-          id: listId
-        }, {
-          type: actionTypes.RESET_RESULTS,
-          id: listId,
-          results
-        }, {
-          type: actionTypes.BULK_ERROR,
-          id: listId,
-          error
-        }]
+        const expectedActions = [
+          pageActions.updateItems(ids, updateData),
+          pageActions.updatingItems(ids),
+          pageActions.resetResults(results),
+          pageActions.markItemsErrored(ids, error)
+        ]
 
         expectAsync(
           store.dispatch(pageActions.updateAllAsync(updateData, update)).then(() => {

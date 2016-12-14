@@ -293,14 +293,19 @@ describe('pagination reducer', () => {
     })
 
     it('handles UPDATING_ALL', () => {
-      const { state: initialState } = setup()
+      const paginator = defaultPaginator.merge({
+        results: [{ id: 1, name: 'Ewe and IPA' }]
+      })
+
+      const { state: initialState } = setup(paginator)
+
       const action = {
         type: actionTypes.UPDATING_ALL,
         id
       }
 
       const state = getPaginator({ pagination: reducer(initialState, action) }, id)
-      expect(state.get('bulkUpdating')).toBe(true)
+      expect(state.get('updating').toArray()).toInclude(1)
     })
 
     it('handles RESET_RESULTS', () => {
@@ -317,7 +322,11 @@ describe('pagination reducer', () => {
     })
 
     context('when handling BULK_ERROR', () => {
-      const { state: initialState } = setup()
+      const paginator = defaultPaginator.merge({
+        results: [{ id: 1, name: 'Ewe and IPA' }]
+      })
+
+      const { state: initialState } = setup(paginator)
       const error = 'server error'
       const action = {
         type: actionTypes.BULK_ERROR,
@@ -326,12 +335,14 @@ describe('pagination reducer', () => {
       }
 
       const state = getPaginator({ pagination: reducer(initialState, action) }, id)
-      it('sets the bulkUpdateError', () => {
-        expect(state.get('bulkUpdateError')).toEqual(error)
+      const item = state.get('results').find(r => r.get('id') === 1)
+
+      it('sets the error on all items', () => {
+        expect(item.get('error')).toEqual(error)
       })
 
-      it('clears the bulkUpdating flag', () => {
-        expect(state.get('bulkUpdating')).toBe(false)
+      it('clears the items from the updating list', () => {
+        expect(state.get('updating').toArray()).toNotInclude(item.get('id'))
       })
     })
 
@@ -340,8 +351,7 @@ describe('pagination reducer', () => {
       const results = [{ id: itemId, name: 'Pouty Stout' }]
       const paginator = defaultPaginator.merge({
         results: Immutable.fromJS(results),
-        bulkUpdating: true,
-        bulkUpdateError: 'server error'
+        updating: Set(itemId)
       })
 
       const { state: initialState } = setup(paginator)
@@ -358,8 +368,8 @@ describe('pagination reducer', () => {
         expect(items.every(i => i.get('active'))).toBe(true)
       })
 
-      it('clears the bulkUpdating flag', () => {
-        expect(state.get('bulkUpdating')).toBe(false)
+      it('removes the item from the updating list', () => {
+        expect(state.get('updating').toArray()).toNotInclude(itemId)
       })
 
       it('clears the bulkUpdateError', () => {

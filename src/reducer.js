@@ -13,8 +13,6 @@ export const defaultPaginator = Map({
   sort: null,
   sortReverse: false,
   isLoading: false,
-  bulkUpdating: false,
-  bulkUpdateError: null,
   stale: false,
   results: List(),
   updating: Set(),
@@ -191,6 +189,35 @@ function updateItem(state, action) {
   )
 }
 
+function updateItems(state, action) {
+  return updateListItem(state, action.id, p => {
+    const itemIds = action.every ?
+      p.get('results').map(r => r.get(recordProps().identifier)) :
+      action.itemIds
+
+    return p.merge({
+      updating: p.get('updating').toSet().subtract(itemIds),
+      results: p.get('results').map(r => {
+        if (itemIds.includes(r.get(recordProps().identifier))) {
+          return r.merge(action.data).set('error', null)
+        }
+
+        return r
+      })
+    })
+  })
+}
+
+function updatingItems(state, action) {
+  return updateListItem(state, action.id, p => {
+    const itemIds = action.every ?
+      p.get('results').map(r => r.get(recordProps().identifier)) :
+      action.itemIds
+
+    return p.set('updating', p.get('updating').toSet().union(itemIds))
+  })
+}
+
 function resetItem(state, action) {
   return updateListItem(state, action.id, p =>
     p.merge({
@@ -205,26 +232,17 @@ function resetItem(state, action) {
 }
 
 function updatingAll(state, action) {
-  return updateListItem(state, action.id, p =>
-    p.set('bulkUpdating', true)
-  )
+  return updatingItems(state, {
+    every: true,
+    ...action
+  })
 }
 
 function updateAll(state, action) {
-  return updateListItem(state, action.id, p => p
-    .set('bulkUpdateError', null)
-    .set('bulkUpdating', false)
-    .set('results', p.get('results').map(r =>
-      r.merge(action.data)
-    ))
-  )
-}
-
-function bulkError(state, action) {
-  return updateListItem(state, action.id, p => p
-    .set('bulkUpdateError', action.error)
-    .set('bulkUpdating', false)
-  )
+  return updateItems(state, {
+    every: true,
+    ...action
+  })
 }
 
 function removingItem(state, action) {
@@ -260,6 +278,33 @@ function itemError(state, action) {
   )
 }
 
+function markItemsErrored(state, action) {
+  return updateListItem(state, action.id, p => {
+    const itemIds = action.every ?
+      p.get('results').map(r => r.get(recordProps().identifier)) :
+      action.itemIds
+
+    return p.merge({
+      updating: p.get('updating').toSet().subtract(itemIds),
+      removing: p.get('removing').toSet().subtract(itemIds),
+      results: p.get('results').map(r => {
+        if (itemIds.includes(r.get(recordProps().identifier))) {
+          return r.set('error', action.error)
+        }
+
+        return r
+      })
+    })
+  })
+}
+
+function bulkError(state, action) {
+  return markItemsErrored(state, {
+    every: true,
+    ...action
+  })
+}
+
 export default resolveEach(initialState, {
   [actionTypes.INITIALIZE_PAGINATOR]: initialize,
   [actionTypes.DESTROY_PAGINATOR]: destroy,
@@ -280,8 +325,11 @@ export default resolveEach(initialState, {
   [actionTypes.SORT_CHANGED]: sortChanged,
   [actionTypes.UPDATING_ITEM]: updatingItem,
   [actionTypes.UPDATE_ITEM]: updateItem,
+  [actionTypes.UPDATING_ITEMS]: updatingItems,
+  [actionTypes.UPDATE_ITEMS]: updateItems,
   [actionTypes.RESET_ITEM]: resetItem,
   [actionTypes.UPDATING_ALL]: updatingAll,
+  [actionTypes.MARK_ITEMS_ERRORED]: markItemsErrored,
   [actionTypes.BULK_ERROR]: bulkError,
   [actionTypes.RESET_RESULTS]: resetResults,
   [actionTypes.UPDATE_ALL]: updateAll,
