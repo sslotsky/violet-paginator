@@ -41,34 +41,32 @@ export class PaginationWrapper extends Component {
     }
   }
 
-  info() {
-    const { paginator } = this.props
-    const totalPages =
-      Math.ceil(paginator.get('totalCount') / paginator.get('pageSize'))
-
-    return {
-      hasPreviousPage: paginator.get('page') > 1,
-      hasNextPage: paginator.get('page') < totalPages,
-      currentPage: paginator.get('page'),
-      pageSize: paginator.get('pageSize'),
-      results: paginator.get('results'),
-      isLoading: paginator.get('isLoading'),
-      updating: paginator.get('updating'),
-      removing: paginator.get('removing'),
-      totalPages
-    }
-  }
-
   render() {
-    const { children, ...rest } = this.props
-    return React.cloneElement(children, { ...rest, ...this.info() })
+    return this.props.children
+  }
+}
+
+function info(paginator) {
+  const totalPages =
+    Math.ceil(paginator.get('totalCount') / paginator.get('pageSize'))
+
+  return {
+    hasPreviousPage: paginator.get('page') > 1,
+    hasNextPage: paginator.get('page') < totalPages,
+    currentPage: paginator.get('page'),
+    pageSize: paginator.get('pageSize'),
+    results: paginator.get('results'),
+    isLoading: paginator.get('isLoading'),
+    updating: paginator.get('updating'),
+    removing: paginator.get('removing'),
+    totalPages
   }
 }
 
 export default function paginate(ComponentClass) {
   return connector(props => (
     <PaginationWrapper {...props}>
-      <ComponentClass {...props} />
+      <ComponentClass {...props} {...info(props.paginator)} />
     </PaginationWrapper>
   ))
 }
