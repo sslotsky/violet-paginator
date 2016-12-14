@@ -6,7 +6,7 @@ import paginate from './PaginationWrapper'
 import { recordProps } from './pageInfoTranslator'
 
 export function DataTable(props) {
-  const { results, headers, isLoading, updating, removing } = props
+  const { results, headers, isLoading, updating, removing, className = 'border' } = props
 
   if (isLoading) {
     return (
@@ -55,7 +55,7 @@ export function DataTable(props) {
   })
 
   return (
-    <table className="border">
+    <table className={className}>
       <thead>
         <tr>
           {headerRow}
@@ -73,7 +73,8 @@ DataTable.propTypes = {
   isLoading: PropTypes.bool,
   results: PropTypes.object,
   updating: PropTypes.object,
-  removing: PropTypes.object
+  removing: PropTypes.object,
+  className: PropTypes.string
 }
 
 export default paginate(DataTable)
