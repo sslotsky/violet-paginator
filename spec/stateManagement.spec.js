@@ -3,10 +3,12 @@ import expect from 'expect'
 import getPaginator, {
   isUpdating,
   isRemoving,
-  preloadedPaginator
+  preloadedPaginator,
+  currentQuery
 } from '../src/lib/stateManagement'
 import reducer, { defaultPaginator } from '../src/reducer'
 import * as actionTypes from '../src/actionTypes'
+import { translate } from '../src/pageInfoTranslator'
 
 describe('State management utilities', () => {
   describe('preloadedPaginator', () => {
@@ -31,6 +33,21 @@ describe('State management utilities', () => {
       it('merges the preloaded data', () => {
         expect(paginator).toEqual(defaultPaginator.merge(preloaded))
       })
+    })
+  })
+
+  describe('currentQuery', () => {
+    const id = 'someId'
+    const initialize = {
+      type: actionTypes.INITIALIZE_PAGINATOR,
+      id
+    }
+
+    const state = { pagination: reducer(undefined, initialize) }
+    const expectedQuery = translate(getPaginator(state, id))
+
+    it('returns the same query that gets passed to config.fetch', () => {
+      expect(currentQuery(state, id)).toEqual(expectedQuery)
     })
   })
 
