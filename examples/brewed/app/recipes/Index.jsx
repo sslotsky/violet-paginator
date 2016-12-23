@@ -5,8 +5,7 @@ import {
   VioletFlipper,
   VioletDataTable,
   VioletPaginator,
-  VioletPageSizeDropdown,
-  getPaginator
+  VioletPageSizeDropdown
 } from 'violet-paginator'
 import { Link } from 'react-router'
 
@@ -44,18 +43,18 @@ export class Index extends Component {
   render() {
     const { fetch, loading } = this.props
     const flipper = (
-      <VioletFlipper listId="recipes" fetch={fetch} />
+      <VioletFlipper listId="recipeGrid" />
     )
 
     return (
       <section>
         <Loading loading={loading} />
-        <VioletPageSizeDropdown listId="recipes" fetch={fetch} />
-        <VioletPaginator listId="recipes" fetch={fetch} />
+        <VioletPageSizeDropdown listId="recipeGrid" />
+        <VioletPaginator listId="recipeGrid"  />
         {flipper}
-        <VioletDataTable listId="recipes" fetch={fetch} headers={this.headers()} />
+        <VioletDataTable listId="recipeGrid" headers={this.headers()} />
         {flipper}
-        <VioletPaginator listId="recipes" fetch={fetch} />
+        <VioletPaginator listId="recipeGrid" />
       </section>
     )
   }

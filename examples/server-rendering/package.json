@@ -26,7 +26,7 @@
     "redux": "^3.6.0",
     "redux-immutablejs": "0.0.8",
     "redux-thunk": "^2.1.0",
-    "violet-paginator": "github:sslotsky/violet-paginator#ef40fccc11a2310258f2fa296171d73cbc94659d",
+    "violet-paginator": "2.0.0",
     "webpack": "^1.14.0"
   },
   "devDependencies": {}

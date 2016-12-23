@@ -1,10 +1,12 @@
 import Immutable, { Map, List, Set } from 'immutable'
-import { resolveEach, updateListItem } from './lib/reduxResolver'
+import { resolveEach } from 'redux-resolver'
+import { updateListItem } from './lib/reduxResolver'
 import actionType, * as actionTypes from './actionTypes'
 import { recordProps } from './pageInfoTranslator'
 import { registerPaginator } from './lib/stateManagement'
 
 export const defaultPaginator = Map({
+  initialized: false,
   page: 1,
   pageSize: 15,
   totalCount: 0,
@@ -21,15 +23,10 @@ export const defaultPaginator = Map({
 })
 
 function initialize(state, action) {
-  const { type: _, filters = {}, preloaded = {}, ...rest } = action
-  const { results = [], totalCount = 0, page = 1 } = preloaded
-
   return state.merge({
-    filters,
-    results,
-    totalCount,
-    page,
-    ...rest
+    initialized: true,
+    stale: !action.preloaded,
+    ...(action.preloaded || {})
   })
 }
 
@@ -37,27 +34,73 @@ function expire(state) {
   return state.set('stale', true)
 }
 
-function expireAll(state) {
-  return state.set('stale', true)
-}
-
 function next(state) {
-  return state.set('page', state.get('page') + 1)
+  return expire(state.set('page', state.get('page') + 1))
 }
 
 function prev(state) {
-  return state.set('page', state.get('page') - 1)
+  return expire(state.set('page', state.get('page') - 1))
 }
 
 function goToPage(state, action) {
-  return state.set('page', action.page)
+  return expire(state.set('page', action.page))
 }
 
 function setPageSize(state, action) {
-  return state.merge({
-    pageSize: action.size,
-    page: 1
-  })
+  return expire(
+    state.merge({
+      pageSize: action.size,
+      page: 1
+    })
+  )
+}
+
+function toggleFilterItem(state, action) {
+  const items = state.getIn(['filters', action.field], Set()).toSet()
+
+  return expire(
+    state.set('page', 1).setIn(
+      ['filters', action.field],
+      items.includes(action.value) ? items.delete(action.value) :items.add(action.value)
+    )
+  )
+}
+
+function setFilter(state, action) {
+  return expire(
+    state.setIn(
+      ['filters', action.field],
+      Immutable.fromJS(action.value)
+    ).set('page', 1)
+  )
+}
+
+function setFilters(state, action) {
+  return expire(
+    state.set(
+      'filters',
+      state.get('filters').merge(action.filters)
+    ).set('page', 1)
+  )
+}
+
+function resetFilters(state, action) {
+  return expire(
+    state.set(
+      'filters',
+      Immutable.fromJS(action.filters || {})
+    ).set('page', 1)
+  )
+}
+
+function sortChanged(state, action) {
+  return expire(
+    state.merge({
+      sort: action.field,
+      sortReverse: action.reverse,
+      page: 1
+    })
+  )
 }
 
 function fetching(state, action) {
@@ -82,44 +125,6 @@ function updateResults(state, action) {
 
 function resetResults(state, action) {
   return state.set('results', Immutable.fromJS(action.results))
-}
-
-function toggleFilterItem(state, action) {
-  const items = state.getIn(['filters', action.field], Set()).toSet()
-
-  return state.set('page', 1).setIn(
-    ['filters', action.field],
-    items.includes(action.value) ? items.delete(action.value) :items.add(action.value)
-  )
-}
-
-function setFilter(state, action) {
-  return state.setIn(
-    ['filters', action.field],
-    Immutable.fromJS(action.value)
-  ).set('page', 1)
-}
-
-function setFilters(state, action) {
-  return state.set(
-    'filters',
-    state.get('filters').merge(action.filters)
-  ).set('page', 1)
-}
-
-function resetFilters(state, action) {
-  return state.set(
-    'filters',
-    Immutable.fromJS(action.filters || {})
-  ).set('page', 1)
-}
-
-function sortChanged(state, action) {
-  return state.merge({
-    sort: action.field,
-    sortReverse: action.reverse,
-    page: 1
-  })
 }
 
 function error(state, action) {
@@ -246,37 +251,38 @@ function bulkError(state, action) {
   })
 }
 
-export default function createPaginator(id, locator) {
-  registerPaginator(id, locator)
+export default function createPaginator(config) {
+  const { initialSettings } = registerPaginator(config)
+  const resolve = t => actionType(t, config.listId)
 
-  return resolveEach(defaultPaginator, {
-    [actionType(actionTypes.INITIALIZE_PAGINATOR, id)]: initialize,
-    [actionType(actionTypes.EXPIRE_PAGINATOR, id)]: expire,
-    [actionTypes.EXPIRE_ALL]: expireAll,
-    [actionType(actionTypes.PREVIOUS_PAGE, id)]: prev,
-    [actionType(actionTypes.NEXT_PAGE, id)]: next,
-    [actionType(actionTypes.GO_TO_PAGE, id)]: goToPage,
-    [actionType(actionTypes.SET_PAGE_SIZE, id)]: setPageSize,
-    [actionType(actionTypes.FETCH_RECORDS, id)]: fetching,
-    [actionType(actionTypes.RESULTS_UPDATED, id)]: updateResults,
-    [actionType(actionTypes.RESULTS_UPDATED_ERROR, id)]: error,
-    [actionType(actionTypes.TOGGLE_FILTER_ITEM, id)]: toggleFilterItem,
-    [actionType(actionTypes.SET_FILTER, id)]: setFilter,
-    [actionType(actionTypes.SET_FILTERS, id)]: setFilters,
-    [actionType(actionTypes.RESET_FILTERS, id)]: resetFilters,
-    [actionType(actionTypes.SORT_CHANGED, id)]: sortChanged,
-    [actionType(actionTypes.UPDATING_ITEM, id)]: updatingItem,
-    [actionType(actionTypes.UPDATE_ITEM, id)]: updateItem,
-    [actionType(actionTypes.UPDATING_ITEMS, id)]: updatingItems,
-    [actionType(actionTypes.UPDATE_ITEMS, id)]: updateItems,
-    [actionType(actionTypes.RESET_ITEM, id)]: resetItem,
-    [actionType(actionTypes.UPDATING_ALL, id)]: updatingAll,
-    [actionType(actionTypes.MARK_ITEMS_ERRORED, id)]: markItemsErrored,
-    [actionType(actionTypes.BULK_ERROR, id)]: bulkError,
-    [actionType(actionTypes.RESET_RESULTS, id)]: resetResults,
-    [actionType(actionTypes.UPDATE_ALL, id)]: updateAll,
-    [actionType(actionTypes.REMOVING_ITEM, id)]: removingItem,
-    [actionType(actionTypes.REMOVE_ITEM, id)]: removeItem,
-    [actionType(actionTypes.ITEM_ERROR, id)]: itemError
+  return resolveEach(defaultPaginator.merge(initialSettings), {
+    [actionTypes.EXPIRE_ALL]: expire,
+    [resolve(actionTypes.INITIALIZE_PAGINATOR)]: initialize,
+    [resolve(actionTypes.EXPIRE_PAGINATOR)]: expire,
+    [resolve(actionTypes.PREVIOUS_PAGE)]: prev,
+    [resolve(actionTypes.NEXT_PAGE)]: next,
+    [resolve(actionTypes.GO_TO_PAGE)]: goToPage,
+    [resolve(actionTypes.SET_PAGE_SIZE)]: setPageSize,
+    [resolve(actionTypes.FETCH_RECORDS)]: fetching,
+    [resolve(actionTypes.RESULTS_UPDATED)]: updateResults,
+    [resolve(actionTypes.RESULTS_UPDATED_ERROR)]: error,
+    [resolve(actionTypes.TOGGLE_FILTER_ITEM)]: toggleFilterItem,
+    [resolve(actionTypes.SET_FILTER)]: setFilter,
+    [resolve(actionTypes.SET_FILTERS)]: setFilters,
+    [resolve(actionTypes.RESET_FILTERS)]: resetFilters,
+    [resolve(actionTypes.SORT_CHANGED)]: sortChanged,
+    [resolve(actionTypes.UPDATING_ITEM)]: updatingItem,
+    [resolve(actionTypes.UPDATE_ITEM)]: updateItem,
+    [resolve(actionTypes.UPDATING_ITEMS)]: updatingItems,
+    [resolve(actionTypes.UPDATE_ITEMS)]: updateItems,
+    [resolve(actionTypes.RESET_ITEM)]: resetItem,
+    [resolve(actionTypes.UPDATING_ALL)]: updatingAll,
+    [resolve(actionTypes.MARK_ITEMS_ERRORED)]: markItemsErrored,
+    [resolve(actionTypes.BULK_ERROR)]: bulkError,
+    [resolve(actionTypes.RESET_RESULTS)]: resetResults,
+    [resolve(actionTypes.UPDATE_ALL)]: updateAll,
+    [resolve(actionTypes.REMOVING_ITEM)]: removingItem,
+    [resolve(actionTypes.REMOVE_ITEM)]: removeItem,
+    [resolve(actionTypes.ITEM_ERROR)]: itemError
   })
 }

@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import register from './actions'
+import composables from './actions'
 import { defaultPaginator } from './reducer'
 import { preloadedPaginator } from './lib/stateManagement'
 
@@ -10,7 +10,7 @@ const connector = connect(
     paginator: preloadedPaginator(state, ownProps.listId, ownProps.preloaded)
   }),
   (dispatch, ownProps) => ({
-    actions: bindActionCreators(register(ownProps), dispatch)
+    actions: bindActionCreators(composables(ownProps), dispatch)
   })
 )
 
@@ -26,7 +26,12 @@ export class PaginationWrapper extends Component {
   }
 
   componentDidMount() {
-    this.props.actions.initialize()
+    const { paginator, actions } = this.props
+
+    if (!paginator.get('initialized')) {
+      actions.initialize()
+    }
+
     this.reloadIfStale(this.props)
   }
 
