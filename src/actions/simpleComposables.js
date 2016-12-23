@@ -7,9 +7,6 @@ const { identifier } = recordProps()
 
 export default function simpleComposables(id) {
   const basic = {
-    destroy: () => ({
-      type: actionType(actionTypes.DESTROY_PAGINATOR, id)
-    }),
     expire: () => ({
       type: actionType(actionTypes.EXPIRE_PAGINATOR, id)
     }),

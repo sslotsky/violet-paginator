@@ -1,19 +1,49 @@
 import { defaultPaginator } from '../reducer'
-import { translate } from '../pageInfoTranslator'
+import { translate, responseProps } from '../pageInfoTranslator'
 
 const stateMap = {}
 const defaultLocator = listId => state => state[listId]
 const preload = { results: [] }
 
-export function registerPaginator(listId, locator = defaultLocator(listId)) {
-  stateMap[listId] = locator
-  return locator
+const [totalCountProp, resultsProp] = responseProps()
+
+const defaultPageParams = {
+  totalCountProp,
+  resultsProp
+}
+
+export function registerPaginator({
+  listId,
+  fetch,
+  initialSettings = {},
+  pageParams = {},
+  locator = defaultLocator(listId)
+}) {
+  stateMap[listId] = {
+    locator,
+    fetch,
+    initialSettings,
+    params: {
+      ...defaultPageParams,
+      ...pageParams
+    }
+  }
+
+  return stateMap[listId]
 }
 
 export function getPaginator(listId, state) {
-  const locator = stateMap[listId] || defaultLocator(listId)
-  return locator(state) || defaultPaginator
+  const config = stateMap[listId] || {
+    locator: defaultLocator(listId)
+  }
+
+  return config.locator(state) || defaultPaginator
 }
+
+export function listConfig(listId) {
+  return stateMap[listId]
+}
+
 export function preloadedPaginator(state, listId, preloaded = preload) {
   const paginator = getPaginator(listId, state)
   return paginator.equals(defaultPaginator) ? paginator.merge(preloaded) : paginator

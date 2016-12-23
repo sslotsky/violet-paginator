@@ -10,11 +10,12 @@ import {
 } from '../src/lib/stateManagement'
 import createReducer, { defaultPaginator } from '../src/reducer'
 import actionType, * as actionTypes from '../src/actionTypes'
-import { translate } from '../src/pageInfoTranslator'
+import { translate, responseProps } from '../src/pageInfoTranslator'
 
 const [id, itemId] = ['recipes', 1]
-const reducer = createReducer(id)
+const reducer = createReducer({ listId: id })
 const resolve = t => actionType(t, id)
+const [totalCountProp, resultsProp] = responseProps()
 
 describe('State management utilities', () => {
   describe('preloadedPaginator', () => {
@@ -43,9 +44,59 @@ describe('State management utilities', () => {
   })
 
   describe('registerPaginator', () => {
+    it('uses the default param names', () => {
+      const { params } = registerPaginator({ listId: 'defaultParams' })
+
+      const expectedParams = {
+        totalCountProp,
+        resultsProp
+      }
+
+      expect(params).toEqual(expectedParams)
+    })
+
+    it('allows overriding of resultsProp', () => {
+      const config = {
+        listId: 'customResultsProp',
+        pageParams: {
+          resultsProp: 'records'
+        }
+      }
+
+      const { params } = registerPaginator(config)
+
+      const expectedParams = {
+        totalCountProp,
+        resultsProp: config.pageParams.resultsProp
+      }
+
+      expect(params).toEqual(expectedParams)
+    })
+
+    it('allows overriding of totalCountProp', () => {
+      const config = {
+        listId: 'customtotalCountProp',
+        pageParams: {
+          totalCountProp: 'total_records'
+        }
+      }
+
+      const { params } = registerPaginator(config)
+
+      const expectedParams = {
+        totalCountProp: config.pageParams.totalCountProp,
+        resultsProp
+      }
+
+      expect(params).toEqual(expectedParams)
+    })
+
     context('when provided a locator', () => {
       const locator = () => defaultPaginator
-      const registeredLocator = registerPaginator(id, locator)
+      const { locator: registeredLocator } = registerPaginator({
+        listId: 'customLocator',
+        locator
+      })
 
       it('returns the locator', () => {
         expect(registeredLocator).toEqual(locator)
@@ -53,10 +104,10 @@ describe('State management utilities', () => {
     })
 
     context('when not provided a locator', () => {
-      const locator = registerPaginator(id)
+      const { locator } = registerPaginator({ listId: 'noLocator' })
 
       it('returns a locator that retrieves state by listId', () => {
-        const state = { [id]: defaultPaginator }
+        const state = { noLocator: defaultPaginator }
         expect(locator(state)).toEqual(defaultPaginator)
       })
     })
@@ -80,21 +131,24 @@ describe('State management utilities', () => {
     const paginator = defaultPaginator.set('pageSize', 50)
 
     context('when locator is registered', () => {
-      const locator = state => state.users.grid
       beforeEach(() => {
-        registerPaginator(id, locator)
+        const locator = state => state.users.grid
+        registerPaginator({ listId: 'deeplyNested', locator })
       })
 
       const state = { users: { grid: paginator } }
 
       it('uses the locator to lookup the state', () => {
-        expect(getPaginator(id, state)).toEqual(paginator)
+        expect(getPaginator('deeplyNested', state)).toEqual(paginator)
       })
     })
 
     context('when locator is not registered', () => {
       const userGridId = 'users'
-      registerPaginator(userGridId)
+      beforeEach(() => {
+        registerPaginator({ listId: userGridId })
+      })
+
       const state = { [userGridId]: paginator }
 
       it('looks up the state by listId', () => {
@@ -111,16 +165,14 @@ describe('State management utilities', () => {
 
   describe('isUpdating', () => {
     context('when an item is updating', () => {
-      beforeEach(() => {
-        registerPaginator(id)
+      const configuredReducer = createReducer({
+        listId: 'configuredReducer',
+        initialSettings: {
+          updating: Set.of(itemId)
+        }
       })
 
-      const initialize = {
-        type: resolve(actionTypes.INITIALIZE_PAGINATOR),
-        updating: Set.of(itemId)
-      }
-
-      const state = { recipes: reducer(undefined, initialize) }
+      const state = { recipes: configuredReducer() }
 
       it('returns true', () => {
         expect(isUpdating(state, id, itemId)).toBe(true)
@@ -142,12 +194,14 @@ describe('State management utilities', () => {
 
   describe('isRemoving', () => {
     context('when an item is being removed', () => {
-      const initialize = {
-        type: resolve(actionTypes.INITIALIZE_PAGINATOR),
-        removing: Set.of(itemId)
-      }
+      const configuredReducer = createReducer({
+        listId: 'configuredReducer',
+        initialSettings: {
+          removing: Set.of(itemId)
+        }
+      })
 
-      const state = reducer(undefined, initialize)
+      const state = configuredReducer()
 
       it('returns true', () => {
         expect(isRemoving(state, itemId)).toBe(true)

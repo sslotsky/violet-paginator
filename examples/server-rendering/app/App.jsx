@@ -1,36 +1,9 @@
 import React, { Component } from 'react'
 import { VioletPaginator, VioletDataTable } from 'violet-paginator'
 import { connect } from 'react-redux'
+import { preloaded } from './recipesConfig'
 
-const results = [{
-  name: 'Ewe and IPA'
-}, {
-  name: 'Pouty Stout'
-}]
-
-const preloaded = {
-  results: results.slice(0, 1),
-  totalCount: 2
-}
-
-const mockFetch = pageInfo => () => {
-  const data = {
-    ...preloaded,
-    results: results.slice(pageInfo.query.page - 1, pageInfo.query.page)
-  }
-
-  return Promise.resolve({ data })
-}
-
-export function App({ fetch }) {
-  const props = {
-    pageSize: 1,
-    totalCountProp: 'totalCount',
-    fetch,
-    preloaded,
-    listId: 'recipes'
-  }
-
+export default function App() {
   const headers = [{
     field: 'name',
     text: 'Name',
@@ -40,13 +13,8 @@ export function App({ fetch }) {
   return(
     <div>
       <h1>Hello World!</h1>
-      <VioletPaginator {...props} />
-      <VioletDataTable {...props} headers={headers} />
+      <VioletPaginator listId="recipes" />
+      <VioletDataTable listId="recipes" preloaded={preloaded} headers={headers} />
     </div>
   )
 }
-
-export default connect(
-  undefined,
-  { fetch: mockFetch }
-)(App)
