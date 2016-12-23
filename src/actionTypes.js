@@ -29,3 +29,7 @@ export const RESET_RESULTS = '@@violet-paginator/RESET_RESULTS'
 export const REMOVING_ITEM = '@@violet-paginator/REMOVING_ITEM'
 export const REMOVE_ITEM = '@@violet-paginator/REMOVE_ITEM'
 export const ITEM_ERROR = '@@violet-paginator/ITEM_ERROR'
+
+export default function actionType(t, id) {
+  return `${t}_${id}`
+}

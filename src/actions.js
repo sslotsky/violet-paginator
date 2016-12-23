@@ -15,16 +15,9 @@ export function expireAll() {
   }
 }
 
-export default function register(config) {
+export default function composables(config) {
   return {
     ...fetchingComposables(config),
     ...simpleComposables(config.listId)
   }
-}
-
-export function composables(config) {
-  return register({
-    ...config,
-    isBoundToDispatch: false
-  })
 }
