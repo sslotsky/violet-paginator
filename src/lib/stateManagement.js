@@ -5,16 +5,26 @@ const stateMap = {}
 const defaultLocator = listId => state => state[listId]
 const preload = { results: [] }
 
+const defaultPageParams = {
+  resultsProp: 'results',
+  totalCountProp: 'total_count'
+}
+
 export function registerPaginator({
   listId,
   fetch,
   initialSettings = {},
+  pageParams = {},
   locator = defaultLocator(listId)
 }) {
   stateMap[listId] = {
     locator,
     fetch,
-    initialSettings
+    initialSettings,
+    params: {
+      ...defaultPageParams,
+      ...pageParams
+    }
   }
 
   return locator
@@ -30,8 +40,8 @@ export function getPaginator(listId, state) {
   return paginator.merge(config.initialSettings)
 }
 
-export function getFetcher(listId) {
-  return stateMap[listId].fetch
+export function listConfig(listId) {
+  return stateMap[listId]
 }
 
 export function preloadedPaginator(state, listId, preloaded = preload) {

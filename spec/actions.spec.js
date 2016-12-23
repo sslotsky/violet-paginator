@@ -3,7 +3,7 @@ import expect from 'expect'
 import PromiseMock from 'promise-mock'
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
-import register, { expireAll } from '../src/actions'
+import composables, { expireAll } from '../src/actions'
 import { defaultPaginator } from '../src/reducer'
 import actionType, * as actionTypes from '../src/actionTypes'
 import expectAsync from './specHelper'
@@ -27,11 +27,7 @@ const setup = (pass=true, results=[]) => {
   const fetch = () => () =>
     (pass && Promise.resolve({ data })) || Promise.reject(new Error('An error'))
 
-  const pageActions = register({
-    isBoundToDispatch: false,
-    listId,
-    fetch
-  })
+  const pageActions = composables({ listId })
 
   registerPaginator({ listId, fetch })
 
@@ -48,10 +44,8 @@ describe('pageActions', () => {
         }
 
         const store = mockStore({ [listId]: defaultPaginator })
-        const pageActions = register({
-          isBoundToDispatch: false,
+        const pageActions = composables({
           listId,
-          fetch: () => {},
           preloaded
         })
 
@@ -103,14 +97,17 @@ describe('pageActions', () => {
         const fetch = () => () => Promise.resolve({ data })
 
         beforeEach(() => {
-          registerPaginator({ listId, fetch })
+          registerPaginator({
+            listId,
+            fetch,
+            pageParams: {
+              resultsProp: 'recipes',
+              totalCountProp: 'total_entries'
+            }
+          })
         })
 
-        const pageActions = register({
-          resultsProp: 'recipes',
-          totalCountProp: 'total_entries',
-          listId
-        })
+        const pageActions = composables({ listId })
 
         it('is able to read the results', () => {
           expectAsync(

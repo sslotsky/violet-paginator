@@ -1,14 +1,13 @@
 import uuid from 'uuid'
 import actionType, * as actionTypes from '../actionTypes'
 import { translate, responseProps } from '../pageInfoTranslator'
-import { getPaginator, getFetcher } from '../lib/stateManagement'
+import { getPaginator, listConfig } from '../lib/stateManagement'
 
 const [totalCountProp, resultsProp] = responseProps()
 
-const fetcher = config =>
+const fetcher = id =>
   (dispatch, getState) => {
-    const id = config.listId
-    const fetch = getFetcher(id)
+    const { fetch, params } = listConfig(id)
     const pageInfo = getPaginator(id, getState())
     const requestId = uuid.v1()
 
@@ -19,8 +18,8 @@ const fetcher = config =>
     return promise.then(resp =>
       dispatch({
         type: actionType(actionTypes.RESULTS_UPDATED, id),
-        results: resp.data[config.resultsProp || resultsProp],
-        totalCount: resp.data[config.totalCountProp || totalCountProp],
+        results: resp.data[params.resultsProp || totalCountProp],
+        totalCount: resp.data[params.totalCountProp || resultsProp],
         requestId
       })
     ).catch(error =>
@@ -32,7 +31,7 @@ const fetcher = config =>
   }
 
 export default function fetchingComposables(config) {
-  const fetch = fetcher(config)
+  const fetch = fetcher(config.listId)
   const id = config.listId
   const execute = action => dispatch => {
     dispatch(action)
