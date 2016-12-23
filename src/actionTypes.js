@@ -1,6 +1,4 @@
 export const INITIALIZE_PAGINATOR = '@@violet-paginator/INITIALIZE_PAGINATOR'
-export const DESTROY_PAGINATOR = '@@violet-paginator/DESTROY_PAGINATOR'
-export const DESTROY_ALL = '@@violet-paginator/DESTROY_ALL'
 export const EXPIRE_PAGINATOR = '@@violet-paginator/EXPIRE_PAGINATOR'
 export const EXPIRE_ALL = '@@violet-paginator/EXPIRE_ALL'
 export const FOUND_PAGINATOR = '@@violet-paginator/FOUND_PAGINATOR'
