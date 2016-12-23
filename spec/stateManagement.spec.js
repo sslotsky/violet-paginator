@@ -45,7 +45,10 @@ describe('State management utilities', () => {
   describe('registerPaginator', () => {
     context('when provided a locator', () => {
       const locator = () => defaultPaginator
-      const registeredLocator = registerPaginator({ listId: id, locator })
+      const { locator: registeredLocator } = registerPaginator({
+        listId: 'customLocator',
+        locator
+      })
 
       it('returns the locator', () => {
         expect(registeredLocator).toEqual(locator)
@@ -53,10 +56,10 @@ describe('State management utilities', () => {
     })
 
     context('when not provided a locator', () => {
-      const locator = registerPaginator({ listId: id })
+      const { locator } = registerPaginator({ listId: 'noLocator' })
 
       it('returns a locator that retrieves state by listId', () => {
-        const state = { [id]: defaultPaginator }
+        const state = { noLocator: defaultPaginator }
         expect(locator(state)).toEqual(defaultPaginator)
       })
     })
@@ -80,21 +83,24 @@ describe('State management utilities', () => {
     const paginator = defaultPaginator.set('pageSize', 50)
 
     context('when locator is registered', () => {
-      const locator = state => state.users.grid
       beforeEach(() => {
-        registerPaginator({ listId: id, locator })
+        const locator = state => state.users.grid
+        registerPaginator({ listId: 'deeplyNested', locator })
       })
 
       const state = { users: { grid: paginator } }
 
       it('uses the locator to lookup the state', () => {
-        expect(getPaginator(id, state)).toEqual(paginator)
+        expect(getPaginator('deeplyNested', state)).toEqual(paginator)
       })
     })
 
     context('when locator is not registered', () => {
       const userGridId = 'users'
-      registerPaginator({ listId: userGridId })
+      beforeEach(() => {
+        registerPaginator({ listId: userGridId })
+      })
+
       const state = { [userGridId]: paginator }
 
       it('looks up the state by listId', () => {
@@ -111,16 +117,14 @@ describe('State management utilities', () => {
 
   describe('isUpdating', () => {
     context('when an item is updating', () => {
-      beforeEach(() => {
-        registerPaginator({ listId: id })
+      const configuredReducer = createReducer({
+        listId: 'configuredReducer',
+        initialSettings: {
+          updating: Set.of(itemId)
+        }
       })
 
-      const initialize = {
-        type: resolve(actionTypes.INITIALIZE_PAGINATOR),
-        updating: Set.of(itemId)
-      }
-
-      const state = { recipes: reducer(undefined, initialize) }
+      const state = { recipes: configuredReducer() }
 
       it('returns true', () => {
         expect(isUpdating(state, id, itemId)).toBe(true)
@@ -142,12 +146,14 @@ describe('State management utilities', () => {
 
   describe('isRemoving', () => {
     context('when an item is being removed', () => {
-      const initialize = {
-        type: resolve(actionTypes.INITIALIZE_PAGINATOR),
-        removing: Set.of(itemId)
-      }
+      const configuredReducer = createReducer({
+        listId: 'configuredReducer',
+        initialSettings: {
+          removing: Set.of(itemId)
+        }
+      })
 
-      const state = reducer(undefined, initialize)
+      const state = configuredReducer()
 
       it('returns true', () => {
         expect(isRemoving(state, itemId)).toBe(true)

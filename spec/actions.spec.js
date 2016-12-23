@@ -35,30 +35,6 @@ const setup = (pass=true, results=[]) => {
 }
 
 describe('pageActions', () => {
-  describe('pageActions.initialize', () => {
-    context('when preloaded data is given', () => {
-      it('attaches the preloaded data to the action', () => {
-        const preloaded = {
-          results: [{ name: 'Ewe and IPA' }],
-          totalCount: 1
-        }
-
-        const store = mockStore({ [listId]: defaultPaginator })
-        const pageActions = composables({
-          listId,
-          preloaded
-        })
-
-        const expectedAction = {
-          type: resolve(actionTypes.INITIALIZE_PAGINATOR),
-          preloaded
-        }
-
-        expect(store.dispatch(pageActions.initialize())).toEqual(expectedAction)
-      })
-    })
-  })
-
   describe('pageActions.reload', () => {
     beforeEach(() => {
       PromiseMock.install()

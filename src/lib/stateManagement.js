@@ -27,17 +27,15 @@ export function registerPaginator({
     }
   }
 
-  return locator
+  return stateMap[listId]
 }
 
 export function getPaginator(listId, state) {
   const config = stateMap[listId] || {
-    locator: defaultLocator(listId),
-    initialSettings: {}
+    locator: defaultLocator(listId)
   }
 
-  const paginator = config.locator(state) || defaultPaginator
-  return paginator.merge(config.initialSettings)
+  return config.locator(state) || defaultPaginator
 }
 
 export function listConfig(listId) {

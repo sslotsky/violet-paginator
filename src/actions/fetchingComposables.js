@@ -39,26 +39,6 @@ export default function fetchingComposables(config) {
   }
 
   return {
-    initialize: () => dispatch => {
-      const action = {
-        type: actionType(actionTypes.INITIALIZE_PAGINATOR, id)
-      }
-
-      if (config.pageSize) {
-        action.pageSize = config.pageSize
-      }
-
-      if (config.filters) {
-        action.filters = config.filters
-      }
-
-      if (config.preloaded) {
-        action.preloaded = config.preloaded
-        return dispatch(action)
-      }
-
-      return dispatch(execute(action))
-    },
     reload: () => fetch,
     next: () => execute({
       type: actionType(actionTypes.NEXT_PAGE, id)

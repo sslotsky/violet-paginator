@@ -21,24 +21,7 @@ export const defaultPaginator = Map({
   filters: Map()
 })
 
-function initialize(state, action) {
-  const { type: _, filters = {}, preloaded = {}, ...rest } = action
-  const { results = [], totalCount = 0, page = 1 } = preloaded
-
-  return state.merge({
-    filters,
-    results,
-    totalCount,
-    page,
-    ...rest
-  })
-}
-
 function expire(state) {
-  return state.set('stale', true)
-}
-
-function expireAll(state) {
   return state.set('stale', true)
 }
 
@@ -248,14 +231,13 @@ function bulkError(state, action) {
 }
 
 export default function createPaginator(config) {
-  registerPaginator(config)
+  const { initialSettings } = registerPaginator(config)
   const { listId } = config
   const resolve = t => actionType(t, listId)
 
-  return resolveEach(defaultPaginator, {
-    [resolve(actionTypes.INITIALIZE_PAGINATOR)]: initialize,
+  return resolveEach(defaultPaginator.merge(initialSettings), {
+    [actionTypes.EXPIRE_ALL]: expire,
     [resolve(actionTypes.EXPIRE_PAGINATOR)]: expire,
-    [actionTypes.EXPIRE_ALL]: expireAll,
     [resolve(actionTypes.PREVIOUS_PAGE)]: prev,
     [resolve(actionTypes.NEXT_PAGE)]: next,
     [resolve(actionTypes.GO_TO_PAGE)]: goToPage,
