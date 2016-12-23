@@ -1,26 +1,20 @@
 import uuid from 'uuid'
 import actionType, * as actionTypes from '../actionTypes'
 import { translate, responseProps } from '../pageInfoTranslator'
-import { getPaginator } from '../lib/stateManagement'
+import { getPaginator, getFetcher } from '../lib/stateManagement'
 
 const [totalCountProp, resultsProp] = responseProps()
 
-const defaultConfig = {
-  isBoundToDispatch: true
-}
-
-const fetcher = customConfig =>
+const fetcher = config =>
   (dispatch, getState) => {
-    const config = { ...defaultConfig, ...customConfig }
     const id = config.listId
+    const fetch = getFetcher(id)
     const pageInfo = getPaginator(id, getState())
     const requestId = uuid.v1()
 
     dispatch({ type: actionType(actionTypes.FETCH_RECORDS, id), requestId })
 
-    const promise = config.isBoundToDispatch ?
-      config.fetch(translate(pageInfo)) :
-      dispatch(config.fetch(translate(pageInfo)))
+    const promise = dispatch(fetch(translate(pageInfo)))
 
     return promise.then(resp =>
       dispatch({

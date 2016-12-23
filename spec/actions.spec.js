@@ -7,6 +7,7 @@ import register, { expireAll } from '../src/actions'
 import { defaultPaginator } from '../src/reducer'
 import actionType, * as actionTypes from '../src/actionTypes'
 import expectAsync from './specHelper'
+import { registerPaginator } from '../src/lib/stateManagement'
 
 const listId = 'recipesList'
 const resolve = t => actionType(t, listId)
@@ -31,6 +32,8 @@ const setup = (pass=true, results=[]) => {
     listId,
     fetch
   })
+
+  registerPaginator({ listId, fetch })
 
   return { paginator, store, pageActions }
 }
@@ -99,12 +102,14 @@ describe('pageActions', () => {
 
         const fetch = () => () => Promise.resolve({ data })
 
+        beforeEach(() => {
+          registerPaginator({ listId, fetch })
+        })
+
         const pageActions = register({
           resultsProp: 'recipes',
           totalCountProp: 'total_entries',
-          isBoundToDispatch: false,
-          listId,
-          fetch
+          listId
         })
 
         it('is able to read the results', () => {

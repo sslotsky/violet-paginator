@@ -13,7 +13,7 @@ import actionType, * as actionTypes from '../src/actionTypes'
 import { translate } from '../src/pageInfoTranslator'
 
 const [id, itemId] = ['recipes', 1]
-const reducer = createReducer(id)
+const reducer = createReducer({ listId: id })
 const resolve = t => actionType(t, id)
 
 describe('State management utilities', () => {
@@ -45,7 +45,7 @@ describe('State management utilities', () => {
   describe('registerPaginator', () => {
     context('when provided a locator', () => {
       const locator = () => defaultPaginator
-      const registeredLocator = registerPaginator(id, locator)
+      const registeredLocator = registerPaginator({ listId: id, locator })
 
       it('returns the locator', () => {
         expect(registeredLocator).toEqual(locator)
@@ -53,7 +53,7 @@ describe('State management utilities', () => {
     })
 
     context('when not provided a locator', () => {
-      const locator = registerPaginator(id)
+      const locator = registerPaginator({ listId: id })
 
       it('returns a locator that retrieves state by listId', () => {
         const state = { [id]: defaultPaginator }
@@ -82,7 +82,7 @@ describe('State management utilities', () => {
     context('when locator is registered', () => {
       const locator = state => state.users.grid
       beforeEach(() => {
-        registerPaginator(id, locator)
+        registerPaginator({ listId: id, locator })
       })
 
       const state = { users: { grid: paginator } }
@@ -94,7 +94,7 @@ describe('State management utilities', () => {
 
     context('when locator is not registered', () => {
       const userGridId = 'users'
-      registerPaginator(userGridId)
+      registerPaginator({ listId: userGridId })
       const state = { [userGridId]: paginator }
 
       it('looks up the state by listId', () => {
@@ -112,7 +112,7 @@ describe('State management utilities', () => {
   describe('isUpdating', () => {
     context('when an item is updating', () => {
       beforeEach(() => {
-        registerPaginator(id)
+        registerPaginator({ listId: id })
       })
 
       const initialize = {

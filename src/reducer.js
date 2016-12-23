@@ -1,5 +1,6 @@
 import Immutable, { Map, List, Set } from 'immutable'
-import { resolveEach, updateListItem } from './lib/reduxResolver'
+import { resolveEach } from 'redux-resolver'
+import { updateListItem } from './lib/reduxResolver'
 import actionType, * as actionTypes from './actionTypes'
 import { recordProps } from './pageInfoTranslator'
 import { registerPaginator } from './lib/stateManagement'
@@ -246,37 +247,39 @@ function bulkError(state, action) {
   })
 }
 
-export default function createPaginator(id, locator) {
-  registerPaginator(id, locator)
+export default function createPaginator(config) {
+  registerPaginator(config)
+  const { listId } = config
+  const resolve = t => actionType(t, listId)
 
   return resolveEach(defaultPaginator, {
-    [actionType(actionTypes.INITIALIZE_PAGINATOR, id)]: initialize,
-    [actionType(actionTypes.EXPIRE_PAGINATOR, id)]: expire,
+    [resolve(actionTypes.INITIALIZE_PAGINATOR)]: initialize,
+    [resolve(actionTypes.EXPIRE_PAGINATOR)]: expire,
     [actionTypes.EXPIRE_ALL]: expireAll,
-    [actionType(actionTypes.PREVIOUS_PAGE, id)]: prev,
-    [actionType(actionTypes.NEXT_PAGE, id)]: next,
-    [actionType(actionTypes.GO_TO_PAGE, id)]: goToPage,
-    [actionType(actionTypes.SET_PAGE_SIZE, id)]: setPageSize,
-    [actionType(actionTypes.FETCH_RECORDS, id)]: fetching,
-    [actionType(actionTypes.RESULTS_UPDATED, id)]: updateResults,
-    [actionType(actionTypes.RESULTS_UPDATED_ERROR, id)]: error,
-    [actionType(actionTypes.TOGGLE_FILTER_ITEM, id)]: toggleFilterItem,
-    [actionType(actionTypes.SET_FILTER, id)]: setFilter,
-    [actionType(actionTypes.SET_FILTERS, id)]: setFilters,
-    [actionType(actionTypes.RESET_FILTERS, id)]: resetFilters,
-    [actionType(actionTypes.SORT_CHANGED, id)]: sortChanged,
-    [actionType(actionTypes.UPDATING_ITEM, id)]: updatingItem,
-    [actionType(actionTypes.UPDATE_ITEM, id)]: updateItem,
-    [actionType(actionTypes.UPDATING_ITEMS, id)]: updatingItems,
-    [actionType(actionTypes.UPDATE_ITEMS, id)]: updateItems,
-    [actionType(actionTypes.RESET_ITEM, id)]: resetItem,
-    [actionType(actionTypes.UPDATING_ALL, id)]: updatingAll,
-    [actionType(actionTypes.MARK_ITEMS_ERRORED, id)]: markItemsErrored,
-    [actionType(actionTypes.BULK_ERROR, id)]: bulkError,
-    [actionType(actionTypes.RESET_RESULTS, id)]: resetResults,
-    [actionType(actionTypes.UPDATE_ALL, id)]: updateAll,
-    [actionType(actionTypes.REMOVING_ITEM, id)]: removingItem,
-    [actionType(actionTypes.REMOVE_ITEM, id)]: removeItem,
-    [actionType(actionTypes.ITEM_ERROR, id)]: itemError
+    [resolve(actionTypes.PREVIOUS_PAGE)]: prev,
+    [resolve(actionTypes.NEXT_PAGE)]: next,
+    [resolve(actionTypes.GO_TO_PAGE)]: goToPage,
+    [resolve(actionTypes.SET_PAGE_SIZE)]: setPageSize,
+    [resolve(actionTypes.FETCH_RECORDS)]: fetching,
+    [resolve(actionTypes.RESULTS_UPDATED)]: updateResults,
+    [resolve(actionTypes.RESULTS_UPDATED_ERROR)]: error,
+    [resolve(actionTypes.TOGGLE_FILTER_ITEM)]: toggleFilterItem,
+    [resolve(actionTypes.SET_FILTER)]: setFilter,
+    [resolve(actionTypes.SET_FILTERS)]: setFilters,
+    [resolve(actionTypes.RESET_FILTERS)]: resetFilters,
+    [resolve(actionTypes.SORT_CHANGED)]: sortChanged,
+    [resolve(actionTypes.UPDATING_ITEM)]: updatingItem,
+    [resolve(actionTypes.UPDATE_ITEM)]: updateItem,
+    [resolve(actionTypes.UPDATING_ITEMS)]: updatingItems,
+    [resolve(actionTypes.UPDATE_ITEMS)]: updateItems,
+    [resolve(actionTypes.RESET_ITEM)]: resetItem,
+    [resolve(actionTypes.UPDATING_ALL)]: updatingAll,
+    [resolve(actionTypes.MARK_ITEMS_ERRORED)]: markItemsErrored,
+    [resolve(actionTypes.BULK_ERROR)]: bulkError,
+    [resolve(actionTypes.RESET_RESULTS)]: resetResults,
+    [resolve(actionTypes.UPDATE_ALL)]: updateAll,
+    [resolve(actionTypes.REMOVING_ITEM)]: removingItem,
+    [resolve(actionTypes.REMOVE_ITEM)]: removeItem,
+    [resolve(actionTypes.ITEM_ERROR)]: itemError
   })
 }

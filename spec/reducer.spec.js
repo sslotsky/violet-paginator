@@ -4,7 +4,7 @@ import createPaginator, { defaultPaginator } from '../src/reducer'
 import actionType, * as actionTypes from '../src/actionTypes'
 
 const id = 'test-list'
-const reducer = createPaginator(id)
+const reducer = createPaginator({ listId: id })
 
 function setup(testPaginator=Map()) {
   const action = {
