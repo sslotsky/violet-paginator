@@ -16,6 +16,32 @@ function getProps(props = {}) {
 }
 
 describe('<PaginationWrapper />', () => {
+  context('when paginator is uninitialized', () => {
+    const props = getProps()
+    mount(
+      <PaginationWrapper {...props}>
+        <Prev />
+      </PaginationWrapper>
+    )
+
+    it('calls initialize', () => {
+      expect(props.actions.initialize).toHaveBeenCalled()
+    })
+  })
+
+  context('when paginator is initialized', () => {
+    const props = getProps({ initialized: true })
+    mount(
+      <PaginationWrapper {...props}>
+        <Prev />
+      </PaginationWrapper>
+    )
+
+    it('does not initialize', () => {
+      expect(props.actions.initialize).toNotHaveBeenCalled()
+    })
+  })
+
   context('when paginator is stale', () => {
     context('and there is no load error', () => {
       const props = getProps({ stale: true })

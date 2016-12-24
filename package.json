@@ -45,6 +45,7 @@
     "babel-regenerator-runtime": "^6.5.0",
     "classnames": "^2.2.5",
     "react-fontawesome": "^1.1.0",
+    "redux-resolver": "^1.0.2",
     "uuid": "^2.0.2"
   },
   "peerDependencies": {
