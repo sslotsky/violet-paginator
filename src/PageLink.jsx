@@ -1,9 +1,9 @@
 import React from 'react'
-import paginate from './PaginationWrapper'
+import { paginate } from './decorators'
 
-export function PageLink({ actions, page, currentPage }) {
+export function PageLink({ pageActions, page, currentPage }) {
   const navigate = () =>
-    actions.goTo(page)
+    pageActions.goTo(page)
 
   const pageNumber = <span>{page}</span>
   const link = page === currentPage ? pageNumber : (

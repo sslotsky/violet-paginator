@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react'
 import FontAwesome from 'react-fontawesome'
 import classNames from 'classnames'
 
-import paginate from './PaginationWrapper'
+import paginate from './decorators/paginate'
 import range from './lib/range'
 import { PageLink } from './PageLink'
 import { Prev } from './Prev'

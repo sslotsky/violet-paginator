@@ -1,14 +1,14 @@
 import React from 'react'
 import FontAwesome from 'react-fontawesome'
-import paginate from './PaginationWrapper'
+import { flip } from './decorators'
 
-export function Prev({ actions, hasPreviousPage }) {
+export function Prev({ pageActions, hasPreviousPage }) {
   const prev = <FontAwesome name="chevron-left" />
   const link = hasPreviousPage ? (
-    <a onClick={actions.prev}>{prev}</a>
+    <a onClick={pageActions.prev}>{prev}</a>
   ) : prev
 
   return link
 }
 
-export default paginate(Prev)
+export default flip(Prev)

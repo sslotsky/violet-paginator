@@ -17,4 +17,8 @@ form.pure-form-brewed {
 ul.pagination {
   margin-top: 1rem;
   margin-bottom: 1rem;
+
+  li a:hover {
+    background-color: #7e69c6;
+  }
 }
