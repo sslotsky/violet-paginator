@@ -1,13 +1,13 @@
 import React from 'react'
 import expect from 'expect'
 import { mount } from 'enzyme'
-import { PaginationWrapper } from '../src/PaginationWrapper'
-import { defaultPaginator } from '../src/reducer'
-import { Prev } from '../src/Prev'
+import { PaginationWrapper } from '../../src/containers/PaginationWrapper'
+import { defaultPaginator } from '../../src/reducer'
+import { Prev } from '../../src/Prev'
 
 function getProps(props = {}) {
   return {
-    actions: {
+    pageActions: {
       reload: expect.createSpy(),
       initialize: expect.createSpy()
     },
@@ -25,7 +25,7 @@ describe('<PaginationWrapper />', () => {
     )
 
     it('calls initialize', () => {
-      expect(props.actions.initialize).toHaveBeenCalled()
+      expect(props.pageActions.initialize).toHaveBeenCalled()
     })
   })
 
@@ -38,7 +38,7 @@ describe('<PaginationWrapper />', () => {
     )
 
     it('does not initialize', () => {
-      expect(props.actions.initialize).toNotHaveBeenCalled()
+      expect(props.pageActions.initialize).toNotHaveBeenCalled()
     })
   })
 
@@ -52,7 +52,7 @@ describe('<PaginationWrapper />', () => {
       )
 
       it('executes a reload', () => {
-        expect(props.actions.reload).toHaveBeenCalled()
+        expect(props.pageActions.reload).toHaveBeenCalled()
       })
     })
 
@@ -69,7 +69,7 @@ describe('<PaginationWrapper />', () => {
       )
 
       it('does not execute a reload', () => {
-        expect(props.actions.reload).toNotHaveBeenCalled()
+        expect(props.pageActions.reload).toNotHaveBeenCalled()
       })
     })
   })

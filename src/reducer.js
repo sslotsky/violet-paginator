@@ -10,7 +10,7 @@ export const defaultPaginator = Map({
   page: 1,
   pageSize: 15,
   totalCount: 0,
-  sort: null,
+  sort: '',
   sortReverse: false,
   isLoading: false,
   stale: false,

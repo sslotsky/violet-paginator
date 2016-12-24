@@ -9,7 +9,9 @@ function getProps(props={}) {
   return {
     field: 'name',
     text: 'Name',
-    actions: {
+    sort: 'name',
+    sortReverse: false,
+    pageActions: {
       sort: expect.createSpy()
     },
     ...props
@@ -64,14 +66,14 @@ describe('<SortLink />', () => {
         })
 
         it('calls the sort action', () => {
-          expect(props.actions.sort).toHaveBeenCalledWith(props.field, true)
+          expect(props.pageActions.sort).toHaveBeenCalledWith(props.field, true)
         })
       })
     })
 
     context('when sorted by given field in reverse', () => {
       beforeEach(() => {
-        props = getProps({ paginator: Map({ sort: props.field, sortReverse: true }) })
+        props = getProps({ sortReverse: true })
         wrapper = shallow(
           <SortLink {...props} />
         )
@@ -88,7 +90,7 @@ describe('<SortLink />', () => {
         })
 
         it('calls the sort action', () => {
-          expect(props.actions.sort).toHaveBeenCalledWith(props.field, false)
+          expect(props.pageActions.sort).toHaveBeenCalledWith(props.field, false)
         })
       })
     })

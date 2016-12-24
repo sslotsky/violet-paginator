@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
 import classNames from 'classnames'
-import paginate from './PaginationWrapper'
+import { flip } from './decorators'
 import { Prev } from './Prev'
 import { Next } from './Next'
 
@@ -25,4 +25,4 @@ Flipper.propTypes = {
   hasNextPage: PropTypes.bool
 }
 
-export default paginate(Flipper)
+export default flip(Flipper)
