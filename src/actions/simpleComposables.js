@@ -101,14 +101,22 @@ export default function simpleComposables(id) {
       })
     }
 
-  const updateItemsAsync = (itemIds, data, update) =>
+  const updateItemsAsync = (itemIds, data, update, showUpdating = true) =>
     (dispatch, getState) => {
       const results = getPaginator(getState(), id).get('results')
 
       dispatch(basic.updateItems(itemIds, data))
-      dispatch(basic.updatingItems(itemIds))
+      if (showUpdating) {
+        dispatch(basic.updatingItems(itemIds))
+      }
 
-      return update.catch(err => {
+      return update.then(resp => {
+        if (showUpdating) {
+          dispatch(basic.updateItems(itemIds, data))
+        }
+
+        return resp
+      }).catch(err => {
         dispatch(basic.resetResults(results.toJS()))
         return dispatch(basic.markItemsErrored(itemIds, err))
       })

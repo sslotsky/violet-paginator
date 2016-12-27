@@ -607,6 +607,7 @@ describe('pageActions', () => {
           const expectedActions = [
             pageActions.updateItems(ids, updateData),
             pageActions.updatingItems(ids),
+            pageActions.updateItems(ids, updateData),
             pageActions.updateItems(ids, serverVersion)
           ]
 
@@ -630,6 +631,7 @@ describe('pageActions', () => {
           const expectedActions = [
             pageActions.updateItems(ids, updateData),
             pageActions.updatingItems(ids),
+            pageActions.updateItems(ids, updateData),
             pageActions.resetResults(serverVersion)
           ]
 
