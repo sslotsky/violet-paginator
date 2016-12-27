@@ -149,6 +149,7 @@ export default function simpleComposables(id) {
   return {
     ...basic,
     updateAsync,
+    updateItemsAsync,
     updateAllAsync,
     removeAsync
   }
