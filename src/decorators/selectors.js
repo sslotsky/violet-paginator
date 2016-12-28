@@ -4,46 +4,46 @@ export default function select(paginator) {
 
   const page = paginator.get('page')
 
-  const flipper = () => ({
-    hasPreviousPage: paginator.get('page') > 1,
+  const flip = () => ({
+    hasPreviousPage: page > 1,
     hasNextPage: page < totalPages
   })
 
-  const fullPaginator = () => ({
+  const paginate = () => ({
     currentPage: page,
     totalPages,
-    ...flipper()
+    ...flip()
   })
 
-  const dataGrid = () => ({
+  const tabulate = () => ({
     results: paginator.get('results'),
     isLoading: paginator.get('isLoading'),
     updating: paginator.get('updating'),
     removing: paginator.get('removing')
   })
 
-  const pageSizer = () => ({
+  const stretch = () => ({
     pageSize: paginator.get('pageSize')
   })
 
-  const sorter = () => ({
+  const sort = () => ({
     sort: paginator.get('sort'),
     sortReverse: paginator.get('sortReverse')
   })
 
-  const paginatedGrid = () => ({
-    ...fullPaginator(),
-    ...dataGrid(),
-    ...pageSizer(),
-    ...sorter()
+  const violetPaginator = () => ({
+    ...paginate(),
+    ...tabulate(),
+    ...stretch(),
+    ...sort()
   })
 
   return {
-    flipper,
-    fullPaginator,
-    dataGrid,
-    pageSizer,
-    sorter,
-    paginatedGrid
+    flip,
+    paginate,
+    tabulate,
+    stretch,
+    sort,
+    violetPaginator
   }
 }

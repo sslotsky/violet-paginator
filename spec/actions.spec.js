@@ -5,7 +5,7 @@ import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import composables, { expireAll } from '../src/actions'
 import { defaultPaginator } from '../src/reducer'
-import actionType, * as actionTypes from '../src/actionTypes'
+import actionType, * as actionTypes from '../src/actions/actionTypes'
 import expectAsync from './specHelper'
 import { registerPaginator } from '../src/lib/stateManagement'
 
@@ -414,9 +414,7 @@ describe('pageActions', () => {
     })
   })
 
-  describe('updateAllAsync', () => {
-    const itemId = 'itemId'
-
+  describe('updateItemsAsync', () => {
     beforeEach(() => {
       PromiseMock.install()
     })
@@ -429,47 +427,42 @@ describe('pageActions', () => {
       const updateData = { active: true }
 
       context('with default settings', () => {
-        const serverVersion = { active: false }
         const results = [{ id: 1, name: 'Ewe and IPA' }]
 
-        it('updates all the items', () => {
+        it('does an async update on all the items', () => {
           const ids = results.map(r => r.id)
           const { pageActions, store } = setup(true, results)
           const expectedActions = [
             pageActions.updateItems(ids, updateData),
             pageActions.updatingItems(ids),
-            pageActions.updateItems(ids, updateData),
-            pageActions.updateItems(ids, serverVersion)
+            pageActions.updateItems(ids, updateData)
           ]
 
-          const update = Promise.resolve(serverVersion)
+          const update = Promise.resolve(updateData)
 
           expectAsync(
-            store.dispatch(pageActions.updateAllAsync(updateData, update)).then(() => {
+            store.dispatch(pageActions.updateItemsAsync(ids, updateData, update)).then(() => {
               expect(store.getActions()).toEqual(expectedActions)
             })
           )
         })
       })
 
-      context('with reset=true', () => {
-        const serverVersion = [{ id: 1, name: 'Ewe and IPA', active: false }]
+      context('with showUpdating=false', () => {
         const results = [{ id: 1, name: 'Ewe and IPA' }]
 
-        it('resets the items', () => {
+        it('skips the updating indicators', () => {
           const { pageActions, store } = setup(true, results)
           const ids = results.map(r => r.id)
           const expectedActions = [
-            pageActions.updateItems(ids, updateData),
-            pageActions.updatingItems(ids),
-            pageActions.updateItems(ids, updateData),
-            pageActions.resetResults(serverVersion)
+            pageActions.updateItems(ids, updateData)
           ]
 
-          const update = Promise.resolve(serverVersion)
+          const update = Promise.resolve(updateData)
+          const promise = pageActions.updateItemsAsync(ids, updateData, update, false)
 
           expectAsync(
-            store.dispatch(pageActions.updateAllAsync(updateData, update, true)).then(() => {
+            store.dispatch(promise).then(() => {
               expect(store.getActions()).toEqual(expectedActions)
             })
           )
@@ -479,6 +472,8 @@ describe('pageActions', () => {
 
     context('on update failure', () => {
       it('reverts the results', () => {
+        const itemId = 1
+
         const record = {
           id: itemId,
           name: 'Ewe and IPA',
@@ -501,7 +496,7 @@ describe('pageActions', () => {
         ]
 
         expectAsync(
-          store.dispatch(pageActions.updateAllAsync(updateData, update)).then(() => {
+          store.dispatch(pageActions.updateItemsAsync([itemId], updateData, update)).then(() => {
             const actions = store.getActions()
             expect(actions).toEqual(expectedActions)
           })

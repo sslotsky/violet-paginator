@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react'
 import FontAwesome from 'react-fontawesome'
 import classNames from 'classnames'
 import SortLink from './SortLink'
-import dataGrid from './decorators/dataGrid'
+import { tabulate } from './decorators'
 import { recordProps } from './pageInfoTranslator'
 
 export function DataTable(props) {
@@ -77,4 +77,4 @@ DataTable.propTypes = {
   className: PropTypes.string
 }
 
-export default dataGrid(DataTable)
+export default tabulate(DataTable)

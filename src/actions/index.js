@@ -1,13 +1,6 @@
 import * as actionTypes from './actionTypes'
-import simpleComposables from './actions/simpleComposables'
-import fetchingComposables from './actions/fetchingComposables'
-
-
-export function destroyAll() {
-  return {
-    type: actionTypes.DESTROY_ALL
-  }
-}
+import simpleComposables from './simpleComposables'
+import fetchingComposables from './fetchingComposables'
 
 export function expireAll() {
   return {
