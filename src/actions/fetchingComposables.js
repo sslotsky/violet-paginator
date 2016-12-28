@@ -1,5 +1,5 @@
 import uuid from 'uuid'
-import actionType, * as actionTypes from '../actionTypes'
+import actionType, * as actionTypes from './actionTypes'
 import { translate } from '../pageInfoTranslator'
 import { getPaginator, listConfig } from '../lib/stateManagement'
 

@@ -1,10 +1,12 @@
 import Immutable, { Map, Set } from 'immutable'
 import expect from 'expect'
 import createPaginator, { defaultPaginator } from '../src/reducer'
-import actionType, * as actionTypes from '../src/actionTypes'
+import actionType, * as actionTypes from '../src/actions/actionTypes'
+import composables from '../src/actions'
 
 const id = 'test-list'
 const reducer = createPaginator({ listId: id })
+const pageActions = composables({ listId: id })
 
 function setup(testPaginator=Map()) {
   const state = defaultPaginator.merge(testPaginator)
@@ -290,21 +292,6 @@ describe('pagination reducer', () => {
     expect(expectedState).toEqual(state)
   })
 
-  it('handles UPDATING_ALL', () => {
-    const paginator = defaultPaginator.merge({
-      results: [{ id: 1, name: 'Ewe and IPA' }]
-    })
-
-    const { state: initialState } = setup(paginator)
-
-    const action = {
-      type: actionType(actionTypes.UPDATING_ALL, id)
-    }
-
-    const state = reducer(initialState, action)
-    expect(state.get('updating').toArray()).toInclude(1)
-  })
-
   it('handles RESET_RESULTS', () => {
     const { state: initialState } = setup()
     const results = [1, 2, 3]
@@ -317,31 +304,7 @@ describe('pagination reducer', () => {
     expect(state.get('results').toJS()).toEqual(results)
   })
 
-  context('when handling BULK_ERROR', () => {
-    const paginator = defaultPaginator.merge({
-      results: [{ id: 1, name: 'Ewe and IPA' }]
-    })
-
-    const { state: initialState } = setup(paginator)
-    const error = 'server error'
-    const action = {
-      type: actionType(actionTypes.BULK_ERROR, id),
-      error
-    }
-
-    const state = reducer(initialState, action)
-    const item = state.get('results').find(r => r.get('id') === 1)
-
-    it('sets the error on all items', () => {
-      expect(item.get('error')).toEqual(error)
-    })
-
-    it('clears the items from the updating list', () => {
-      expect(state.get('updating').toArray()).toNotInclude(item.get('id'))
-    })
-  })
-
-  context('when handling UPDATE_ALL', () => {
+  describe('UPDATE_ITEMS', () => {
     const itemId = 'someId'
     const results = [{ id: itemId, name: 'Pouty Stout' }]
     const paginator = defaultPaginator.merge({
@@ -350,10 +313,7 @@ describe('pagination reducer', () => {
     })
 
     const { state: initialState } = setup(paginator)
-    const action = {
-      type: actionType(actionTypes.UPDATE_ALL, id),
-      data: { active: true }
-    }
+    const action = pageActions.updateItems([itemId], { active: true })
 
     const state = reducer(initialState, action)
 
@@ -364,10 +324,6 @@ describe('pagination reducer', () => {
 
     it('removes the item from the updating list', () => {
       expect(state.get('updating').toArray()).toNotInclude(itemId)
-    })
-
-    it('clears the bulkUpdateError', () => {
-      expect(state.get('bulkUpdateError')).toNotExist()
     })
   })
 
@@ -380,6 +336,18 @@ describe('pagination reducer', () => {
 
     const state = reducer(initialState, action)
     expect(state.get('updating').toJS()).toInclude(action.itemId)
+  })
+
+  describe('UPDATING_ITEMS', () => {
+    const { state: initialState } = setup()
+    const ids = [1, 2, 3]
+    const action = pageActions.updatingItems(ids)
+
+    const state = reducer(initialState, action)
+
+    it('marks the items as updating', () => {
+      expect(state.get('updating')).toEqual(Set(ids))
+    })
   })
 
   context('when handling UPDATE_ITEM', () => {
