@@ -57,10 +57,10 @@ export default function simpleComposables(id) {
       id,
       error
     }),
-    markItemsErrored: (ids, error) => ({
+    markItemsErrored: (itemIds, error) => ({
       type: actionTypes.MARK_ITEMS_ERRORED,
       id,
-      ids,
+      itemIds,
       error
     }),
     resetResults: (results) => ({
