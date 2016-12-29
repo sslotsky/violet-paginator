@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
 import FontAwesome from 'react-fontawesome'
-import { sorter } from './decorators'
+import { sort as decorate } from './decorators'
 
 export function SortLink({ pageActions, field, text, sort, sortReverse, sortable=true }) {
   if (!sortable) {
@@ -30,5 +30,5 @@ SortLink.propTypes = {
   sortable: PropTypes.bool
 }
 
-export default sorter(SortLink)
+export default decorate(SortLink)
 

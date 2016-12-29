@@ -1,8 +1,8 @@
-import { paginatedGrid } from '../../src/decorators'
+import { violetPaginator } from '../../src/decorators'
 import * as shared from './shared'
 
-describe('paginatedGrid()', () => {
-  shared.decorate(paginatedGrid)
+describe('violetPaginator()', () => {
+  shared.decorate(violetPaginator)
   shared.behavesLikeAPaginator()
   shared.behavesLikeADataGrid()
   shared.behavesLikeAPageSizer()

@@ -1,7 +1,7 @@
 import Immutable, { Map, List, Set } from 'immutable'
 import { resolveEach } from 'redux-resolver'
 import { updateListItem } from './lib/reduxResolver'
-import actionType, * as actionTypes from './actionTypes'
+import actionType, * as actionTypes from './actions/actionTypes'
 import { recordProps } from './pageInfoTranslator'
 import { registerPaginator } from './lib/stateManagement'
 
@@ -150,9 +150,7 @@ function updateItem(state, action) {
 }
 
 function updateItems(state, action) {
-  const itemIds = action.every ?
-    state.get('results').map(r => r.get(recordProps().identifier)) :
-    action.itemIds
+  const { itemIds } = action
 
   return state.merge({
     updating: state.get('updating').toSet().subtract(itemIds),
@@ -167,9 +165,7 @@ function updateItems(state, action) {
 }
 
 function updatingItems(state, action) {
-  const itemIds = action.every ?
-    state.get('results').map(r => r.get(recordProps().identifier)) :
-    action.itemIds
+  const { itemIds } = action
 
   return state.set('updating', state.get('updating').toSet().union(itemIds))
 }
@@ -182,20 +178,6 @@ function resetItem(state, action) {
       () => Immutable.fromJS(action.data),
       recordProps().identifier
     )
-  })
-}
-
-function updatingAll(state, action) {
-  return updatingItems(state, {
-    every: true,
-    ...action
-  })
-}
-
-function updateAll(state, action) {
-  return updateItems(state, {
-    every: true,
-    ...action
   })
 }
 
@@ -227,9 +209,7 @@ function itemError(state, action) {
 }
 
 function markItemsErrored(state, action) {
-  const itemIds = action.every ?
-    state.get('results').map(r => r.get(recordProps().identifier)) :
-    action.itemIds
+  const { itemIds } = action
 
   return state.merge({
     updating: state.get('updating').toSet().subtract(itemIds),
@@ -241,13 +221,6 @@ function markItemsErrored(state, action) {
 
       return r
     })
-  })
-}
-
-function bulkError(state, action) {
-  return markItemsErrored(state, {
-    every: true,
-    ...action
   })
 }
 
@@ -276,11 +249,8 @@ export default function createPaginator(config) {
     [resolve(actionTypes.UPDATING_ITEMS)]: updatingItems,
     [resolve(actionTypes.UPDATE_ITEMS)]: updateItems,
     [resolve(actionTypes.RESET_ITEM)]: resetItem,
-    [resolve(actionTypes.UPDATING_ALL)]: updatingAll,
     [resolve(actionTypes.MARK_ITEMS_ERRORED)]: markItemsErrored,
-    [resolve(actionTypes.BULK_ERROR)]: bulkError,
     [resolve(actionTypes.RESET_RESULTS)]: resetResults,
-    [resolve(actionTypes.UPDATE_ALL)]: updateAll,
     [resolve(actionTypes.REMOVING_ITEM)]: removingItem,
     [resolve(actionTypes.REMOVE_ITEM)]: removeItem,
     [resolve(actionTypes.ITEM_ERROR)]: itemError

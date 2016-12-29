@@ -9,7 +9,7 @@ import {
   getPaginator
 } from '../src/lib/stateManagement'
 import createReducer, { defaultPaginator } from '../src/reducer'
-import actionType, * as actionTypes from '../src/actionTypes'
+import actionType, * as actionTypes from '../src/actions/actionTypes'
 import { translate, responseProps } from '../src/pageInfoTranslator'
 
 const [id, itemId] = ['recipes', 1]
