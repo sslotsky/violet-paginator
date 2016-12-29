@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react'
-import { pageSizer } from './decorators'
+import { stretch } from './decorators'
 
 const defaultOptions = [
   15,
@@ -29,4 +29,4 @@ PageSizeDropdown.propTypes = {
   options: PropTypes.array
 }
 
-export default pageSizer(PageSizeDropdown)
+export default stretch(PageSizeDropdown)

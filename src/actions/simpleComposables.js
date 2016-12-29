@@ -1,6 +1,6 @@
 import { Map } from 'immutable'
 import { recordProps } from '../pageInfoTranslator'
-import actionType, * as actionTypes from '../actionTypes'
+import actionType, * as actionTypes from './actionTypes'
 import { getPaginator } from '../lib/stateManagement'
 
 const { identifier } = recordProps()
@@ -39,10 +39,6 @@ export default function simpleComposables(id) {
     updateAll: (data) => ({
       type: actionType(actionTypes.UPDATE_ALL, id),
       data
-    }),
-    bulkError: (error) => ({
-      type: actionType(actionTypes.BULK_ERROR, id),
-      error
     }),
     markItemsErrored: (itemIds, error) => ({
       type: actionType(actionTypes.MARK_ITEMS_ERRORED, id),
@@ -104,24 +100,6 @@ export default function simpleComposables(id) {
       })
     }
 
-  const updateAllAsync = (data, update, reset=false) =>
-    (dispatch, getState) => {
-      const results = getPaginator(id, getState()).get('results')
-      const ids = results.map(r => r.get(identifier)).toArray()
-
-      return dispatch(updateItemsAsync(ids, data, update)).then(resp => {
-        if (resp.type === actionType(actionTypes.MARK_ITEMS_ERRORED, id)) {
-          return {}
-        }
-
-        if (reset) {
-          return dispatch(basic.resetResults(resp))
-        }
-
-        return dispatch(basic.updateItems(ids, resp))
-      })
-    }
-
   const removeAsync = (itemId, remove) =>
     (dispatch, getState) => {
       const item = getPaginator(id, getState()).get('results')
@@ -140,7 +118,6 @@ export default function simpleComposables(id) {
     ...basic,
     updateAsync,
     updateItemsAsync,
-    updateAllAsync,
     removeAsync
   }
 }
