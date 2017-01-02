@@ -2,7 +2,6 @@
 [![npm](https://img.shields.io/npm/dt/violet-paginator.svg)](https://www.npmjs.com/package/violet-paginator)
 [![npm](https://img.shields.io/npm/dm/violet-paginator.svg)](https://www.npmjs.com/package/violet-paginator)
 [![Build Status](https://travis-ci.org/sslotsky/violet-paginator.svg?branch=master)](https://travis-ci.org/sslotsky/violet-paginator)
-[![codecov](https://codecov.io/gh/sslotsky/violet-paginator/branch/master/graph/badge.svg)](https://codecov.io/gh/sslotsky/violet-paginator)
 [![npm](https://img.shields.io/npm/l/express.svg)](https://github.com/sslotsky/violet-paginator)
 
 # violet-paginator
@@ -34,7 +33,7 @@ The current version of this package includes the following peer dependencies:
   "peerDependencies": {
     "immutable": "^3.7.6",
     "react": "^0.14.8 || ^15.1.0",
-    "react-redux": "^4.4.4",
+    "react-redux": "^4.4.4 || 5.x",
     "redux": "^3.4.0"
   },
 ```
@@ -49,18 +48,24 @@ and `font-awesome` stylesheets as described later in this document.
 
 `VioletPaginator` is intended to be flexible so that it can be used in many ways without much fuss. We provide premade components, but our library is broken down into small, exposed pieces that allow you to easily override default settings, abstract core functionality, and create your own components.
 
-### Mounting the reducer
+### Creating a reducer
 
-As with many redux based packages, `violet-paginator` comes with a reducer that must be imported and added to your state via `combineReducers`:
+Rather than exposing a single reducer, `violet-paginator` uses a
+[higher order reducer function](http://redux.js.org/docs/recipes/reducers/ReusingReducerLogic.html#customizing-behavior-with-higher-order-reducers)
+that creates a reducer and ties it to a `listId` and a `fetch` function (this has changed since version 1, see the [upgrade guide](upgrade_guide.md) for details).
 
 ```javascript
-import { pagination } from 'violet-paginator'
+import { createPaginator } from 'violet-paginator'
 import { combineReducers } from 'redux'
 import users from './users/reducer'
+import { fetch } from './recipes/actions'
 
 export default combineReducers({
   users,
-  pagination
+  recipes: createPaginator({
+    listId: 'recipes',
+    fetch
+  })
 })
 ```
 
@@ -122,57 +127,39 @@ id | `'id'` | The name of the property on the record to be used as the unique id
 ### Using Premade VioletPaginator Components
 
 The following will display a 3 column data table with full pagination controls above and below the table.
-All pagination components require the `listId` prop as well as a `fetch` function that is used to retrieve records.
-The supplied `fetch` function will be called by the paginator the first time that a component with that
-`listId` initializes and every time a pagination action is dispatched, so you never need to call it yourself.
+All pagination components require the `listId` prop, and they will use the `fetch` function that was supplied
+in the `createPaginator` call to retrieve the results at the appropriate times. _**You never actually call `fetch` yourself.**_
 The `VioletDataTable` component also takes an array of headers.
 
 ```javascript
-import React, { PropTypes, Component } from 'react'
-import { connect } from 'react-redux'
+import React, { PropTypes } from 'react'
 import { VioletDataTable, VioletPaginator } from 'violet-paginator'
 
-import fetchRecipes from './actions'
+export default function RecipeList() {
+  const headers = [{
+    field: 'name',
+    text: 'Name'
+  }, {
+    field: 'created_at',
+    text: 'Date Created'
+  }, {
+    field: 'boil_time',
+    sortable: false,
+    text: 'Boil Time'
+  }]
 
-export class Index extends Component {
-  static propTypes = {
-    fetch: PropTypes.func.isRequired
-  }
+  const paginator = (
+    <VioletPaginator listId="recipes" />
+  )
 
-  headers() {
-    return [{
-      field: 'name',
-      text: 'Name'
-    }, {
-      field: 'created_at',
-      text: 'Date Created'
-    }, {
-      field: 'boil_time',
-      sortable: false,
-      text: 'Boil Time'
-    }]
-  }
-
-  render() {
-    const { fetch } = this.props
-    const paginator = (
-      <VioletPaginator listId="recipes" fetch={fetch} />
-    )
-
-    return (
-      <section>
-        {paginator}
-        <VioletDataTable listId="recipes" fetch={fetch} headers={this.headers()} />
-        {paginator}
-      </section>
-    )
-  }
+  return (
+    <section>
+      {paginator}
+      <VioletDataTable listId="recipes" headers={this.headers()} />
+      {paginator}
+    </section>
+  )
 }
-
-export default connect(
-  () => ({}),
-  { fetch: fetchRecipes }
-)(Index)
 ```
 
 The `fetch` function that you supply to the paginator is an action creator that returns a promise. Therefore,
@@ -228,38 +215,46 @@ are specified. However, each header can be supplied with a `format` function, wh
 or a full-fledged react component. Example:
 
 ```javascript
-  activeColumn(recipe) {
+  const activeColumn = recipe => {
     const icon = recipe.get('active') ? 'check' : 'ban'
     return (
       <FontAwesome name={icon} />
     )
   }
 
-  headers() {
-    return [{
-      field: 'active',
-      sortable: false,
-      text: 'Active',
-      format: (recipe) => this.activeColumn(recipe)
-    }]
-  }
+  const headers = [{
+    field: 'active',
+    sortable: false,
+    text: 'Active',
+    format: activeColumn
+  }, {
+    ...
+  }]
 ```
 
 ### Composing Actions
 
 `violet-paginator` is a plugin for redux apps, and as such, it dispatches its own actions and stores state in its own reducer. To give you complete control of the pagination state, the API provides access to all of these actions via the [composables](composables.md) and [simpleComposables](simplecomposables.md) functions. This allows you the flexibility to call them directly as part of a more complex operation. The most common use case for this would be [updating an item within the list](updating_items.md). 
 
-As an example, consider a datatable where one column has a checkbox that's supposed to mark an item as active or inactive. Assuming that you have a `listId` of `'recipes'`, you could write an action creator like this to toggle the active state of a recipe within the list:
+As an example, consider a datatable where one column has a checkbox that's supposed to mark an item as active or inactive.
+Assuming that you have a `listId` of `'recipes'`, you could write an action creator like this to update the record on the server
+and then toggle the active state of the corresponding recipe within the list:
 
 ```javascript
-import { simpleComposables } from 'violet-paginator'
+import api from 'ROOT/api'
+import { composables } from 'violet-paginator'
 
-const pageActions = simpleComposables('recipes')
+const pageActions = composables({ listId: 'recipes' })
 
 export function toggleActive(recipe) {
-  return pageActions.updateItem(
+  const data = {
+    active: !recipe.get('active')
+  }
+
+  return pageActions.updateAsync(
     recipe.get('id'),
-    { active: !recipe.get('active') }
+    data,
+    api.recipes.update(data)
   )
 }
 ```
@@ -267,24 +262,28 @@ export function toggleActive(recipe) {
 Now you can bring this action creator into your connected component using `connect` and `mapDispatchToProps`:
 
 ```javascript
+import { toggleActive } from './actions'
+
+export function Recipes({ toggle }) {
+  ...
+}
+
 export default connect(
-  () => ({}),
-  { fetch: fetchRecipes, toggle: toggleActive }
+  undefined,
+  { toggle: toggleActive }
 )(Recipes)
 ```
 
 Finally, the `format` function for the `active` column in your data table might look like this:
 
 ```javascript
-  activeColumn(recipe) {
-    return (
-      <input
-        type="checkbox"
-        checked={!!recipe.get('active')}
-        onClick={() => this.props.toggle(recipe)}
-      />
-    )
-  }
+  const activeColumn = recipe => (
+    <input
+      type="checkbox"
+      checked={recipe.get('active')}
+      onClick={toggle}
+    />
+  )
 ```
 
 ### Building Custom Components
@@ -296,18 +295,18 @@ is to look at some of the simpler premade components. For example, here's a link
 ```javascript
 import React from 'react'
 import FontAwesome from 'react-fontawesome'
-import paginate from './PaginationWrapper'
+import { flip } from './decorators'
 
-export function Next({ actions, hasNextPage }) {
+export function Next({ pageActions, hasNextPage }) {
   const next = <FontAwesome name="chevron-right" />
   const link = hasNextPage ? (
-    <a onClick={actions.next}>{next}</a>
+    <a onClick={pageActions.next}>{next}</a>
   ) : next
 
   return link
 }
 
-export default paginate(Next)
+export default flip(Next)
 ```
 
 And here's a link that can sort our list in either direction by a given field name:
@@ -315,49 +314,73 @@ And here's a link that can sort our list in either direction by a given field na
 ```javascript
 import React, { PropTypes } from 'react'
 import FontAwesome from 'react-fontawesome'
-import paginate from './PaginationWrapper'
+import { sort as decorate } from './decorators'
 
-export function SortLink({ paginator, actions, field, text, sortable=true }) {
+export function SortLink({ pageActions, field, text, sort, sortReverse, sortable=true }) {
   if (!sortable) {
     return <span>{text}</span>
   }
 
-  const sort = () =>
-    actions.sort(field, !paginator.get('sortReverse'))
+  const sortByField = () =>
+    pageActions.sort(field, !sortReverse)
 
-  const arrow = paginator.get('sort') === field && (
-    paginator.get('sortReverse') ? 'angle-up' : 'angle-down'
+  const arrow = sort === field && (
+    sortReverse ? 'angle-up' : 'angle-down'
   )
 
   return (
-    <a onClick={sort}>
+    <a onClick={sortByField}>
       {text} <FontAwesome name={arrow || ''} />
     </a>
   )
 }
 
 SortLink.propTypes = {
-  paginator: PropTypes.object,
-  actions: PropTypes.object,
+  sort: PropTypes.string,
+  sortReverse: PropTypes.bool,
+  pageActions: PropTypes.object,
   field: PropTypes.string.isRequired,
   text: PropTypes.string.isRequired,
   sortable: PropTypes.bool
 }
 
-export default paginate(SortLink)
+export default decorate(SortLink)
+
 ```
 
 These components are simple and small enough to be written as pure functions rather than classes, and you should be able
-to accomplish the same. As you might have guessed, we expose the `paginate` function that's being called as the default export
-for our components, and that `paginate` function returns a higher order component that injects every property that your component
-could possibly need in order to read and update pagination state. The only props that callers need to supply to these components are
-a `listId` and a `fetchFunction`, and one or two additional props in some cases. Simply import it into your custom component:
+to accomplish the same. As you might have guessed, we expose the `flip` and `sorter` functions that are being called as the default export
+for our components, and those functions decorate your components with props that allow you to read and update the pagination state.
+The only prop that callers need to supply to these components is
+a `listId`, and one or two additional props in some cases. Simply import our decorators into your custom component:
 
 ```javascript
-import { paginate } from 'violet-paginator'
+import { decorators } from 'violet-paginator'
 ```
 
-and you are ready to roll your own.
+and you are ready to roll your own:
+
+```javascript
+// Supports 'previous' and 'next' links
+export defaut decorators.flip(MyFlipperComponent)
+
+// Supports full pagination controls
+export default decorators.paginate(MyPaginationComponent)
+
+// Supports grids/datatables
+export default decorators.tabulate(MyDataGridComponent)
+
+// Supprts controls for changing the page size
+export default decorators.stretch(MyPageSizeDropdown)
+
+// Supports a control for sorting the list by the field name
+export default decorators.sort(MySortLink)
+
+// The kitchen sink! Injects properties from all decorators
+export default decorators.violetPaginator(MyPaginatedGridComponent)
+```
+
+For more on using decorators or creating your own, [check the docs on decorators](the_paginationwrapper.md).
 
 ## Contributing
 
@@ -369,4 +392,5 @@ key points:
 
 ### Testing
 
-This package is tested with mocha. The project uses CI through Travis which includes running tests and linting. Please make sure to write tests for any new pull requests.
+This package is tested with mocha. The project uses CI through Travis which includes running tests, linting, and code coverage.
+Please make sure to write tests for any new pull requests. Code coverage will block the PR if your code is not sufficiently covered.
