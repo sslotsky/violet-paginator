@@ -22,7 +22,7 @@ function verifyIcon(node) {
 describe('<Prev />', () => {
   context('when no previous page exists', () => {
     const wrapper = shallow(
-      <Prev actions={{}} />
+      <Prev pageActions={{}} />
     )
 
     it('renders an icon', () => {
@@ -31,12 +31,12 @@ describe('<Prev />', () => {
   })
 
   context('when previous page exists', () => {
-    const actions = {
+    const pageActions = {
       prev: expect.createSpy()
     }
 
     const wrapper = shallow(
-      <Prev actions={actions} hasPreviousPage />
+      <Prev pageActions={pageActions} hasPreviousPage />
     )
 
     it('renders an anchor', () => {
@@ -52,7 +52,7 @@ describe('<Prev />', () => {
     context('when clicking the link', () => {
       wrapper.find('a').simulate('click')
       it('calls the prev action', () => {
-        expect(actions.prev).toHaveBeenCalled()
+        expect(pageActions.prev).toHaveBeenCalled()
       })
     })
   })

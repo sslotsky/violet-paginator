@@ -1,13 +1,13 @@
 import React from 'react'
 import expect from 'expect'
 import { mount } from 'enzyme'
-import { PaginationWrapper } from '../src/PaginationWrapper'
-import { defaultPaginator } from '../src/reducer'
-import { Prev } from '../src/Prev'
+import { PaginationWrapper } from '../../src/containers/PaginationWrapper'
+import { defaultPaginator } from '../../src/reducer'
+import { Prev } from '../../src/Prev'
 
 function getProps(props = {}) {
   return {
-    actions: {
+    pageActions: {
       reload: expect.createSpy(),
       initialize: expect.createSpy()
     },
@@ -16,6 +16,32 @@ function getProps(props = {}) {
 }
 
 describe('<PaginationWrapper />', () => {
+  context('when paginator is uninitialized', () => {
+    const props = getProps()
+    mount(
+      <PaginationWrapper {...props}>
+        <Prev />
+      </PaginationWrapper>
+    )
+
+    it('calls initialize', () => {
+      expect(props.pageActions.initialize).toHaveBeenCalled()
+    })
+  })
+
+  context('when paginator is initialized', () => {
+    const props = getProps({ initialized: true })
+    mount(
+      <PaginationWrapper {...props}>
+        <Prev />
+      </PaginationWrapper>
+    )
+
+    it('does not initialize', () => {
+      expect(props.pageActions.initialize).toNotHaveBeenCalled()
+    })
+  })
+
   context('when paginator is stale', () => {
     context('and there is no load error', () => {
       const props = getProps({ stale: true })
@@ -26,7 +52,7 @@ describe('<PaginationWrapper />', () => {
       )
 
       it('executes a reload', () => {
-        expect(props.actions.reload).toHaveBeenCalled()
+        expect(props.pageActions.reload).toHaveBeenCalled()
       })
     })
 
@@ -43,7 +69,7 @@ describe('<PaginationWrapper />', () => {
       )
 
       it('does not execute a reload', () => {
-        expect(props.actions.reload).toNotHaveBeenCalled()
+        expect(props.pageActions.reload).toNotHaveBeenCalled()
       })
     })
   })

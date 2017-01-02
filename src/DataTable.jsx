@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react'
 import FontAwesome from 'react-fontawesome'
 import classNames from 'classnames'
-import { SortLink } from './SortLink'
-import paginate from './PaginationWrapper'
+import SortLink from './SortLink'
+import { tabulate } from './decorators'
 import { recordProps } from './pageInfoTranslator'
 
 export function DataTable(props) {
@@ -77,4 +77,4 @@ DataTable.propTypes = {
   className: PropTypes.string
 }
 
-export default paginate(DataTable)
+export default tabulate(DataTable)

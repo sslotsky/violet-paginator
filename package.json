@@ -45,12 +45,13 @@
     "babel-regenerator-runtime": "^6.5.0",
     "classnames": "^2.2.5",
     "react-fontawesome": "^1.1.0",
+    "redux-resolver": "^1.0.2",
     "uuid": "^2.0.2"
   },
   "peerDependencies": {
     "immutable": "^3.7.6",
     "react": "^0.14.8 || ^15.1.0",
-    "react-redux": "^4.4.4",
+    "react-redux": "^4.4.4 || 5.x",
     "redux": "^3.4.0"
   },
   "devDependencies": {

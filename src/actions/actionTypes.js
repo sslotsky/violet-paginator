@@ -1,6 +1,4 @@
 export const INITIALIZE_PAGINATOR = '@@violet-paginator/INITIALIZE_PAGINATOR'
-export const DESTROY_PAGINATOR = '@@violet-paginator/DESTROY_PAGINATOR'
-export const DESTROY_ALL = '@@violet-paginator/DESTROY_ALL'
 export const EXPIRE_PAGINATOR = '@@violet-paginator/EXPIRE_PAGINATOR'
 export const EXPIRE_ALL = '@@violet-paginator/EXPIRE_ALL'
 export const FOUND_PAGINATOR = '@@violet-paginator/FOUND_PAGINATOR'
@@ -21,11 +19,12 @@ export const UPDATE_ITEMS = '@@violet-paginator/UPDATE_ITEMS'
 export const UPDATE_ITEM = '@@violet-paginator/UPDATE_ITEM'
 export const UPDATING_ITEMS = '@@violet-paginator/UPDATING_ITEMS'
 export const RESET_ITEM = '@@violet-paginator/RESET_ITEM'
-export const UPDATING_ALL = '@@violet-paginator/UPDATING_ALL'
-export const UPDATE_ALL = '@@violet-paginator/UPDATE_ALL'
-export const BULK_ERROR = '@@violet-paginator/BULK_ERROR'
 export const MARK_ITEMS_ERRORED = '@@violet-paginator/MARK_ITEMS_ERRORED'
 export const RESET_RESULTS = '@@violet-paginator/RESET_RESULTS'
 export const REMOVING_ITEM = '@@violet-paginator/REMOVING_ITEM'
 export const REMOVE_ITEM = '@@violet-paginator/REMOVE_ITEM'
 export const ITEM_ERROR = '@@violet-paginator/ITEM_ERROR'
+
+export default function actionType(t, id) {
+  return `${t}_${id}`
+}

@@ -1,34 +1,34 @@
 import React, { PropTypes } from 'react'
-import { Map } from 'immutable'
 import FontAwesome from 'react-fontawesome'
-import paginate from './PaginationWrapper'
+import { sort as decorate } from './decorators'
 
-export function SortLink({ actions, field, text, paginator=Map(), sortable=true }) {
+export function SortLink({ pageActions, field, text, sort, sortReverse, sortable=true }) {
   if (!sortable) {
     return <span>{text}</span>
   }
 
-  const sort = () =>
-    actions.sort(field, !paginator.get('sortReverse'))
+  const sortByField = () =>
+    pageActions.sort(field, !sortReverse)
 
-  const arrow = paginator.get('sort') === field && (
-    paginator.get('sortReverse') ? 'angle-up' : 'angle-down'
+  const arrow = sort === field && (
+    sortReverse ? 'angle-up' : 'angle-down'
   )
 
   return (
-    <a onClick={sort}>
+    <a onClick={sortByField}>
       {text} <FontAwesome name={arrow || ''} />
     </a>
   )
 }
 
 SortLink.propTypes = {
-  paginator: PropTypes.object,
-  actions: PropTypes.object,
+  sort: PropTypes.string,
+  sortReverse: PropTypes.bool,
+  pageActions: PropTypes.object,
   field: PropTypes.string.isRequired,
   text: PropTypes.string.isRequired,
   sortable: PropTypes.bool
 }
 
-export default paginate(SortLink)
+export default decorate(SortLink)
 

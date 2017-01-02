@@ -1,10 +1,14 @@
 import { i18nReducer } from 'react-redux-i18n'
 import { combineReducers } from 'redux'
-import { pagination } from 'violet-paginator'
+import { createPaginator } from 'violet-paginator'
 import recipes from './recipes/reducer'
+import fetch from './recipes/actions'
 
 export default combineReducers({
   recipes,
-  pagination,
+  recipeGrid: createPaginator({
+    listId: 'recipeGrid',
+    fetch
+  }),
   i18n: i18nReducer
 })

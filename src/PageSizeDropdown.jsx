@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react'
-import paginate from './PaginationWrapper'
+import { stretch } from './decorators'
 
 const defaultOptions = [
   15,
@@ -8,13 +8,13 @@ const defaultOptions = [
   100
 ]
 
-export function PageSizeDropdown({ pageSize, actions, options=defaultOptions }) {
+export function PageSizeDropdown({ pageSize, pageActions, options=defaultOptions }) {
   const optionTags = options.map(n =>
     <option key={n} value={n}>{n}</option>
   )
 
   const setPageSize = e =>
-    actions.setPageSize(parseInt(e.target.value, 10))
+    pageActions.setPageSize(parseInt(e.target.value, 10))
 
   return (
     <select value={pageSize} onChange={setPageSize}>
@@ -25,8 +25,8 @@ export function PageSizeDropdown({ pageSize, actions, options=defaultOptions }) 
 
 PageSizeDropdown.propTypes = {
   pageSize: PropTypes.number,
-  actions: PropTypes.object,
+  pageActions: PropTypes.object,
   options: PropTypes.array
 }
 
-export default paginate(PageSizeDropdown)
+export default stretch(PageSizeDropdown)

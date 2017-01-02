@@ -26,9 +26,9 @@ describe('<PageLink />', () => {
   })
 
   context('for any other page', () => {
-    const actions = { goTo: expect.createSpy() }
+    const pageActions = { goTo: expect.createSpy() }
     const wrapper = shallow(
-      <PageLink page={2} currentPage={1} actions={actions} />
+      <PageLink page={2} currentPage={1} pageActions={pageActions} />
     )
 
     it('displays a link', () => {
@@ -43,7 +43,7 @@ describe('<PageLink />', () => {
     context('when the link is clicked', () => {
       it('calls the goTo action', () => {
         wrapper.find('a').simulate('click')
-        expect(actions.goTo).toHaveBeenCalledWith(2)
+        expect(pageActions.goTo).toHaveBeenCalledWith(2)
       })
     })
   })
