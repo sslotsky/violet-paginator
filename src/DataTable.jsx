@@ -33,7 +33,7 @@ export function DataTable(props) {
     const columns = headers.map(h => {
       const { field, format } = h
       const data = r.get(field)
-      const displayData = (format && format(r)) || data
+      const displayData = (format && format(r, i)) || data
 
       return (
         <td key={field}>
