@@ -46,7 +46,7 @@
     "classnames": "^2.2.5",
     "react-fontawesome": "^1.1.0",
     "redux-resolver": "^1.0.2",
-    "uuid": "^2.0.2"
+    "uuid": "^3.0.1"
   },
   "peerDependencies": {
     "immutable": "^3.7.6",
