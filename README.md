@@ -53,7 +53,7 @@ and `font-awesome` stylesheets as described later in this document.
 
 Rather than exposing a single reducer, `violet-paginator` uses a
 [higher order reducer function](http://redux.js.org/docs/recipes/reducers/ReusingReducerLogic.html#customizing-behavior-with-higher-order-reducers)
-that creates a reducer and ties it to a `listId` and a `fetch` function (this has changed since version 1, see the [upgrade guide](upgrade_guide.md) for details).
+that creates a reducer and ties it to a `listId` and a `fetch` function (this has changed since version 1, see the [upgrade guide](https://sslotsky.gitbooks.io/violet-paginator/content/upgrade_guide.html) for details).
 
 ```javascript
 import { createPaginator } from 'violet-paginator'
