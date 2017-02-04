@@ -3,6 +3,7 @@
 [![npm](https://img.shields.io/npm/dm/violet-paginator.svg)](https://www.npmjs.com/package/violet-paginator)
 [![Build Status](https://travis-ci.org/sslotsky/violet-paginator.svg?branch=master)](https://travis-ci.org/sslotsky/violet-paginator)
 [![npm](https://img.shields.io/npm/l/express.svg)](https://github.com/sslotsky/violet-paginator)
+[![dependencies](https://david-dm.org/sslotsky/violet-paginator.svg)](https://david-dm.org/sslotsky/violet-paginator)
 
 # violet-paginator
 
