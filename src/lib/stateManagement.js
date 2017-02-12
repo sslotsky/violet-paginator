@@ -5,11 +5,13 @@ const stateMap = {}
 const defaultLocator = listId => state => state[listId]
 const preload = { results: [] }
 
-const [totalCountProp, resultsProp] = responseProps()
+const defaultPageParams = () => {
+  const [totalCountProp, resultsProp] = responseProps()
 
-const defaultPageParams = {
-  totalCountProp,
-  resultsProp
+  return {
+    totalCountProp,
+    resultsProp
+  }
 }
 
 export function registerPaginator({
@@ -24,7 +26,7 @@ export function registerPaginator({
     fetch,
     initialSettings,
     params: {
-      ...defaultPageParams,
+      ...defaultPageParams(),
       ...pageParams
     }
   }

@@ -31,7 +31,7 @@ function initialize(state, action) {
 }
 
 function expire(state) {
-  return state.set('stale', true)
+  return state.merge({ stale: true, loadError: null })
 }
 
 function next(state) {
