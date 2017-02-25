@@ -34,8 +34,17 @@ export default function simpleComposables(id) {
       id,
       updatesRemaining
     }),
+    updateFailed: (itemId, updatesRemaining) => ({
+      type: actionType(actionTypes.UPDATE_FAILED, itemId),
+      id,
+      updatesRemaining
+    }),
     massUpdateComplete: (itemIds) => ({
       type: actionType(actionTypes.MASS_UPDATE_COMPLETE, id),
+      itemIds
+    }),
+    massUpdateFailed: (itemIds) => ({
+      type: actionType(actionTypes.MASS_UPDATE_FAILED, id),
       itemIds
     }),
     resetItem: (itemId, data) => ({
@@ -79,22 +88,18 @@ export default function simpleComposables(id) {
       })
     }
 
-  const updateItemsAsync = (itemIds, data, update, showUpdating = true) =>
+  const updateItemsAsync = (itemIds, data, update) =>
     (dispatch, getState) => {
       const results = getPaginator(id, getState()).get('results')
 
       dispatch(basic.updateItems(itemIds, data))
-      if (showUpdating) {
-        dispatch(basic.updatingItems(itemIds))
-      }
+      dispatch(basic.updatingItems(itemIds))
 
       return update.then(resp => {
-        if (showUpdating) {
-          dispatch(basic.updateItems(itemIds, data))
-        }
-
+        dispatch(basic.massUpdateComplete(itemIds))
         return resp
       }).catch(err => {
+        dispatch(basic.massUpdateFailed(itemIds))
         dispatch(basic.resetResults(results.toJS()))
         throw err
       })

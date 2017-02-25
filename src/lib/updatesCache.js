@@ -16,7 +16,7 @@ export default function updatesCache(listId, dispatch) {
         dispatch(actions.updateComplete(id, --cacheSlice[id]))
         return resp
       }).catch(err => {
-        dispatch(actions.updateComplete(id, --cacheSlice[id]))
+        dispatch(actions.updateFailed(id, --cacheSlice[id]))
         throw err
       })
     }

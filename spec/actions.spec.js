@@ -431,7 +431,7 @@ describe('pageActions', () => {
         const expectedActions = [
           pageActions.updateItem(itemId, updateData),
           pageActions.updatingItem(itemId),
-          pageActions.updateComplete(itemId, 0),
+          pageActions.updateFailed(itemId, 0),
           pageActions.resetItem(itemId, record)
         ]
 
@@ -456,48 +456,24 @@ describe('pageActions', () => {
 
     context('on update success', () => {
       const updateData = { active: true }
+      const results = [{ id: 1, name: 'Ewe and IPA' }]
 
-      context('with default settings', () => {
-        const results = [{ id: 1, name: 'Ewe and IPA' }]
+      it('does an async update on all the items', () => {
+        const ids = results.map(r => r.id)
+        const { pageActions, store } = setup(true, results)
+        const expectedActions = [
+          pageActions.updateItems(ids, updateData),
+          pageActions.updatingItems(ids),
+          pageActions.massUpdateComplete(ids)
+        ]
 
-        it('does an async update on all the items', () => {
-          const ids = results.map(r => r.id)
-          const { pageActions, store } = setup(true, results)
-          const expectedActions = [
-            pageActions.updateItems(ids, updateData),
-            pageActions.updatingItems(ids),
-            pageActions.updateItems(ids, updateData)
-          ]
+        const update = Promise.resolve(updateData)
 
-          const update = Promise.resolve(updateData)
-
-          expectAsync(
-            store.dispatch(pageActions.updateItemsAsync(ids, updateData, update)).then(() => {
-              expect(store.getActions()).toEqual(expectedActions)
-            })
-          )
-        })
-      })
-
-      context('with showUpdating=false', () => {
-        const results = [{ id: 1, name: 'Ewe and IPA' }]
-
-        it('skips the updating indicators', () => {
-          const { pageActions, store } = setup(true, results)
-          const ids = results.map(r => r.id)
-          const expectedActions = [
-            pageActions.updateItems(ids, updateData)
-          ]
-
-          const update = Promise.resolve(updateData)
-          const promise = pageActions.updateItemsAsync(ids, updateData, update, false)
-
-          expectAsync(
-            store.dispatch(promise).then(() => {
-              expect(store.getActions()).toEqual(expectedActions)
-            })
-          )
-        })
+        expectAsync(
+          store.dispatch(pageActions.updateItemsAsync(ids, updateData, update)).then(() => {
+            expect(store.getActions()).toEqual(expectedActions)
+          })
+        )
       })
     })
 
@@ -522,6 +498,7 @@ describe('pageActions', () => {
         const expectedActions = [
           pageActions.updateItems(ids, updateData),
           pageActions.updatingItems(ids),
+          pageActions.massUpdateFailed(ids),
           pageActions.resetResults(results)
         ]
 

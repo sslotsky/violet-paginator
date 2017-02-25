@@ -53,7 +53,8 @@ export function preloadedPaginator(state, listId, preloaded = preload) {
 
 export function isUpdating(state, listId, itemId) {
   const paginator = getPaginator(listId, state)
-  return paginator.get('updating').includes(itemId)
+  return paginator.get('updating').includes(itemId) ||
+    paginator.get('massUpdating').includes(itemId)
 }
 
 export function isRemoving(state, itemId) {

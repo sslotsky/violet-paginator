@@ -389,7 +389,7 @@ describe('pagination reducer', () => {
     const state = reducer(initialState, action)
 
     it('marks the items as updating', () => {
-      expect(state.get('updating')).toEqual(Set(ids))
+      expect(state.get('massUpdating')).toEqual(Set(ids))
     })
   })
 

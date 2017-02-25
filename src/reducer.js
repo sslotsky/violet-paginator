@@ -16,6 +16,7 @@ export const defaultPaginator = Map({
   stale: false,
   results: List(),
   updating: Set(),
+  massUpdating: Set(),
   removing: Set(),
   requestId: null,
   loadError: null,
@@ -174,13 +175,13 @@ function updateItems(state, action) {
 function updatingItems(state, action) {
   const { itemIds } = action
 
-  return state.set('updating', state.get('updating').toSet().union(itemIds))
+  return state.set('massUpdating', state.get('massUpdating').union(itemIds))
 }
 
 function massUpdateComplete(state, action) {
   const { itemIds } = action
 
-  return state.set('updating', state.get('updating').subtract(itemIds))
+  return state.set('massUpdating', state.get('massUpdating').subtract(itemIds))
 }
 
 function resetItem(state, action) {
@@ -234,7 +235,9 @@ export default function createPaginator(config) {
     [resolve(actionTypes.UPDATING_ITEMS)]: updatingItems,
     [resolve(actionTypes.UPDATE_ITEMS)]: updateItems,
     [resolve(actionTypes.UPDATE_COMPLETE)]: updateComplete,
+    [resolve(actionTypes.UPDATE_FAILED)]: updateComplete,
     [resolve(actionTypes.MASS_UPDATE_COMPLETE)]: massUpdateComplete,
+    [resolve(actionTypes.MASS_UPDATE_FAILED)]: massUpdateComplete,
     [resolve(actionTypes.RESET_ITEM)]: resetItem,
     [resolve(actionTypes.RESET_RESULTS)]: resetResults,
     [resolve(actionTypes.REMOVING_ITEM)]: removingItem,
