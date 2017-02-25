@@ -25,8 +25,8 @@ describe('<Next />', () => {
       <Next pageActions={{}} />
     )
 
-    it('renders an icon', () => {
-      verifyIcon(wrapper.node)
+    it('disables the button', () => {
+      expect(wrapper.props().disabled).toBe(true)
     })
   })
 
@@ -39,18 +39,17 @@ describe('<Next />', () => {
       <Next pageActions={pageActions} hasNextPage />
     )
 
-    it('renders an anchor', () => {
-      expect(wrapper.node.type).toEqual('a')
-      expect(wrapper.find('a').length).toEqual(1)
+    it('renders a button', () => {
+      expect(wrapper.node.type).toEqual('button')
     })
 
-    it('renders an icon inside the anchor', () => {
+    it('renders an icon inside the button', () => {
       const icon = wrapper.node.props.children
       verifyIcon(icon)
     })
 
-    context('when clicking the link', () => {
-      wrapper.find('a').simulate('click')
+    context('when clicking the button', () => {
+      wrapper.simulate('click')
       it('calls the prev action', () => {
         expect(pageActions.next).toHaveBeenCalled()
       })

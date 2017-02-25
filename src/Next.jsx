@@ -1,14 +1,20 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 import FontAwesome from 'react-fontawesome'
 import { flip } from './decorators'
 
 export function Next({ pageActions, hasNextPage }) {
-  const next = <FontAwesome name="chevron-right" />
-  const link = hasNextPage ? (
-    <a onClick={pageActions.next}>{next}</a>
-  ) : next
+  return (
+    <button type="button" disabled={!hasNextPage} onClick={pageActions.next}>
+      <FontAwesome name="chevron-right" />
+    </button>
+  )
+}
 
-  return link
+Next.propTypes = {
+  pageActions: PropTypes.shape({
+    next: PropTypes.func.isRequired
+  }).isRequired,
+  hasNextPage: PropTypes.bool
 }
 
 export default flip(Next)

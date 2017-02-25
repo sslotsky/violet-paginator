@@ -31,8 +31,8 @@ describe('<PageLink />', () => {
       <PageLink page={2} currentPage={1} pageActions={pageActions} />
     )
 
-    it('displays a link', () => {
-      expect(wrapper.node.type).toEqual('a')
+    it('displays a button', () => {
+      expect(wrapper.node.type).toEqual('button')
     })
 
     it('displays the page number within the link', () => {
@@ -42,7 +42,7 @@ describe('<PageLink />', () => {
 
     context('when the link is clicked', () => {
       it('calls the goTo action', () => {
-        wrapper.find('a').simulate('click')
+        wrapper.simulate('click')
         expect(pageActions.goTo).toHaveBeenCalledWith(2)
       })
     })

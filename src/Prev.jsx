@@ -1,14 +1,20 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 import FontAwesome from 'react-fontawesome'
 import { flip } from './decorators'
 
 export function Prev({ pageActions, hasPreviousPage }) {
-  const prev = <FontAwesome name="chevron-left" />
-  const link = hasPreviousPage ? (
-    <a onClick={pageActions.prev}>{prev}</a>
-  ) : prev
+  return (
+    <button type="button" disabled={!hasPreviousPage} onClick={pageActions.prev}>
+      <FontAwesome name="chevron-left" />
+    </button>
+  )
+}
 
-  return link
+Prev.propTypes = {
+  pageActions: PropTypes.shape({
+    prev: PropTypes.func.isRequired
+  }).isRequired,
+  hasPreviousPage: PropTypes.bool
 }
 
 export default flip(Prev)

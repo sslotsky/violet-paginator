@@ -18,6 +18,19 @@ ul.pagination {
   margin-top: 1rem;
   margin-bottom: 1rem;
 
+  li button {
+    background-color: transparent;
+    color: black;
+
+    &:disabled {
+      color: rgba(0, 0, 0, .54);
+    }
+
+    &:hover:not(:disabled) {
+      background-color: #7e69c6;
+    }
+  }
+
   li a:hover {
     background-color: #7e69c6;
   }

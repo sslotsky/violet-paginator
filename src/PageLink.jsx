@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 import { paginate } from './decorators'
 
 export function PageLink({ pageActions, page, currentPage }) {
@@ -7,10 +7,18 @@ export function PageLink({ pageActions, page, currentPage }) {
 
   const pageNumber = <span>{page}</span>
   const link = page === currentPage ? pageNumber : (
-    <a onClick={navigate}>{pageNumber}</a>
+    <button type="button" onClick={navigate}>{pageNumber}</button>
   )
 
   return link
+}
+
+PageLink.propTypes = {
+  pageActions: PropTypes.shape({
+    goTo: PropTypes.func.isRequired
+  }).isRequired,
+  page: PropTypes.number.isRequired,
+  currentPage: PropTypes.number.isRequired
 }
 
 export default paginate(PageLink)

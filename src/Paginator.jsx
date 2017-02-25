@@ -9,13 +9,11 @@ import { Prev } from './Prev'
 import { Next } from './Next'
 
 export function Paginator(props) {
-  const { currentPage, totalPages, hasPreviousPage, hasNextPage } = props
+  const { currentPage, totalPages } = props
 
   const upperOffset = Math.max(0, (currentPage - totalPages) + 3)
   const minPage = Math.max(props.currentPage - 3 - upperOffset, 1)
   const maxPage = Math.min(minPage + 6, totalPages)
-  const prevClasses = classNames({ disabled: !hasPreviousPage })
-  const nextClasses = classNames({ disabled: !hasNextPage })
 
   const pageLinks = [...range(minPage, maxPage)].map(page => {
     const pageLinkClass = classNames({ current: page === currentPage })
@@ -47,7 +45,7 @@ export function Paginator(props) {
 
   return (
     <ul className="pagination">
-      <li className={prevClasses}>
+      <li>
         <Prev {...props} />
       </li>
       {begin}
@@ -55,7 +53,7 @@ export function Paginator(props) {
       {pageLinks}
       {end && separator}
       {end}
-      <li className={nextClasses}>
+      <li>
         <Next {...props} />
       </li>
     </ul>
