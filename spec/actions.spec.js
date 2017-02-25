@@ -363,13 +363,12 @@ describe('pageActions', () => {
       it('updates the item', () => {
         const { pageActions, store } = setup()
         const updateData = { active: true }
-        const serverVersion = { active: false }
-        const update = Promise.resolve(serverVersion)
+        const update = Promise.resolve()
 
         const expectedActions = [
           pageActions.updateItem(itemId, updateData),
           pageActions.updatingItem(itemId),
-          pageActions.updateItem(itemId, serverVersion)
+          pageActions.updateItem(itemId, updateData)
         ]
 
         expectAsync(

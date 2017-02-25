@@ -71,9 +71,10 @@ export default function simpleComposables(id) {
 
       dispatch(basic.updateItem(itemId, data))
       dispatch(basic.updatingItem(itemId))
-      return update.then(serverUpdate =>
-        dispatch(basic.updateItem(itemId, serverUpdate))
-      ).catch(err => {
+      return update.then(serverUpdate => {
+        dispatch(basic.updateItem(itemId, data))
+        return serverUpdate
+      }).catch(err => {
         dispatch(basic.resetItem(itemId, item.toJS()))
         return dispatch(basic.itemError(itemId, err))
       })
