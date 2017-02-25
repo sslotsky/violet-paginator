@@ -143,7 +143,7 @@ function updateItem(state, action) {
     updating: state.get('updating').toSet().delete(action.itemId),
     results: updateListItem(
       state.get('results'), action.itemId,
-      item => item.merge(action.data).set('error', null),
+      item => item.merge(action.data),
       recordProps().identifier
     )
   })
@@ -156,7 +156,7 @@ function updateItems(state, action) {
     updating: state.get('updating').toSet().subtract(itemIds),
     results: state.get('results').map(r => {
       if (itemIds.includes(r.get(recordProps().identifier))) {
-        return r.merge(action.data).set('error', null)
+        return r.merge(action.data)
       }
 
       return r
@@ -195,35 +195,6 @@ function removeItem(state, action) {
   })
 }
 
-function itemError(state, action) {
-  return state.merge({
-    updating: state.get('updating').toSet().delete(action.itemId),
-    removing: state.get('removing').toSet().delete(action.itemId),
-    results: updateListItem(
-      state.get('results'),
-      action.itemId,
-      item => item.set('error', Immutable.fromJS(action.error)),
-      recordProps().identifier
-    )
-  })
-}
-
-function markItemsErrored(state, action) {
-  const { itemIds } = action
-
-  return state.merge({
-    updating: state.get('updating').toSet().subtract(itemIds),
-    removing: state.get('removing').toSet().subtract(itemIds),
-    results: state.get('results').map(r => {
-      if (itemIds.includes(r.get(recordProps().identifier))) {
-        return r.set('error', Immutable.fromJS(action.error))
-      }
-
-      return r
-    })
-  })
-}
-
 export default function createPaginator(config) {
   const { initialSettings } = registerPaginator(config)
   const resolve = t => actionType(t, config.listId)
@@ -249,10 +220,8 @@ export default function createPaginator(config) {
     [resolve(actionTypes.UPDATING_ITEMS)]: updatingItems,
     [resolve(actionTypes.UPDATE_ITEMS)]: updateItems,
     [resolve(actionTypes.RESET_ITEM)]: resetItem,
-    [resolve(actionTypes.MARK_ITEMS_ERRORED)]: markItemsErrored,
     [resolve(actionTypes.RESET_RESULTS)]: resetResults,
     [resolve(actionTypes.REMOVING_ITEM)]: removingItem,
-    [resolve(actionTypes.REMOVE_ITEM)]: removeItem,
-    [resolve(actionTypes.ITEM_ERROR)]: itemError
+    [resolve(actionTypes.REMOVE_ITEM)]: removeItem
   })
 }

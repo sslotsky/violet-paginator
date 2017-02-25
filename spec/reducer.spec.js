@@ -351,29 +351,6 @@ describe('pagination reducer', () => {
     })
   })
 
-  describe('MARK_ITEMS_ERRORED', () => {
-    const itemId = 'someId'
-    const results = [{ id: itemId, name: 'Pouty Stout' }]
-    const paginator = defaultPaginator.merge({
-      results: Immutable.fromJS(results),
-      updating: Set(itemId)
-    })
-
-    const { state: initialState } = setup(paginator)
-    const error = { name: ['taken'] }
-    const action = pageActions.markItemsErrored([itemId], error)
-
-    const state = reducer(initialState, action)
-
-    it('marks the items as errored', () => {
-      const item = state.get('results').find(r => r.get('id') === itemId)
-      expect(item.get('error')).toEqual(Immutable.fromJS(error))
-    })
-
-    it('removes the item from the updating list', () => {
-      expect(state.get('updating').toArray()).toNotInclude(itemId)
-    })
-  })
 
   it('handles UPDATING_ITEM', () => {
     const { state: initialState } = setup()
@@ -400,7 +377,7 @@ describe('pagination reducer', () => {
 
   context('when handling UPDATE_ITEM', () => {
     const itemId = 'someId'
-    const results = [{ id: itemId, name: 'Pouty Stout', error: 'Error updating recipe' }]
+    const results = [{ id: itemId, name: 'Pouty Stout' }]
     const updating = Set.of('someId')
     const paginator = defaultPaginator.merge({ results: Immutable.fromJS(results), updating })
     const { state: initialState } = setup(paginator)
@@ -419,10 +396,6 @@ describe('pagination reducer', () => {
 
     it('removes the item from the updating list', () => {
       expect(state.get('updating').toJS()).toNotInclude(itemId)
-    })
-
-    it('removes the error from the item', () => {
-      expect(state.get('error')).toNotExist()
     })
   })
 
@@ -456,30 +429,6 @@ describe('pagination reducer', () => {
 
     it('removes the item from the removing list', () => {
       expect(state.get('removing').toJS()).toNotInclude(itemId)
-    })
-  })
-
-  describe('ITEM_ERROR', () => {
-    const itemId = 'someId'
-    const results = [{ id: itemId, name: 'Pouty Stout' }]
-    const updating = Set.of(itemId)
-    const paginator = defaultPaginator.merge({ results: Immutable.fromJS(results), updating })
-    const { state: initialState } = setup(paginator)
-    const action = {
-      type: actionType(actionTypes.ITEM_ERROR, id),
-      itemId,
-      error: 'Error updating item'
-    }
-
-    const state = reducer(initialState, action)
-    const item = state.get('results').find(r => r.get('id') === itemId)
-
-    it('attaches the error to the item', () => {
-      expect(item.get('error')).toEqual(action.error)
-    })
-
-    it('removes the item from the updating list', () => {
-      expect(state.get('updating').toJS()).toNotInclude(itemId)
     })
   })
 

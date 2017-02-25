@@ -40,11 +40,6 @@ export default function simpleComposables(id) {
       type: actionType(actionTypes.UPDATE_ALL, id),
       data
     }),
-    markItemsErrored: (itemIds, error) => ({
-      type: actionType(actionTypes.MARK_ITEMS_ERRORED, id),
-      itemIds,
-      error
-    }),
     resetResults: (results) => ({
       type: actionType(actionTypes.RESET_RESULTS, id),
       results
@@ -56,11 +51,6 @@ export default function simpleComposables(id) {
     removeItem: (itemId) => ({
       type: actionType(actionTypes.REMOVE_ITEM, id),
       itemId
-    }),
-    itemError: (itemId, error) => ({
-      type: actionType(actionTypes.ITEM_ERROR, id),
-      itemId,
-      error
     })
   }
 
@@ -76,7 +66,7 @@ export default function simpleComposables(id) {
         return serverUpdate
       }).catch(err => {
         dispatch(basic.resetItem(itemId, item.toJS()))
-        return dispatch(basic.itemError(itemId, err))
+        throw err
       })
     }
 
@@ -97,7 +87,7 @@ export default function simpleComposables(id) {
         return resp
       }).catch(err => {
         dispatch(basic.resetResults(results.toJS()))
-        return dispatch(basic.markItemsErrored(itemIds, err))
+        throw err
       })
     }
 
@@ -111,7 +101,7 @@ export default function simpleComposables(id) {
         dispatch(basic.removeItem(itemId))
       ).catch(err => {
         dispatch(basic.resetItem(itemId, item.toJS()))
-        return dispatch(basic.itemError(itemId, err))
+        throw err
       })
     }
 

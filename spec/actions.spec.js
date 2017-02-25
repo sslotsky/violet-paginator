@@ -399,12 +399,11 @@ describe('pageActions', () => {
         const expectedActions = [
           pageActions.updateItem(itemId, updateData),
           pageActions.updatingItem(itemId),
-          pageActions.resetItem(itemId, record),
-          pageActions.itemError(itemId, error)
+          pageActions.resetItem(itemId, record)
         ]
 
         expectAsync(
-          store.dispatch(pageActions.updateAsync(itemId, updateData, update)).then(() => {
+          store.dispatch(pageActions.updateAsync(itemId, updateData, update)).catch(() => {
             const actions = store.getActions()
             expect(actions).toEqual(expectedActions)
           })
@@ -490,12 +489,11 @@ describe('pageActions', () => {
         const expectedActions = [
           pageActions.updateItems(ids, updateData),
           pageActions.updatingItems(ids),
-          pageActions.resetResults(results),
-          pageActions.markItemsErrored(ids, error)
+          pageActions.resetResults(results)
         ]
 
         expectAsync(
-          store.dispatch(pageActions.updateItemsAsync([itemId], updateData, update)).then(() => {
+          store.dispatch(pageActions.updateItemsAsync([itemId], updateData, update)).catch(() => {
             const actions = store.getActions()
             expect(actions).toEqual(expectedActions)
           })
@@ -547,12 +545,11 @@ describe('pageActions', () => {
 
         const expectedActions = [
           pageActions.removingItem(itemId),
-          pageActions.resetItem(itemId, record),
-          pageActions.itemError(itemId, error)
+          pageActions.resetItem(itemId, record)
         ]
 
         expectAsync(
-          store.dispatch(pageActions.removeAsync(itemId, remove)).then(() => {
+          store.dispatch(pageActions.removeAsync(itemId, remove)).catch(() => {
             const actions = store.getActions()
             expect(actions).toEqual(expectedActions)
           })
