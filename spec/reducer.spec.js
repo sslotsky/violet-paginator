@@ -15,6 +15,28 @@ function setup(testPaginator=Map()) {
 }
 
 describe('pagination reducer', () => {
+  context('when augmented', () => {
+    it('responds to given actions', () => {
+      const config = {
+        listId: 'customized',
+        initialSettings: {
+          customField: undefined
+        },
+        augmentWith: {
+          CUSTOM_ACTION: (state, action) => state.set('customField', action.value)
+        }
+      }
+
+      const reducer = createPaginator(config)
+      const action = {
+        type: 'CUSTOM_ACTION',
+        value: 'someVal'
+      }
+
+      expect(reducer(undefined, action)).toEqual(defaultPaginator.set('customField', action.value))
+    })
+  })
+
   describe('createPaginator', () => {
     context('with initial settings', () => {
       const config = {

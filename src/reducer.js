@@ -197,9 +197,11 @@ function removeItem(state, action) {
 
 export default function createPaginator(config) {
   const { initialSettings } = registerPaginator(config)
+  const { augmentWith = {} } = config
   const resolve = t => actionType(t, config.listId)
 
   return resolveEach(defaultPaginator.merge(initialSettings), {
+    ...augmentWith,
     [actionTypes.EXPIRE_ALL]: expire,
     [resolve(actionTypes.INITIALIZE_PAGINATOR)]: initialize,
     [resolve(actionTypes.EXPIRE_PAGINATOR)]: expire,
