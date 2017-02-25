@@ -514,20 +514,40 @@ describe('pageActions', () => {
     })
 
     context('on remove success', () => {
-      it('removes the item', () => {
-        const { pageActions, store } = setup()
-        const remove = Promise.resolve()
+      context('by default', () => {
+        it('expires the list', () => {
+          const { pageActions, store } = setup()
+          const remove = Promise.resolve()
 
-        const expectedActions = [
-          pageActions.removingItem(itemId),
-          pageActions.removeItem(itemId)
-        ]
+          const expectedActions = [
+            pageActions.removingItem(itemId),
+            pageActions.expire()
+          ]
 
-        expectAsync(
-          store.dispatch(pageActions.removeAsync(itemId, remove)).then(() => {
-            expect(store.getActions()).toEqual(expectedActions)
-          })
-        )
+          expectAsync(
+            store.dispatch(pageActions.removeAsync(itemId, remove)).then(() => {
+              expect(store.getActions()).toEqual(expectedActions)
+            })
+          )
+        })
+      })
+
+      context('when choosing not to expire', () => {
+        it('removes the item', () => {
+          const { pageActions, store } = setup()
+          const remove = Promise.resolve()
+
+          const expectedActions = [
+            pageActions.removingItem(itemId),
+            pageActions.removeItem(itemId)
+          ]
+
+          expectAsync(
+            store.dispatch(pageActions.removeAsync(itemId, remove, false)).then(() => {
+              expect(store.getActions()).toEqual(expectedActions)
+            })
+          )
+        })
       })
     })
 
