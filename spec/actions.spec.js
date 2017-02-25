@@ -8,6 +8,7 @@ import { defaultPaginator } from '../src/reducer'
 import actionType, * as actionTypes from '../src/actions/actionTypes'
 import expectAsync from './specHelper'
 import { registerPaginator } from '../src/lib/stateManagement'
+import range from '../src/lib/range'
 
 const listId = 'recipesList'
 const resolve = t => actionType(t, listId)
@@ -359,6 +360,37 @@ describe('pageActions', () => {
       PromiseMock.uninstall()
     })
 
+    context('in quick succession', () => {
+      it('clears the updating flag when all updates have finished', () => {
+        const { pageActions, store } = setup()
+        const updateData = { active: true }
+
+        const updateActions = [...range(1, 4)].reduce((actions) =>
+          actions.concat([
+            pageActions.updateItem(itemId, updateData),
+            pageActions.updatingItem(itemId)
+          ]),
+          []
+        )
+
+        const completeActions = [...range(0, 3)].reverse().map(i =>
+          pageActions.updateComplete(itemId, i)
+        )
+
+        const expectedActions = updateActions.concat(completeActions)
+
+        const updates = [...range(1, 4)].map(() =>
+          store.dispatch(pageActions.updateAsync(itemId, updateData, Promise.resolve()))
+        )
+
+        expectAsync(
+          Promise.all(updates).then(() =>
+            expect(store.getActions()).toEqual(expectedActions)
+          )
+        )
+      })
+    })
+
     context('on update success', () => {
       it('updates the item', () => {
         const { pageActions, store } = setup()
@@ -368,7 +400,7 @@ describe('pageActions', () => {
         const expectedActions = [
           pageActions.updateItem(itemId, updateData),
           pageActions.updatingItem(itemId),
-          pageActions.updateItem(itemId, updateData)
+          pageActions.updateComplete(itemId, 0)
         ]
 
         expectAsync(
@@ -399,6 +431,7 @@ describe('pageActions', () => {
         const expectedActions = [
           pageActions.updateItem(itemId, updateData),
           pageActions.updatingItem(itemId),
+          pageActions.updateComplete(itemId, 0),
           pageActions.resetItem(itemId, record)
         ]
 

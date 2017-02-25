@@ -13,9 +13,9 @@ global.navigator = {
   userAgent: 'node.js'
 }
 
-export default function expectAsync(promise) {
+export default function expectAsync(...promises) {
   let rejected = false
-  promise.catch(() => {
+  Promise.all(promises).catch(() => {
     rejected = true
   })
 

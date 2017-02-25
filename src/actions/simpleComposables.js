@@ -2,6 +2,7 @@ import { Map } from 'immutable'
 import { recordProps } from '../pageInfoTranslator'
 import actionType, * as actionTypes from './actionTypes'
 import { getPaginator } from '../lib/stateManagement'
+import updatesCache from '../lib/updatesCache'
 
 const { identifier } = recordProps()
 
@@ -27,6 +28,15 @@ export default function simpleComposables(id) {
       type: actionType(actionTypes.UPDATE_ITEMS, id),
       itemIds,
       data
+    }),
+    updateComplete: (itemId, updatesRemaining) => ({
+      type: actionType(actionTypes.UPDATE_COMPLETE, itemId),
+      id,
+      updatesRemaining
+    }),
+    massUpdateComplete: (itemIds) => ({
+      type: actionType(actionTypes.MASS_UPDATE_COMPLETE, id),
+      itemIds
     }),
     resetItem: (itemId, data) => ({
       type: actionType(actionTypes.RESET_ITEM, id),
@@ -56,15 +66,14 @@ export default function simpleComposables(id) {
 
   const updateAsync = (itemId, data, update) =>
     (dispatch, getState) => {
+      const cache = updatesCache(id, dispatch)
+
       const item = getPaginator(id, getState()).get('results')
         .find(r => r.get(identifier) === itemId) || Map()
 
       dispatch(basic.updateItem(itemId, data))
-      dispatch(basic.updatingItem(itemId))
-      return update.then(serverUpdate => {
-        dispatch(basic.updateItem(itemId, data))
-        return serverUpdate
-      }).catch(err => {
+
+      return cache.update(itemId, update).catch(err => {
         dispatch(basic.resetItem(itemId, item.toJS()))
         throw err
       })

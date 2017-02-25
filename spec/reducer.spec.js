@@ -367,10 +367,6 @@ describe('pagination reducer', () => {
       const item = state.get('results').find(r => r.get('id') === itemId)
       expect(item).toEqual(Map(reset))
     })
-
-    it('removes the item from the updating list', () => {
-      expect(state.get('updating').toArray()).toNotInclude(itemId)
-    })
   })
 
 
@@ -414,10 +410,6 @@ describe('pagination reducer', () => {
     it('updates the item', () => {
       const item = state.get('results').toJS()[0]
       expect(item.name).toEqual(action.data.name)
-    })
-
-    it('removes the item from the updating list', () => {
-      expect(state.get('updating').toJS()).toNotInclude(itemId)
     })
   })
 

@@ -140,7 +140,6 @@ function updatingItem(state, action) {
 
 function updateItem(state, action) {
   return state.merge({
-    updating: state.get('updating').toSet().delete(action.itemId),
     results: updateListItem(
       state.get('results'), action.itemId,
       item => item.merge(action.data),
@@ -149,11 +148,19 @@ function updateItem(state, action) {
   })
 }
 
+function updateComplete(state, action) {
+  if (action.updatesRemaining > 0) {
+    return state
+  }
+
+  const updating = state.get('updating')
+  return state.set('updating', updating.delete(action.id))
+}
+
 function updateItems(state, action) {
   const { itemIds } = action
 
   return state.merge({
-    updating: state.get('updating').toSet().subtract(itemIds),
     results: state.get('results').map(r => {
       if (itemIds.includes(r.get(recordProps().identifier))) {
         return r.merge(action.data)
@@ -170,9 +177,14 @@ function updatingItems(state, action) {
   return state.set('updating', state.get('updating').toSet().union(itemIds))
 }
 
+function massUpdateComplete(state, action) {
+  const { itemIds } = action
+
+  return state.set('updating', state.get('updating').subtract(itemIds))
+}
+
 function resetItem(state, action) {
   return state.merge({
-    updating: state.get('updating').toSet().delete(action.itemId),
     results: updateListItem(
       state.get('results'), action.itemId,
       () => Immutable.fromJS(action.data),
@@ -221,6 +233,8 @@ export default function createPaginator(config) {
     [resolve(actionTypes.UPDATE_ITEM)]: updateItem,
     [resolve(actionTypes.UPDATING_ITEMS)]: updatingItems,
     [resolve(actionTypes.UPDATE_ITEMS)]: updateItems,
+    [resolve(actionTypes.UPDATE_COMPLETE)]: updateComplete,
+    [resolve(actionTypes.MASS_UPDATE_COMPLETE)]: massUpdateComplete,
     [resolve(actionTypes.RESET_ITEM)]: resetItem,
     [resolve(actionTypes.RESET_RESULTS)]: resetResults,
     [resolve(actionTypes.REMOVING_ITEM)]: removingItem,
