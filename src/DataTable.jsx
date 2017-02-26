@@ -1,12 +1,25 @@
 import React, { PropTypes } from 'react'
 import FontAwesome from 'react-fontawesome'
-import classNames from 'classnames'
 import SortLink from './SortLink'
 import { tabulate } from './decorators'
 import { recordProps } from './pageInfoTranslator'
+import DataRow from './containers/DataRow'
+import TableRow from './TableRow'
+
+function renderRow(headers) {
+  return (r, i) => (
+    <DataRow
+      key={i}
+      itemId={r[recordProps().identifier]}
+      component={TableRow}
+      index={i}
+      headers={headers}
+    />
+  )
+}
 
 export function DataTable(props) {
-  const { results, headers, isLoading, updating, removing, className = 'border' } = props
+  const { results, headers, isLoading, className = 'border' } = props
 
   if (isLoading) {
     return (
@@ -29,31 +42,6 @@ export function DataTable(props) {
     </th>
   )
 
-  const rows = results.map((r, i) => {
-    const columns = headers.map(h => {
-      const { field, format } = h
-      const data = r.get(field)
-      const displayData = (format && format(r, i)) || data
-
-      return (
-        <td key={field}>
-          {displayData}
-        </td>
-      )
-    })
-
-    const classes = classNames({
-      updating: updating.includes(r.get(recordProps().identifier)),
-      removing: removing.includes(r.get(recordProps().identifier))
-    })
-
-    return (
-      <tr className={classes} key={`results-${i}`}>
-        {columns}
-      </tr>
-    )
-  })
-
   return (
     <table className={className}>
       <thead>
@@ -62,7 +50,7 @@ export function DataTable(props) {
         </tr>
       </thead>
       <tbody>
-        {rows}
+        {results.map(renderRow(headers))}
       </tbody>
     </table>
   )
@@ -71,7 +59,7 @@ export function DataTable(props) {
 DataTable.propTypes = {
   headers: PropTypes.array.isRequired,
   isLoading: PropTypes.bool,
-  results: PropTypes.object,
+  results: PropTypes.arrayOf(PropTypes.object),
   updating: PropTypes.object,
   removing: PropTypes.object,
   className: PropTypes.string

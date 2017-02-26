@@ -1,4 +1,3 @@
-import { List, Set } from 'immutable'
 import React from 'react'
 import expect from 'expect'
 import { mount } from 'enzyme'
@@ -44,19 +43,11 @@ export function behavesLikeAPaginator() {
 
 export function behavesLikeADataGrid() {
   it('injects results', function () {
-    expect(this.component.props().results).toBeA(List)
+    expect(this.component.props().results).toBeA(Array)
   })
 
   it('injects isLoading', function () {
     expect(this.component.props().isLoading).toBeA('boolean')
-  })
-
-  it('injects updating', function () {
-    expect(this.component.props().updating).toBeA(Set)
-  })
-
-  it('injects removing', function () {
-    expect(this.component.props().removing).toBeA(Set)
   })
 }
 

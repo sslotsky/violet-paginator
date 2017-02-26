@@ -16,10 +16,8 @@ export default function select(paginator) {
   })
 
   const tabulate = () => ({
-    results: paginator.get('results'),
-    isLoading: paginator.get('isLoading'),
-    updating: paginator.get('updating'),
-    removing: paginator.get('removing')
+    results: paginator.get('results').toJS(),
+    isLoading: paginator.get('isLoading')
   })
 
   const stretch = () => ({

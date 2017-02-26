@@ -201,10 +201,10 @@ describe('State management utilities', () => {
         }
       })
 
-      const state = configuredReducer()
+      const state = { recipes: configuredReducer() }
 
       it('returns true', () => {
-        expect(isRemoving(state, itemId)).toBe(true)
+        expect(isRemoving(state, 'recipes', itemId)).toBe(true)
       })
     })
 

@@ -1,5 +1,6 @@
+import { Map } from 'immutable'
 import { defaultPaginator } from '../reducer'
-import { translate, responseProps } from '../pageInfoTranslator'
+import { translate, responseProps, recordProps } from '../pageInfoTranslator'
 
 const stateMap = {}
 const defaultLocator = listId => state => state[listId]
@@ -42,6 +43,14 @@ export function getPaginator(listId, state) {
   return config.locator(state) || defaultPaginator
 }
 
+export function getItem(state, listId, itemId) {
+  return getPaginator(listId, state).get('results').find(
+    r => r.get(recordProps().identifier) === itemId,
+    undefined,
+    Map()
+  )
+}
+
 export function listConfig(listId) {
   return stateMap[listId]
 }
@@ -57,8 +66,8 @@ export function isUpdating(state, listId, itemId) {
     paginator.get('massUpdating').includes(itemId)
 }
 
-export function isRemoving(state, itemId) {
-  return state.get('removing').includes(itemId)
+export function isRemoving(state, listId, itemId) {
+  return getPaginator(listId, state).get('removing').includes(itemId)
 }
 
 export function currentQuery(state, listId) {

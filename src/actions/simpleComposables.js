@@ -2,7 +2,7 @@ import { Map } from 'immutable'
 import { recordProps } from '../pageInfoTranslator'
 import actionType, * as actionTypes from './actionTypes'
 import { getPaginator } from '../lib/stateManagement'
-import updatesCache from '../lib/updatesCache'
+import semaphore from '../lib/updateSemaphore'
 
 const { identifier } = recordProps()
 
@@ -75,14 +75,14 @@ export default function simpleComposables(id) {
 
   const updateAsync = (itemId, data, update) =>
     (dispatch, getState) => {
-      const cache = updatesCache(id, dispatch)
+      const sem = semaphore(id, dispatch)
 
       const item = getPaginator(id, getState()).get('results')
         .find(r => r.get(identifier) === itemId) || Map()
 
       dispatch(basic.updateItem(itemId, data))
 
-      return cache.update(itemId, update).catch(err => {
+      return sem.update(itemId, update).catch(err => {
         dispatch(basic.resetItem(itemId, item.toJS()))
         throw err
       })
