@@ -155,7 +155,7 @@ function updateComplete(state, action) {
   }
 
   const updating = state.get('updating')
-  return state.set('updating', updating.delete(action.id))
+  return state.set('updating', updating.delete(action.itemId))
 }
 
 function updateItems(state, action) {

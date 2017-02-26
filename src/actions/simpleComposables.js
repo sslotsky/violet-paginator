@@ -30,8 +30,8 @@ export default function simpleComposables(id) {
       data
     }),
     updateComplete: (itemId, updatesRemaining) => ({
-      type: actionType(actionTypes.UPDATE_COMPLETE, itemId),
-      id,
+      type: actionType(actionTypes.UPDATE_COMPLETE, id),
+      itemId,
       updatesRemaining
     }),
     updateFailed: (itemId, updatesRemaining) => ({

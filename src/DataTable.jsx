@@ -60,8 +60,6 @@ DataTable.propTypes = {
   headers: PropTypes.array.isRequired,
   isLoading: PropTypes.bool,
   results: PropTypes.arrayOf(PropTypes.object),
-  updating: PropTypes.object,
-  removing: PropTypes.object,
   className: PropTypes.string
 }
 
