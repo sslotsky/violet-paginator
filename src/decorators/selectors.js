@@ -1,3 +1,5 @@
+import { recordProps } from '../pageInfoTranslator'
+
 export default function select(paginator) {
   const totalPages =
     Math.ceil(paginator.get('totalCount') / paginator.get('pageSize'))
@@ -17,6 +19,11 @@ export default function select(paginator) {
 
   const tabulate = () => ({
     results: paginator.get('results').toJS(),
+    isLoading: paginator.get('isLoading')
+  })
+
+  const tabulateLean = () => ({
+    ids: paginator.get('results').map(r => r.get(recordProps().identifier)),
     isLoading: paginator.get('isLoading')
   })
 
@@ -40,6 +47,7 @@ export default function select(paginator) {
     flip,
     paginate,
     tabulate,
+    tabulateLean,
     stretch,
     sort,
     violetPaginator

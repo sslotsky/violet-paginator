@@ -393,23 +393,92 @@ describe('pagination reducer', () => {
     })
   })
 
-  context('when handling UPDATE_ITEM', () => {
+  describe('UPDATE_ITEM', () => {
     const itemId = 'someId'
     const results = [{ id: itemId, name: 'Pouty Stout' }]
-    const updating = Set.of('someId')
-    const paginator = defaultPaginator.merge({ results: Immutable.fromJS(results), updating })
+    const paginator = defaultPaginator.merge({ results })
     const { state: initialState } = setup(paginator)
+
+    context('when the item is in the list', () => {
+      const action = {
+        type: actionType(actionTypes.UPDATE_ITEM, id),
+        data: { name: 'Ewe and IPA' },
+        itemId
+      }
+
+      const state = reducer(initialState, action)
+
+      it('updates the item', () => {
+        const item = state.get('results').toJS()[0]
+        expect(item.name).toEqual(action.data.name)
+      })
+    })
+
+    context('when the item is not in the list', () => {
+      const action = {
+        type: actionType(actionTypes.UPDATE_ITEM, id),
+        data: { name: 'Ewe and IPA' },
+        itemId: 'someOtherId'
+      }
+
+      const state = reducer(initialState, action)
+
+      it('does not mutate the state', () => {
+        expect(state).toEqual(initialState)
+      })
+    })
+  })
+
+  describe('UPDATE_COMPLETE', () => {
+    const itemId = 'someId'
+    const updating = Set.of('someId')
+    const paginator = defaultPaginator.merge({ updating })
+    const { state: initialState } = setup(paginator)
+
+    context('when there are 0 updates remaining', () => {
+      const action = {
+        type: actionType(actionTypes.UPDATE_COMPLETE, id),
+        updatesRemaining: 0,
+        itemId
+      }
+
+      const state = reducer(initialState, action)
+
+      it('clears the updating flag', () => {
+        expect(state.get('updating').toArray()).toNotInclude(itemId)
+      })
+    })
+
+    context('when updates remain', () => {
+      const action = {
+        type: actionType(actionTypes.UPDATE_COMPLETE, id),
+        updatesRemaining: 1,
+        itemId
+      }
+
+      const state = reducer(initialState, action)
+
+      it('does not clear the updating flag', () => {
+        expect(state.get('updating').toArray()).toInclude(itemId)
+      })
+    })
+  })
+
+  describe('MASS_UPDATE_COMPLETE', () => {
+    const ids = ['someId', 'someOtherId']
+    const massUpdating = Set(ids)
+    const paginator = defaultPaginator.merge({ massUpdating })
+    const { state: initialState } = setup(paginator)
+
     const action = {
-      type: actionType(actionTypes.UPDATE_ITEM, id),
-      data: { name: 'Ewe and IPA' },
-      itemId
+      type: actionType(actionTypes.MASS_UPDATE_COMPLETE, id),
+      itemIds: ids
     }
 
     const state = reducer(initialState, action)
 
-    it('updates the item', () => {
-      const item = state.get('results').toJS()[0]
-      expect(item.name).toEqual(action.data.name)
+    it('clears all massUpdating flags', () => {
+      expect(state.get('massUpdating').toArray()).toEqual([])
     })
   })
 
