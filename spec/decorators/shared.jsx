@@ -20,6 +20,20 @@ export function decorate(decorator) {
   })
 }
 
+export function behavesLikeADataRow() {
+  it('injects the record', function () {
+    expect(this.component.props().record).toBeA('object')
+  })
+
+  it('injects updating', function () {
+    expect(this.component.props().updating).toBeA('boolean')
+  })
+
+  it('injects removing', function () {
+    expect(this.component.props().removing).toBeA('boolean')
+  })
+}
+
 export function behavesLikeAFlipper() {
   it('injects hasPreviousPage', function () {
     expect(this.component.props().hasPreviousPage).toBeA('boolean')
