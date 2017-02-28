@@ -1,5 +1,4 @@
 import React from 'react'
-import { List } from 'immutable'
 import expect from 'expect'
 import { mount } from 'enzyme'
 import configureMockStore from 'redux-mock-store'
@@ -68,7 +67,7 @@ export function behavesLikeADataGrid() {
 
 export function behavesLikeALeanDataGrid() {
   it('injects ids', function () {
-    expect(this.component.props().ids).toBeA(List)
+    expect(this.component.props().ids).toBeA(Array)
   })
 
   it('injects isLoading', function () {
