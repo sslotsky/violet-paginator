@@ -6,16 +6,17 @@ import { defaultPaginator } from '../../src/reducer'
 
 const mockStore = configureMockStore()
 
-export function decorate(decorator) {
+export function decorate(decorator, props = {}) {
   const Component = () => false
   const Decorated = decorator(Component)
   const store = mockStore({ recipes: defaultPaginator })
   const wrapper = mount(
-    <Decorated store={store} listId="recipes" />
+    <Decorated store={store} listId="recipes" {...props} />
   )
 
   before(function () {
     this.component = wrapper.find(Component)
+    this.wrapper = wrapper
   })
 }
 

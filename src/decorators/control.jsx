@@ -1,12 +1,10 @@
 import React, { PropTypes, Component } from 'react'
 import { List } from 'immutable'
-import decorate from './decorate'
-import select from './selectors'
 
-export default function tabulateLean(Table) {
-  class Controlled extends Component {
+export default function control(Table) {
+  return class extends Component {
     static propTypes = {
-      ids: PropTypes.instanceOf(List),
+      ids: PropTypes.instanceOf(List).isRequired,
       shouldUpdate: PropTypes.func,
       isLoading: PropTypes.bool
     }
@@ -31,7 +29,5 @@ export default function tabulateLean(Table) {
       )
     }
   }
-
-  return decorate(Controlled, props => select(props.paginator).tabulateLean())
 }
 
