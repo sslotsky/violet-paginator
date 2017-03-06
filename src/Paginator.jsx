@@ -1,10 +1,9 @@
 import React, { PropTypes } from 'react'
-import FontAwesome from 'react-fontawesome'
 import classNames from 'classnames'
 
 import paginate from './decorators/paginate'
 import range from './lib/range'
-import { PageLink } from './PageLink'
+import { PageNumber } from './PageNumber'
 import { Prev } from './Prev'
 import { Next } from './Next'
 
@@ -20,26 +19,26 @@ export function Paginator(props) {
 
     return (
       <li className={pageLinkClass} key={page}>
-        <PageLink {...props} page={page} />
+        <PageNumber {...props} page={page} />
       </li>
     )
   })
 
   const separator = totalPages > 7 ? (
     <li className="skip">
-      <FontAwesome name="ellipsis-h" />
+      <i className="fa fa-ellipsis-h" />
     </li>
   ) : false
 
   const begin = separator && minPage > 1 ? (
     <li>
-      <PageLink {...props} page={1} />
+      <PageNumber {...props} page={1} />
     </li>
   ) : false
 
   const end = separator && maxPage < totalPages ? (
     <li>
-      <PageLink {...props} page={totalPages} />
+      <PageNumber {...props} page={totalPages} />
     </li>
   ) : false
 

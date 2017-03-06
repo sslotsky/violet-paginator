@@ -1,7 +1,7 @@
 import React from 'react'
 import expect from 'expect'
 import { shallow } from 'enzyme'
-import { PageLink } from '../src/PageLink'
+import { PageNumber } from '../src/PageNumber'
 
 function verifyPageNumber(node, pageNumber) {
   const { type, props: { children } } = node
@@ -14,11 +14,11 @@ function verifyPageNumber(node, pageNumber) {
   ])
 }
 
-describe('<PageLink />', () => {
+describe('<PageNumber />', () => {
   context('for the current page', () => {
     it('displays the page number in a span', () => {
       const wrapper = shallow(
-        <PageLink page={1} currentPage={1} />
+        <PageNumber page={1} currentPage={1} />
       )
 
       verifyPageNumber(wrapper.node, 1)
@@ -28,7 +28,7 @@ describe('<PageLink />', () => {
   context('for any other page', () => {
     const pageActions = { goTo: expect.createSpy() }
     const wrapper = shallow(
-      <PageLink page={2} currentPage={1} pageActions={pageActions} />
+      <PageNumber page={2} currentPage={1} pageActions={pageActions} />
     )
 
     it('displays a button', () => {

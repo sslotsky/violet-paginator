@@ -1,11 +1,10 @@
 import React, { PropTypes } from 'react'
-import FontAwesome from 'react-fontawesome'
 import { flip } from './decorators'
 
 export function Next({ pageActions, hasNextPage }) {
   return (
     <button type="button" disabled={!hasNextPage} onClick={pageActions.next}>
-      <FontAwesome name="chevron-right" />
+      <i className="fa fa-chevron-right" />
     </button>
   )
 }

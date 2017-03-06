@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
-import FontAwesome from 'react-fontawesome'
-import SortLink from './SortLink'
+import classNames from 'classnames'
+import ColumnHeader from './ColumnHeader'
 import { tabulateLean } from './decorators'
 import DataRow from './containers/DataRow'
 import TableRow from './TableRow'
@@ -20,29 +20,19 @@ function renderRow(headers) {
 export function DataTable(props) {
   const { ids, headers, isLoading, className = 'border' } = props
 
-  if (isLoading) {
-    return (
-      <center>
-        <FontAwesome
-          name="spinner"
-          spin
-          size="5x"
-        />
-      </center>
-    )
-  }
-
   const headerRow = headers.map(h =>
     <th key={h.field}>
-      <SortLink
+      <ColumnHeader
         {...props}
         {...h}
       />
     </th>
   )
 
+  const classes = classNames(className, { loading: isLoading })
+
   return (
-    <table className={className}>
+    <table className={classes}>
       <thead>
         <tr>
           {headerRow}

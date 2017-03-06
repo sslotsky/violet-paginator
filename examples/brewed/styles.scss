@@ -29,6 +29,10 @@ ul.pagination {
     &:hover:not(:disabled) {
       background-color: #7e69c6;
     }
+
+    i {
+      margin: 0; 
+    }
   }
 
   li a:hover {
@@ -36,7 +40,30 @@ ul.pagination {
   }
 }
 
-tbody tr.updating td:first-child {
+table {
+  position: relative;
+
+  &.loading::after {
+    content: '';
+    position: absolute;
+    background-color: rgba(255, 255, 255, .5);
+    top: 0;
+    height: 100%;
+    width: 100%;
+  }
+
+  th button {
+    background-color: thistle;
+    border-radius: .25rem;
+
+    i {
+      margin-right: none;
+      margin-left: .5rem;
+    }
+  }
+}
+
+tbody tr.updating td:first-child, table.loading thead:first-child {
   position: relative;
 
   &::after {

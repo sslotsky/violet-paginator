@@ -5,18 +5,7 @@ import FontAwesome from 'react-fontawesome'
 import { Prev } from '../src/Prev'
 
 function verifyIcon(node) {
-  const {
-    type,
-    props: { name }
-  } = node
-
-  expect([
-    type,
-    name
-  ]).toEqual([
-    FontAwesome,
-    'chevron-left'
-  ])
+  expect(node.props().className).toEqual('fa fa-chevron-left')
 }
 
 describe('<Prev />', () => {
@@ -44,7 +33,7 @@ describe('<Prev />', () => {
     })
 
     it('renders an icon inside the anchor', () => {
-      const icon = wrapper.node.props.children
+      const icon = wrapper.children()
       verifyIcon(icon)
     })
 

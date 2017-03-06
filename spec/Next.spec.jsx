@@ -5,18 +5,7 @@ import FontAwesome from 'react-fontawesome'
 import { Next } from '../src/Next'
 
 function verifyIcon(node) {
-  const {
-    type,
-    props: { name }
-  } = node
-
-  expect([
-    type,
-    name
-  ]).toEqual([
-    FontAwesome,
-    'chevron-right'
-  ])
+  expect(node.props().className).toEqual('fa fa-chevron-right')
 }
 
 describe('<Next />', () => {
@@ -44,7 +33,7 @@ describe('<Next />', () => {
     })
 
     it('renders an icon inside the button', () => {
-      const icon = wrapper.node.props.children
+      const icon = wrapper.children()
       verifyIcon(icon)
     })
 
