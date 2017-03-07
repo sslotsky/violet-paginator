@@ -37,9 +37,23 @@ describe('<ColumnHeader />', () => {
       expect(wrapper.children().node).toEqual(props.text)
     })
 
+    context('when sorted by a different field', () => {
+      beforeEach(() => {
+        props = getProps({ sort: 'otherField' })
+        wrapper = shallow(
+          <ColumnHeader {...props} />
+        )
+      })
+
+      it('indicates a sortable column', () => {
+        const icon = wrapper.find('i')
+        expect(icon.props().className).toEqual('fa fa-sort');
+      })
+    })
+
     context('when sorted by given field', () => {
       beforeEach(() => {
-        props = getProps({ paginator: Map({ sort: props.field }) })
+        props = getProps()
         wrapper = shallow(
           <ColumnHeader {...props} />
         )
