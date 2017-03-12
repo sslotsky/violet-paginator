@@ -1,7 +1,6 @@
 import React from 'react'
 import expect from 'expect'
 import { shallow } from 'enzyme'
-import FontAwesome from 'react-fontawesome'
 import { Prev } from '../src/Prev'
 
 function verifyIcon(node) {
