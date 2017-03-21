@@ -1,6 +1,6 @@
 {
   "name": "violet-paginator",
-  "version": "3.0.0-beta-3",
+  "version": "3.0.0-beta-4",
   "description": "Display, paginate, sort, filter, and update items from the server. violet-paginator is a complete list management library for react/redux applications.",
   "main": "lib/index.js",
   "scripts": {
