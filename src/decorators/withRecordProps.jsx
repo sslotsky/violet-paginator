@@ -1,8 +1,10 @@
-import { connect } from 'react-redux'
+import { getFlux } from '../flux'
 import { getItem, isUpdating, isRemoving } from '../lib/stateManagement'
 
+const flux = getFlux()
+
 export default function withRecordProps(Component) {
-  return connect(
+  return flux.decorate(
     (state, ownProps) => {
       const { listId, itemId } = ownProps
 

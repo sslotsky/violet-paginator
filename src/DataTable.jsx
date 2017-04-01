@@ -6,15 +6,17 @@ import DataRow from './containers/DataRow'
 import TableRow from './TableRow'
 
 function renderRow(headers) {
-  return (id, i) => (
-    <DataRow
-      key={i}
-      itemId={id}
-      component={TableRow}
-      index={i}
-      headers={headers}
-    />
-  )
+  return (id, i) => {
+    return (
+      <DataRow
+        key={i}
+        itemId={id}
+        component={TableRow}
+        index={i}
+        headers={headers}
+      />
+    )
+  }
 }
 
 export function DataTable(props) {

@@ -1,16 +1,17 @@
 import { PropTypes, Component } from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
+import { getFlux, bindActions } from '../flux'
 import composables from '../actions'
 import { defaultPaginator } from '../reducer'
 import { preloadedPaginator } from '../lib/stateManagement'
 
-export const connector = connect(
+const flux = getFlux()
+
+export const connector = flux.decorate(
   (state, ownProps) => ({
     paginator: preloadedPaginator(state, ownProps.listId, ownProps.preloaded)
   }),
   (dispatch, ownProps) => ({
-    pageActions: bindActionCreators(composables(ownProps), dispatch)
+    pageActions: bindActions(composables(ownProps), dispatch)
   })
 )
 

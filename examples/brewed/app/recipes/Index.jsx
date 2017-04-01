@@ -1,6 +1,4 @@
 import React, { PropTypes, Component } from 'react'
-import { connect } from 'react-redux'
-import { I18n } from 'react-redux-i18n'
 import {
   VioletFlipper,
   VioletDataTable,
@@ -9,15 +7,7 @@ import {
 } from 'violet-paginator'
 import { Link } from 'react-router'
 
-import Loading from './Loading'
-import fetchRecipes, { toggleActive } from './actions'
-
-export class Index extends Component {
-  static propTypes = {
-    loading: PropTypes.bool,
-    fetch: PropTypes.func.isRequired
-  }
-
+export default class Index extends Component {
   nameColumn(recipe) {
     return (
       <Link to={`/recipes/${recipe.get('id')}`}>
@@ -29,14 +19,14 @@ export class Index extends Component {
   headers() {
     return [{
       field: 'name',
-      text: I18n.t('recipes.name')
+      text: 'Name'
     }, {
       field: 'created_at',
-      text: I18n.t('recipes.created_at')
+      text: 'Created At'
     }, {
       field: 'boil_time',
       sortable: false,
-      text: I18n.t('recipes.boil_time')
+      text: 'Boil Time'
     }, {
       field: 'active',
       sortable: false,
@@ -45,21 +35,19 @@ export class Index extends Component {
         <input
           type="checkbox"
           checked={!!recipe.active}
-          onChange={() => this.props.toggle(recipe)}
+          onChange={() => {}/*this.props.toggle(recipe)}*/}
         />
       )
     }]
   }
 
   render() {
-    const { fetch, loading } = this.props
     const flipper = (
       <VioletFlipper listId="recipeGrid" />
     )
 
     return (
       <section>
-        <Loading loading={loading} />
         <VioletPageSizeDropdown listId="recipeGrid" />
         <VioletPaginator listId="recipeGrid"  />
         {flipper}
@@ -70,10 +58,3 @@ export class Index extends Component {
     )
   }
 }
-
-export default connect(
-  state => ({
-    loading: !state.recipes.get('connected')
-  }),
-  { fetch: fetchRecipes, toggle: toggleActive }
-)(Index)

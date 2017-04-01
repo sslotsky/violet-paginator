@@ -5,11 +5,7 @@ import { composables } from 'violet-paginator'
 const pageActions = composables({ listId: 'recipeGrid' })
 
 export default function fetchRecipes(pageInfo) {
-  return dispatch =>
-    api.recipes.index(pageInfo.query).then(resp => {
-      dispatch({ type: actionTypes.CONNECTED })
-      return resp
-    })
+  return () => api.recipes.index(pageInfo.query)
 }
 
 export function toggleActive(recipe) {
