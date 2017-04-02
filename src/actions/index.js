@@ -1,6 +1,7 @@
 import * as actionTypes from './actionTypes'
 import simpleComposables from './simpleComposables'
 import fetchingComposables from './fetchingComposables'
+import { bindActions } from '../flux'
 
 export function expireAll() {
   return {
@@ -13,4 +14,8 @@ export default function composables(config) {
     ...fetchingComposables(config),
     ...simpleComposables(config.listId)
   }
+}
+
+export function actionFactory(listId) {
+  return bindActions(composables({ listId }))
 }

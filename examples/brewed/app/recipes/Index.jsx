@@ -6,8 +6,9 @@ import {
   VioletPageSizeDropdown
 } from 'violet-paginator'
 import { Link } from 'react-router'
+import * as actions from './actions'
 
-export default class Index extends Component {
+export class Index extends Component {
   nameColumn(recipe) {
     return (
       <Link to={`/recipes/${recipe.get('id')}`}>
@@ -35,7 +36,7 @@ export default class Index extends Component {
         <input
           type="checkbox"
           checked={!!recipe.active}
-          onChange={() => {}/*this.props.toggle(recipe)}*/}
+          onChange={() =>this.props.toggle(recipe)}
         />
       )
     }]
@@ -58,3 +59,5 @@ export default class Index extends Component {
     )
   }
 }
+
+export default props => <Index {...props} toggle={actions.toggleActive} />;

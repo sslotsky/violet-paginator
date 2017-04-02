@@ -1,4 +1,4 @@
-export composables, { expireAll } from './actions'
+export composables, { actionFactory, expireAll } from './actions'
 export VioletDataTable from './DataTable'
 export VioletFlipper from './Flipper'
 export VioletPaginator from './Paginator'

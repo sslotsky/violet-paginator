@@ -1,8 +1,8 @@
 import api from 'ROOT/api'
 import * as actionTypes from './actionTypes'
-import { composables } from 'violet-paginator'
+import { actionFactory } from 'violet-paginator'
 
-const pageActions = composables({ listId: 'recipeGrid' })
+const pageActions = actionFactory('recipeGrid')
 
 export default function fetchRecipes(pageInfo) {
   return () => api.recipes.index(pageInfo.query)
@@ -14,5 +14,5 @@ export function toggleActive(recipe) {
     setTimeout(resolve, 1500)
   })
 
-  return dispatch => dispatch(pageActions.updateAsync(recipe.id, data, update))
+  return pageActions.updateAsync(recipe.id, data, update)
 }
