@@ -1,8 +1,8 @@
 import api from 'ROOT/api'
 import * as actionTypes from './actionTypes'
-import { actionFactory } from 'violet-paginator'
+import { composables } from 'violet-paginator'
 
-const pageActions = actionFactory('recipeGrid')
+const pageActions = composables({ listId: 'recipeGrid' })
 
 export default function fetchRecipes(pageInfo) {
   return () => api.recipes.index(pageInfo.query)

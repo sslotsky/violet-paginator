@@ -6,6 +6,7 @@ import {
   VioletPageSizeDropdown
 } from 'violet-paginator'
 import { Link } from 'react-router'
+import { connect } from 'react-redux'
 import * as actions from './actions'
 
 export class Index extends Component {
@@ -60,4 +61,4 @@ export class Index extends Component {
   }
 }
 
-export default props => <Index {...props} toggle={actions.toggleActive} />;
+export default connect(undefined, { toggle: actions.toggleActive })(Index)

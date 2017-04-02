@@ -9,8 +9,8 @@ let flux = {
   decorate: connect
 }
 
-export function injectFlux({ dispatch, getState, decorate }) {
-  flux = { dispatch, getState, decorate }
+export function injectFlux(store) {
+  flux = { ...store, decorate: connect }
 }
 
 export function bindActions(actions) {

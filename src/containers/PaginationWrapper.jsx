@@ -4,9 +4,7 @@ import composables from '../actions'
 import { defaultPaginator } from '../reducer'
 import { preloadedPaginator } from '../lib/stateManagement'
 
-const flux = getFlux()
-
-export const connector = flux.decorate(
+export const connector = () => getFlux().decorate(
   (state, ownProps) => ({
     paginator: preloadedPaginator(state, ownProps.listId, ownProps.preloaded)
   }),

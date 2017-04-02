@@ -35,8 +35,13 @@ export function createStore() {
     store = {
       getState,
       dispatch,
-      subscribe: listener => listeners.push(listener),
-      unsubscribe: listener => listeners.splice(listeners.indexOf(listener), 1)
+      subscribe: listener => {
+        listeners.push(listener)
+
+        return function unsubscribe() {
+          listeners.splice(listeners.indexOf(listener), 1)
+        }
+      }
     }
   }
 
