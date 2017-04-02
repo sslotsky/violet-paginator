@@ -1,6 +1,6 @@
 {
   "name": "paginate-this",
-  "version": "4.0.0-beta-1",
+  "version": "4.0.0-beta",
   "description": "Display, paginate, sort, filter, and update items from the server. paginate-this is a complete list management library for react applications.",
   "main": "lib/index.js",
   "scripts": {
