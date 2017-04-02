@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/orange-marmalade/paginate-this.svg?branch=master)](https://travis-ci.org/orange-marmalade/paginate-this)
+[![Build Status](https://travis-ci.org/orange-marmalade/paginate-this.svg?branch=paginate-this)](https://travis-ci.org/orange-marmalade/paginate-this)
 
 # paginate-this
 
