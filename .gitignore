@@ -4,3 +4,4 @@ node_modules/
 coverage/
 .nyc_output/
 examples/server-rendering/assets/bundle.js
+npm-debug.log
