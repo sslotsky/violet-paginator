@@ -1,8 +1,8 @@
-import React, { PropTypes, Component } from 'react'
+import React, { Component } from 'react'
 import { getFlux, bindActions } from './flux'
 
 function resolveActions(props, actionSelect) {
-  if (typeof(actionSelect) === 'function') {
+  if (typeof (actionSelect) === 'function') {
     return actionSelect(getFlux().dispatch, props)
   }
 

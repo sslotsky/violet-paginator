@@ -8,12 +8,12 @@ const getState = () => state
 const listeners = []
 
 const dispatch = action => {
-  if (typeof(action) === 'function') {
+  if (typeof (action) === 'function') {
     return action(dispatch, getState)
   }
 
   Object.keys(state).forEach(k => {
-    state[k] = reducers[k](state[k], action); 
+    state[k] = reducers[k](state[k], action)
   })
 
   listeners.forEach(l => l())

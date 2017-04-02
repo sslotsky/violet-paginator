@@ -6,11 +6,12 @@ const store = createStore()
 let flux = {
   dispatch: store.dispatch,
   getState: store.getState,
+  subscribe: store.subscribe,
   decorate: connect
 }
 
-export function injectFlux(store) {
-  flux = { ...store, decorate: connect }
+export function injectFlux(impl) {
+  flux = { ...impl, decorate: connect }
 }
 
 export function bindActions(actions) {
