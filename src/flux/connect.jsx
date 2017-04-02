@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react';
-import { createStore } from '../store';
-import { bindActions } from '../flux';
+import { createStore } from './store';
+import { bindActions } from './flux';
 
 const store = createStore()
 

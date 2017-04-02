@@ -1,4 +1,4 @@
-import createPaginator from './reducer'
+import createPaginator from '../reducer'
 
 const reducers = {}
 const state = {}

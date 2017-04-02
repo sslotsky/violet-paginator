@@ -1,4 +1,4 @@
-import { getFlux } from '../flux'
+import { getFlux } from '../flux/flux'
 import { getItem, isUpdating, isRemoving } from '../lib/stateManagement'
 
 const flux = getFlux()

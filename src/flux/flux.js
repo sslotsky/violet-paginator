@@ -1,4 +1,4 @@
-import connect from './containers/Connector'
+import connect from './connect'
 import { createStore } from './store'
 
 const store = createStore()
@@ -7,6 +7,10 @@ let flux = {
   dispatch: store.dispatch,
   getState: store.getState,
   decorate: connect
+}
+
+export function injectFlux({ dispatch, getState, decorate }) {
+  flux = { dispatch, getState, decorate }
 }
 
 export function bindActions(actions) {

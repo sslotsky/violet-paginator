@@ -1,7 +1,7 @@
 import * as actionTypes from './actionTypes'
 import simpleComposables from './simpleComposables'
 import fetchingComposables from './fetchingComposables'
-import { bindActions } from '../flux'
+import { bindActions } from '../flux/flux'
 
 export function expireAll() {
   return {
