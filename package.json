@@ -1,7 +1,7 @@
 {
-  "name": "violet-paginator",
+  "name": "paginate-this",
   "version": "4.0.0-beta-1",
-  "description": "Display, paginate, sort, filter, and update items from the server. violet-paginator is a complete list management library for react/redux applications.",
+  "description": "Display, paginate, sort, filter, and update items from the server. paginate-this is a complete list management library for react applications.",
   "main": "lib/index.js",
   "scripts": {
     "spec": "mocha './spec/**/*.spec.js*' --compilers js:babel-register --recursive",
@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sslotsky/violet-paginator.git"
+    "url": "git+https://github.com/orange-marmalade/paginate-this.git"
   },
   "keywords": [
     "react",
@@ -23,8 +23,7 @@
     "paginator",
     "list management",
     "filter",
-    "sort",
-    "violet"
+    "sort"
   ],
   "nyc": {
     "extension": [
