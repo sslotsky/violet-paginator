@@ -247,7 +247,7 @@ export default function Recipes() {
 
 ### Configuration
 
-'paginate-this' aims to make client-server communication painless. For us, usability means:
+`paginate-this` aims to make client-server communication painless. For us, usability means:
 
 1. We know how to read data from your server.
 2. We will provide you with the _correctly formatted_ parameters that you need to send to your server.
@@ -287,7 +287,7 @@ And a corresponding example URL:
 https://www.example.com/v1/users?page=6&page_size=15&sort=name&direction=asc
 ```
 
-The complete list of configuration options and their defaults can be found in the [pageInfoTranslator](https://github.com/sslotsky/violet-paginator/blob/master/src/pageInfoTranslator.js):
+The complete list of configuration options and their defaults can be found in the [pageInfoTranslator](#tbd):
 
 Property Name | Default Value | Description
 ---|:---:|:---
@@ -318,7 +318,7 @@ or a full-fledged react component. Example:
 
 ```javascript
   const activeColumn = recipe => {
-    const icon = recipe.get('active') ? 'check' : 'ban'
+    const icon = recipe.active ? 'check' : 'ban'
     return (
       <FontAwesome name={icon} />
     )
@@ -577,4 +577,4 @@ Please make sure to write tests for any new pull requests. Code coverage will bl
 
 ## TBD
 
-1. Need to move & rework existing documentation
+1. Need to move & rework [existing documentation](https://sslotsky.gitbooks.io/violet-paginator/content/)
