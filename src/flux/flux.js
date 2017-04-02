@@ -20,13 +20,5 @@ export function bindActions(actions) {
   }), {})
 }
 
-export function injectStore({
-  decorate,
-  getState,
-  dispatch
-}) {
-  flux = { decorate, getState, dispatch, bindActions }
-}
-
 export const getFlux = () => flux
 
