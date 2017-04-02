@@ -1,5 +1,5 @@
 {
-  "name": "paginate-this",
+  "name": "@orange-marmalade/paginate-this",
   "version": "4.0.0-beta-1",
   "description": "Display, paginate, sort, filter, and update items from the server. paginate-this is a complete list management library for react applications.",
   "main": "lib/index.js",
@@ -80,5 +80,12 @@
     "redux-mock-store": "^1.1.4",
     "redux-thunk": "^2.1.0",
     "webpack": "^1.13.1"
+  },
+  "bugs": {
+    "url": "https://github.com/orange-marmalade/paginate-this/issues"
+  },
+  "homepage": "https://github.com/orange-marmalade/paginate-this#readme",
+  "directories": {
+    "example": "examples"
   }
 }
