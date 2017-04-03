@@ -36,7 +36,7 @@ export default function select(paginator) {
     sortReverse: paginator.get('sortReverse')
   })
 
-  const violetPaginator = () => ({
+  const paginateThis = () => ({
     ...paginate(),
     ...tabulate(),
     ...stretch(),
@@ -50,6 +50,6 @@ export default function select(paginator) {
     tabulateLean,
     stretch,
     sort,
-    violetPaginator
+    paginateThis
   }
 }

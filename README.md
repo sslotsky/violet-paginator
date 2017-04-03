@@ -42,7 +42,7 @@ A minimal example:
 
 ```javascript
 import React from 'react'
-import { paginate, VioletPaginator, VioletDataTable } from 'paginate-this'
+import { paginate, Paginator, DataTable } from 'paginate-this'
 import api from 'ROOT/api'
 
 function fetchRecipes(pageInfo) {
@@ -68,8 +68,8 @@ const headers = {
 export default function Recipes() {
   return (
     <section>
-      <VioletPaginator listId="recipeGrid"  />
-      <VioletDataTable listId="recipeGrid" headers={headers} />
+      <Paginator listId="recipeGrid"  />
+      <DataTable listId="recipeGrid" headers={headers} />
     </section>
   )
 }
@@ -178,7 +178,7 @@ from `redux`:
 
 ```javascript
 import { createStore, applyMiddleware } from 'redux'
-import { middleware } from 'violet-paginator'
+import { middleware } from 'paginate-this'
 
 import reducers from './reducers'
 
@@ -192,7 +192,7 @@ the `injectFlux` function. All together now (with a little bell on it):
 
 ```javascript
 import { compose, createStore, applyMiddleware } from 'redux'
-import { injectFlux, configurePageParams, middleware } from 'violet-paginator'
+import { injectFlux, configurePageParams, middleware } from 'paginate-this'
 
 import reducers from './reducers'
 
@@ -219,7 +219,7 @@ in order to find your list within the store. Some require additional props. Exam
 
 ```javascript
 import React from 'react'
-import { VioletPaginator, VioletDataTable } from 'paginate-this'
+import { Paginator, DataTable } from 'paginate-this'
 
 const headers = {
   return [{
@@ -238,8 +238,8 @@ const headers = {
 export default function Recipes() {
   return (
     <section>
-      <VioletPaginator listId="recipeGrid"  />
-      <VioletDataTable listId="recipeGrid" headers={headers} />
+      <Paginator listId="recipeGrid"  />
+      <DataTable listId="recipeGrid" headers={headers} />
     </section>
   )
 }
@@ -310,9 +310,9 @@ You can include this stylesheet in any way you wish, or you can choose to style 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 ```
 
-### Customizing VioletDataTable
+### Customizing the DataTable component
 
-By default, the `VioletDataTable` will simply display the raw values from the data that correspond to the headers that
+By default, the `DataTable` will simply display the raw values from the data that correspond to the headers that
 are specified. However, each header can be supplied with a `format` function, which can return a simple value, some markup,
 or a full-fledged react component. Example:
 
@@ -381,7 +381,7 @@ At this point you could attach your composed action to a custom checkbox in the 
 
 ```javascript
 import React, { PropTypes } from 'react'
-import { VioletDataTable, VioletPaginator } from 'violet-paginator'
+import { DataTable, Paginator } from 'paginate-this'
 import * as actions from './actions'
 
 export function Recipes({ toggle })  {
@@ -405,8 +405,8 @@ export function Recipes({ toggle })  {
 
   return (
     <section>
-      <VioletPaginator listId="recipeGrid"  />
-      <VioletDataTable listId="recipeGrid" headers={headers} />
+      <Paginator listId="recipeGrid"  />
+      <DataTable listId="recipeGrid" headers={headers} />
     </section>
   )
 }
@@ -445,7 +445,7 @@ Now you can bring this action creator into your connected component using `conne
 
 ```javascript
 import React, { PropTypes } from 'react'
-import { VioletDataTable, VioletPaginator } from 'violet-paginator'
+import { DataTable, Paginator } from 'paginate-this'
 import * as actions from './actions'
 
 export function Recipes({ toggle }) {
@@ -556,7 +556,7 @@ export default decorators.stretch(MyPageSizeDropdown)
 export default decorators.sort(MySortLink)
 
 // The kitchen sink! Injects properties from all decorators
-export default decorators.violetPaginator(MyPaginatedGridComponent)
+export default decorators.paginateThis(MyPaginatedGridComponent)
 ```
 
 For more on using decorators or creating your own, [check the docs on decorators](#tbd).

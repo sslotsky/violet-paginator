@@ -1,8 +1,8 @@
-import { violetPaginator } from '../../src/decorators'
+import { paginateThis } from '../../src/decorators'
 import * as shared from './shared'
 
 describe('violetPaginator()', () => {
-  shared.decorate(violetPaginator)
+  shared.decorate(paginateThis)
   shared.behavesLikeAPaginator()
   shared.behavesLikeADataGrid()
   shared.behavesLikeAPageSizer()
