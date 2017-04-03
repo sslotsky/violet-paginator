@@ -9,7 +9,7 @@ import { loadTranslations, setLocale, syncTranslationWithStore, I18n } from 'rea
 import '../styles.scss'
 
 import translations from 'CONF/locales'
-import { injectFlux, configurePageParams, middleware } from 'violet-paginator'
+import { injectFlux, configurePageParams, middleware } from '@orange-marmalade/paginate-this'
 
 import reducers from './reducers'
 import App from './App'

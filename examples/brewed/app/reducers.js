@@ -1,6 +1,6 @@
 import { i18nReducer } from 'react-redux-i18n'
 import { combineReducers } from 'redux'
-import { createPaginator } from 'violet-paginator'
+import { createPaginator } from '@orange-marmalade/paginate-this'
 import recipes from './recipes/reducer'
 import fetch from './recipes/actions'
 

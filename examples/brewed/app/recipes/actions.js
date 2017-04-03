@@ -1,6 +1,6 @@
 import api from 'ROOT/api'
 import * as actionTypes from './actionTypes'
-import { composables } from 'violet-paginator'
+import { composables } from '@orange-marmalade/paginate-this'
 
 const pageActions = composables({ listId: 'recipeGrid' })
 

@@ -1,10 +1,10 @@
 import React, { PropTypes, Component } from 'react'
 import {
-  VioletFlipper,
-  VioletDataTable,
-  VioletPaginator,
-  VioletPageSizeDropdown
-} from 'violet-paginator'
+  Flipper,
+  DataTable,
+  Paginator,
+  PageSizeDropdown
+} from '@orange-marmalade/paginate-this'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import * as actions from './actions'
@@ -45,17 +45,17 @@ export class Index extends Component {
 
   render() {
     const flipper = (
-      <VioletFlipper listId="recipeGrid" />
+      <Flipper listId="recipeGrid" />
     )
 
     return (
       <section>
-        <VioletPageSizeDropdown listId="recipeGrid" />
-        <VioletPaginator listId="recipeGrid"  />
+        <PageSizeDropdown listId="recipeGrid" />
+        <Paginator listId="recipeGrid"  />
         {flipper}
-        <VioletDataTable listId="recipeGrid" headers={this.headers()} />
+        <DataTable listId="recipeGrid" headers={this.headers()} />
         {flipper}
-        <VioletPaginator listId="recipeGrid" />
+        <Paginator listId="recipeGrid" />
       </section>
     )
   }
