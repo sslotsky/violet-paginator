@@ -11,14 +11,20 @@ function resolveActions(props, actionSelect) {
 
 export default function connect(propSelect, actionSelect = {}) {
   return Comp => class extends Component {
-    notify = () => this.setState(getFlux().getState())
+    notify = () => {
+      if (this.shouldUpdate) {
+        this.setState(getFlux().getState())
+      }
+    }
 
     componentDidMount() {
       this.unsubscribe = getFlux().subscribe(this.notify)
+      this.shouldUpdate = true
     }
 
     componentWillUnmount() {
       this.unsubscribe()
+      this.shouldUpdate = false
     }
 
     render() {
