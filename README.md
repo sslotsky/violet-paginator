@@ -1,9 +1,9 @@
 [![npm](https://img.shields.io/npm/v/@orange-marmalade/paginate-this.svg?style=plastic)](https://www.npmjs.com/package/@orange-marmalade/paginate-this)
-[![Build Status](https://travis-ci.org/orange-marmalade/paginate-this.svg?branch=paginate-this)](https://travis-ci.org/orange-marmalade/paginate-this)
+[![Travis branch](https://img.shields.io/travis/orange-marmalade/paginate-this/paginate-this.svg?style=plastic)](https://travis-ci.org/orange-marmalade/paginate-this)
 [![Codecov](https://img.shields.io/codecov/c/github/orange-marmalade/paginate-this.svg?style=plastic)](https://codecov.io/gh/orange-marmalade/paginate-this)
 [![license](https://img.shields.io/github/license/orange-marmalade/paginate-this.svg?style=plastic)](https://github.com/orange-marmalade/paginate-this/blob/paginate-this/LICENSE.md)
-[![dependencies Status](https://david-dm.org/orange-marmalade/paginate-this/status.png)](https://david-dm.org/orange-marmalade/paginate-this)
-[![devDependencies Status](https://david-dm.org/orange-marmalade/paginate-this/dev-status.png)](https://david-dm.org/orange-marmalade/paginate-this?type=dev)
+[![David](https://img.shields.io/david/orange-marmalade/paginate-this.svg?style=plastic)](https://david-dm.org/orange-marmalade/paginate-this)
+[![David](https://img.shields.io/david/dev/orange-marmalade/paginate-this.svg?style=plastic)](https://david-dm.org/orange-marmalade/paginate-this?type=dev)
 
 # paginate-this
 
