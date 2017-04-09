@@ -16,7 +16,7 @@ export function Paginator(props) {
   const rangeSize = 7 - [hasRightEllipsis, hasLeftEllipsis].filter(h => h).length
   const maxPage = Math.max(minPage + 1, Math.min(totalPages - 1, minPage + (rangeSize - 1)))
 
-  const pageLinks = [...range(minPage, maxPage)].map(page => {
+  const pageLinks = totalPages > 2 && [...range(minPage, maxPage)].map(page => {
     const pageLinkClass = classNames({ current: page === currentPage })
 
     return (
@@ -38,7 +38,7 @@ export function Paginator(props) {
     </li>
   )
 
-  const end = (
+  const end = totalPages > 1 && (
     <li className={classNames({ current: currentPage === totalPages })}>
       <PageNumber {...props} page={totalPages} />
     </li>
