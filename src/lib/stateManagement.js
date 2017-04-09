@@ -15,6 +15,10 @@ const defaultPageParams = () => {
   }
 }
 
+export function stateInfo() {
+  return stateMap
+}
+
 export function registerPaginator({
   listId,
   fetch,

@@ -10,9 +10,11 @@ import { Next } from './Next'
 export function Paginator(props) {
   const { currentPage, totalPages } = props
 
-  const upperOffset = Math.max(0, (currentPage - totalPages) + 3)
-  const minPage = Math.max(props.currentPage - 3 - upperOffset, 1)
-  const maxPage = Math.min(minPage + 6, totalPages)
+  const hasRightEllipsis = totalPages - currentPage >= 7
+  const hasLeftEllipsis = (totalPages > 7) && (currentPage > 2)
+  const minPage = hasLeftEllipsis ? Math.min(currentPage, totalPages - 6) : 2
+  const rangeSize = 7 - [hasRightEllipsis, hasLeftEllipsis].filter(h => h).length
+  const maxPage = Math.max(minPage + 1, Math.min(totalPages - 1, minPage + (rangeSize - 1)))
 
   const pageLinks = [...range(minPage, maxPage)].map(page => {
     const pageLinkClass = classNames({ current: page === currentPage })
@@ -24,23 +26,23 @@ export function Paginator(props) {
     )
   })
 
-  const separator = totalPages > 7 ? (
+  const separator = (
     <li className="skip">
       <i className="fa fa-ellipsis-h" />
     </li>
-  ) : false
+  )
 
-  const begin = separator && minPage > 1 ? (
-    <li>
+  const begin = (
+    <li className={classNames({ current: currentPage === 1 })}>
       <PageNumber {...props} page={1} />
     </li>
-  ) : false
+  )
 
-  const end = separator && maxPage < totalPages ? (
-    <li>
+  const end = (
+    <li className={classNames({ current: currentPage === totalPages })}>
       <PageNumber {...props} page={totalPages} />
     </li>
-  ) : false
+  )
 
   return (
     <ul className="pagination">
@@ -48,9 +50,9 @@ export function Paginator(props) {
         <Prev {...props} />
       </li>
       {begin}
-      {begin && separator}
+      {hasLeftEllipsis && separator}
       {pageLinks}
-      {end && separator}
+      {hasRightEllipsis && separator}
       {end}
       <li>
         <Next {...props} />

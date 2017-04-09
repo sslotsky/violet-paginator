@@ -23,6 +23,11 @@ module.exports = {
     historyApiFallback: true
   },
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env': {
+        'NODE_ENV': JSON.stringify('development')
+      }
+    }),
     new BrowserSyncPlugin({
       host: 'localhost',
       port: 3000,

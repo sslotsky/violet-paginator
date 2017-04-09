@@ -49,13 +49,14 @@ A minimal example:
 
 ```javascript
 import React from 'react'
-import { paginate, Paginator, DataTable } from 'paginate-this'
+import { initializeStore, paginate, Paginator, DataTable } from 'paginate-this'
 import api from 'ROOT/api'
 
 function fetchRecipes(pageInfo) {
   return () => api.recipes.index(pageInfo.query)
 }
 
+initializeStore()
 paginate({ listId: 'recipeGrid', fetch: fetchRecipes })
 
 const headers = {
@@ -151,6 +152,28 @@ By using the `paginate` function, you are telling `paginate-this` to manage the 
 
 The `paginate` function also allows many additional configuration options, which you can read about [here](#TBD).
 
+#### Initializing the store
+
+Before you can render components or fire off some actions, call `initializeStore()` so that `paginate-this` can prepare
+its data store:
+
+```javascript
+import { initializeStore } from '@orange-marmalade/paginate-this'
+
+initializeStore()
+```
+
+#### Optional debugging
+
+Calling `debug()` before initializing the store signals `paginate-this` to print useful info to the console.
+
+```javascript
+import { initializeStore, debug } from '@orange-marmalade/paginate-this'
+
+debug(process.env.NODE_ENV === 'development')
+initializeStore()
+```
+
 ### Redux setup
 
 Integrating `paginate-this` with `redux` is easy, and the setup is almost identical to the standalone setup.
@@ -195,11 +218,11 @@ const store = createStore(reducers, applyMiddleware(middleware.jelly))
 #### Injecting the redux store
 
 Last step. In order to let `redux` communicate with `paginate` this, we need three essential pieces of the `redux` store, which you provide with
-the `injectFlux` function. All together now (with a little bell on it):
+the `initializeStore` function. All together now (with a little bell on it):
 
 ```javascript
 import { compose, createStore, applyMiddleware } from 'redux'
-import { injectFlux, configurePageParams, middleware } from 'paginate-this'
+import { initializeStore, configurePageParams, middleware } from 'paginate-this'
 
 import reducers from './reducers'
 
@@ -216,8 +239,30 @@ configurePageParams({
   sortReverse: true
 })
 
-injectFlux(store)
+initializeStore(store)
 ```
+
+#### Optional logging middleware
+
+We expose another piece of middleware called `spill` which prints useful info to the console. This is the same middleware that runs in standalone
+mode when using [`debug(true)`](#optional-debugging).
+
+```javascript
+import { createStore, applyMiddleware } from 'redux'
+import { initializeStore, middleware } from '@orange-marmalade/paginate-this'
+
+import reducers from './reducers'
+
+const store = createStore(
+  reducers,
+  applyMiddleware(middleware.jelly, middleware.spill)
+)
+
+initializeStore(store)
+```
+
+This prints the action and resulting state to the console similar to [redux-devtools](https://github.com/gaearon/redux-devtools), which we recommend
+using instead of `spill` if you're setting up `paginate-this` in `redux` mode.
 
 ### Rendering components
 
@@ -362,7 +407,7 @@ The most common use case for composing actions would be [updating an item within
 ##### actionFactory
 
 As an example, consider a datatable where one column has a checkbox that's supposed to mark an item as active or inactive.
-Assuming that you have a `listId` of `'recipes'`, you could write an action creator like this to update the record on the server
+Assuming that you have a `listId` of `'recipeGrid'`, you could write an action creator like this to update the record on the server
 and then toggle the active state of the corresponding recipe within the list:
 
 ```javascript

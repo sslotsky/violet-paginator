@@ -1,17 +1,12 @@
 import connect from './connect'
 import { createStore } from './store'
 
-const store = createStore()
-
 let flux = {
-  dispatch: store.dispatch,
-  getState: store.getState,
-  subscribe: store.subscribe,
   decorate: connect
 }
 
-export function injectFlux(impl) {
-  flux = { ...impl, decorate: connect }
+export function initializeStore(store = createStore()) {
+  flux = { ...store, decorate: connect }
 }
 
 export function bindActions(actions) {

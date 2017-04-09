@@ -2,6 +2,7 @@ import React from 'react'
 import expect from 'expect'
 import { mount } from 'enzyme'
 import configureMockStore from 'redux-mock-store'
+import { initializeStore } from '../../src/flux/flux'
 import { defaultPaginator } from '../../src/reducer'
 
 const mockStore = configureMockStore()
@@ -10,6 +11,7 @@ export function decorate(decorator, initialSettings = {}) {
   const Component = () => false
   const Decorated = decorator(Component)
   const store = mockStore({ recipes: defaultPaginator.merge(initialSettings) })
+  initializeStore(store)
   const wrapper = mount(
     <Decorated store={store} listId="recipes" />
   )

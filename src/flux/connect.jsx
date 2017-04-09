@@ -1,15 +1,8 @@
 import React, { Component } from 'react'
-import { getFlux, bindActions } from './flux'
+import resolveActions from './resolveActions'
+import { getFlux } from './flux'
 
-function resolveActions(props, actionSelect) {
-  if (typeof (actionSelect) === 'function') {
-    return actionSelect(getFlux().dispatch, props)
-  }
-
-  return bindActions(actionSelect)
-}
-
-export default function connect(propSelect, actionSelect = {}) {
+export default function connect(propSelect = () => ({}), actionSelect = {}) {
   return Comp => class extends Component {
     notify = () => {
       if (this.shouldUpdate) {

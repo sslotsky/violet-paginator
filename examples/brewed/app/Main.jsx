@@ -9,7 +9,7 @@ import { loadTranslations, setLocale, syncTranslationWithStore, I18n } from 'rea
 import '../styles.scss'
 
 import translations from 'CONF/locales'
-import { injectFlux, configurePageParams, middleware } from '@orange-marmalade/paginate-this'
+import { initializeStore, configurePageParams, middleware, debug } from '@orange-marmalade/paginate-this'
 
 import reducers from './reducers'
 import App from './App'
@@ -18,16 +18,16 @@ const devtools = window.devToolsExtension ? window.devToolsExtension() : f => f
 
 const store = createStore(
   reducers,
-  compose(applyMiddleware(middleware.jelly), devtools)
+  applyMiddleware(middleware.jelly, middleware.spill)
 )
+
+initializeStore(store)
 
 configurePageParams({
   perPage: 'results_per_page',
   sortOrder: 'sort_reverse',
   sortReverse: true
 })
-
-injectFlux(store)
 
 syncTranslationWithStore(store)
 store.dispatch(loadTranslations(translations))

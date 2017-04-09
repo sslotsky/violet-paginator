@@ -24,6 +24,6 @@ function wrap(Component, decorator) {
 }
 
 export default function decorate(Component, decorator) {
-  return connector()(wrap(Component, decorator))
+  return connector(wrap(Component, decorator))
 }
 

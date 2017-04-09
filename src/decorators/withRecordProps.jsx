@@ -1,10 +1,8 @@
 import { getFlux } from '../flux/flux'
 import { getItem, isUpdating, isRemoving } from '../lib/stateManagement'
 
-const flux = getFlux()
-
 export default function withRecordProps(Component) {
-  return flux.decorate(
+  return getFlux().decorate(
     (state, ownProps) => {
       const { listId, itemId } = ownProps
 

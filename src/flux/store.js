@@ -1,4 +1,6 @@
 import createPaginator from '../reducer'
+import getMiddleware from '../middleware/internalMiddleware'
+
 
 const reducers = {}
 const state = {}
@@ -6,19 +8,6 @@ const state = {}
 const getState = () => state
 
 const listeners = []
-
-const dispatch = action => {
-  if (typeof (action) === 'function') {
-    return action(dispatch, getState)
-  }
-
-  Object.keys(state).forEach(k => {
-    state[k] = reducers[k](state[k], action)
-  })
-
-  listeners.forEach(l => l())
-  return action
-}
 
 export function paginate(config) {
   const { locator: _, ...rest } = config
@@ -30,11 +19,28 @@ export function paginate(config) {
 
 let store = null
 
+const dispatch = action => {
+  Object.keys(state).forEach(k => {
+    state[k] = reducers[k](state[k], action)
+  })
+
+  listeners.forEach(l => l())
+
+  return action
+}
+
+const compose = (a, b, ...rest) => {
+  if (!b) {
+    return a(arg => arg)
+  }
+
+  return a(compose(b, ...rest))
+}
+
 export function createStore() {
   if (!store) {
     store = {
       getState,
-      dispatch,
       subscribe: listener => {
         listeners.push(listener)
 
@@ -43,6 +49,10 @@ export function createStore() {
         }
       }
     }
+
+    const chain = getMiddleware().map(m => m(store))
+
+    store.dispatch = action => dispatch(compose(...chain)(action))
   }
 
   return store
