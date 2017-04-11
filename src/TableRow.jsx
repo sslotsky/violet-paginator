@@ -1,8 +1,9 @@
-import React, { PropTypes } from 'react'
-import classNames from 'classnames'
+import React from 'react'
+import PropTypes from 'prop-types'
+import classNames from './lib/classNames'
 
 export default function TableRow({ record, index, updating, removing, headers }) {
-  const classes = classNames({ updating, removing })
+  const classes = classNames().withConditional({ updating, removing }).load()
   const columns = headers.map(h => {
     const { field, format } = h
     const data = record[field]

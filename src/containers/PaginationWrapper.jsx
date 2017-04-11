@@ -1,4 +1,5 @@
-import { PropTypes, Component } from 'react'
+import { Component } from 'react'
+import PropTypes from 'prop-types'
 import { getFlux, bindActions } from '../flux/flux'
 import composables from '../actions'
 import { defaultPaginator } from '../reducer'

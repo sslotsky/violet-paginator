@@ -25,9 +25,15 @@ and extend default behavior by composing actions.
 
 ## Demo
 
+http://daffy-teeth.surge.sh/
+
 ## Extended Documentation
 
 ## Installation
+
+```
+npm i --save @orange-marmalade/paginate-this
+```
 
 ## Dependencies
 

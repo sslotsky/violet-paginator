@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import { withRecordProps } from '../decorators'
 
 export default function DataRow({ component, ...rest }, context) {

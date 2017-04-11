@@ -1,5 +1,6 @@
-import React, { PropTypes } from 'react'
-import classNames from 'classnames'
+import React from 'react'
+import PropTypes from 'prop-types'
+import classNames from './lib/classNames'
 import ColumnHeader from './ColumnHeader'
 import { tabulateLean } from './decorators'
 import DataRow from './containers/DataRow'
@@ -29,7 +30,9 @@ export function DataTable(props) {
     </th>
   )
 
-  const classes = classNames(className, { loading: isLoading })
+  const classes = classNames(className)
+    .withConditional({ loading: isLoading })
+    .load()
 
   return (
     <table className={classes}>

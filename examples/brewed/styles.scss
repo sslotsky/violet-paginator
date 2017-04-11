@@ -18,25 +18,31 @@ ul.pagination {
   margin-top: 1rem;
   margin-bottom: 1rem;
 
-  li button {
-    background-color: transparent;
-    color: black;
+  li {
+    width: 2.5rem;
+    border: none;
+    box-shadow: none;
 
-    &:disabled {
-      color: rgba(0, 0, 0, .54);
+    &.current {
+      font-weight: bold;
     }
 
-    &:hover:not(:disabled) {
-      background-color: #7e69c6;
-    }
+    button {
+      background-color: transparent;
+      color: black;
 
-    i {
-      margin: 0; 
-    }
-  }
+      &:disabled {
+        color: rgba(0, 0, 0, .54);
+      }
 
-  li a:hover {
-    background-color: #7e69c6;
+      &:hover:not(:disabled) {
+        background-color: #7e69c6;
+      }
+
+      i {
+        margin: 0; 
+      }
+    }
   }
 }
 

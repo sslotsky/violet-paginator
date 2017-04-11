@@ -1,5 +1,4 @@
 import axios from 'axios'
-import PubSub from 'pubsub-js'
 
 const API_BASE = 'https://brewed-dev.herokuapp.com/v1'
 
@@ -13,17 +12,6 @@ function api() {
       Accept: 'application/json'
     }
   })
-
-  adapter.interceptors.response.use(
-    undefined,
-    (error) => {
-      if (error.response.status === 403) {
-        PubSub.publish('session.expired')
-      }
-
-      return Promise.reject(error)
-    }
-  )
 
   return adapter
 }

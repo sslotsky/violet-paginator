@@ -1,6 +1,5 @@
 import Immutable, { Map, List, Set } from 'immutable'
-import { resolveEach } from 'redux-resolver'
-import { updateListItem } from './lib/reduxResolver'
+import { resolveEach, updateListItem } from './lib/reduxResolver'
 import actionType, * as actionTypes from './actions/actionTypes'
 import { recordProps } from './pageInfoTranslator'
 import { registerPaginator } from './lib/stateManagement'

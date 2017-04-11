@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import { sort as decorate } from './decorators'
 
 export function ColumnHeader({ pageActions, field, text, sort, sortReverse, sortable=true }) {

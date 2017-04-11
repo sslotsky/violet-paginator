@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import Recipes from './recipes/Index'
 
 export default function App() {
@@ -6,8 +7,8 @@ export default function App() {
     <div>
       <div className="alert">
         <center>
-          <h1>VioletPaginator</h1>
-          <a target="_blank" href="https://github.com/sslotsky/violet-paginator" className="btn">
+          <h1>PaginateThis</h1>
+          <a target="_blank" href="https://github.com/@orange-marmalade/paginate-this" className="btn">
             <span className="fa fa-github">
               View On Github
             </span>

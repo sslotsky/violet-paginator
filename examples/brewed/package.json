@@ -7,12 +7,12 @@
     "start": "webpack-dev-server --progress --colors -w",
     "lint": "eslint ./app/** --ext=js,jsx",
     "test": "npm run lint",
-    "build-example": "webpack ./index.js"
+    "build-example": "webpack ./index.js --config ./webpack.config.deploy.js"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@orange-marmalade/paginate-this": "^4.0.0-beta-4",
+    "@orange-marmalade/paginate-this": "^4.0.0-beta-7",
     "axios": "^0.13.1",
     "babel-core": "^6.13.2",
     "babel-loader": "^6.2.4",
@@ -26,16 +26,11 @@
     "fbjs": "^0.8.3",
     "immutable": "^3.8.1",
     "node-sass": "^3.8.0",
-    "pubsub-js": "^1.5.4",
+    "prop-types": "^15.5.6",
     "react": "^15.3.0",
     "react-dom": "^15.3.0",
-    "react-fontawesome": "^1.1.0",
     "react-redux": "^4.4.5",
-    "react-redux-i18n": "0.0.3",
-    "react-router": "^3.0.0",
     "redux": "^3.5.2",
-    "redux-resolver": "^1.0.1",
-    "redux-thunk": "^2.1.0",
     "sass-loader": "^4.0.0",
     "style-loader": "^0.13.1",
     "webpack": "^1.13.1"

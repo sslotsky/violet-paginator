@@ -1,5 +1,6 @@
-import React, { PropTypes } from 'react'
-import classNames from 'classnames'
+import React from 'react'
+import PropTypes from 'prop-types'
+import classNames from './lib/classNames'
 
 import paginate from './decorators/paginate'
 import range from './lib/range'
@@ -17,7 +18,9 @@ export function Paginator(props) {
   const maxPage = Math.max(minPage + 1, Math.min(totalPages - 1, minPage + (rangeSize - 1)))
 
   const pageLinks = totalPages > 2 && [...range(minPage, maxPage)].map(page => {
-    const pageLinkClass = classNames({ current: page === currentPage })
+    const pageLinkClass = classNames()
+      .withConditional({ current: page === currentPage })
+      .load()
 
     return (
       <li className={pageLinkClass} key={page}>

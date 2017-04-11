@@ -1,8 +1,8 @@
 import api from 'ROOT/api'
 import * as actionTypes from './actionTypes'
-import { composables } from '@orange-marmalade/paginate-this'
+import { actionFactory } from '@orange-marmalade/paginate-this'
 
-const pageActions = composables({ listId: 'recipeGrid' })
+const pageActions = actionFactory('recipeGrid')
 
 export default function fetchRecipes(pageInfo) {
   return () => api.recipes.index(pageInfo.query)
