@@ -41,9 +41,7 @@
   "author": "Sam Slotsky",
   "license": "MIT",
   "dependencies": {
-    "classnames": "^2.2.5",
     "prop-types": "^15.5.7",
-    "redux-resolver": "^1.0.2",
     "uuid": "^3.0.1"
   },
   "peerDependencies": {
