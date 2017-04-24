@@ -55,7 +55,7 @@ A minimal example:
 
 ```javascript
 import React from 'react'
-import { initializeStore, paginate, Paginator, DataTable } from 'paginate-this'
+import { initializeStore, paginate, Paginator, DataTable } from '@orange-marmalade/paginate-this'
 import api from 'ROOT/api'
 
 function fetchRecipes(pageInfo) {
@@ -120,7 +120,7 @@ https://www.example.com/v1/users?page=6&limit=25&sort=name&reverse=true
 Fortunately, `paginate-this` does not discriminate. You can tell us about your API conventions, and we will follow them:
 
 ```javascript
-import { configurePageParams } from 'paginate-this'
+import { configurePageParams } from '@orange-marmalade/paginate-this'
 
 configurePageParams({
   perPage: 'results_per_page',
@@ -144,7 +144,7 @@ a major goal of this rewrite was to reduce depenendencies, and decoupling from `
 Tell us about your list. It needs a unique identifier, and a function that fetches data from the server:
 
 ```javascript
-import { paginate } from 'paginate-this'
+import { paginate } from '@orange-marmalade/paginate-this'
 import api from 'ROOT/api'
 
 function fetchRecipes(pageInfo) {
@@ -190,7 +190,7 @@ This is similar to [declaring a list](#declaring-a-list) in the standalone setup
 you'll use `createPaginator`, which will return a reducer for you to add to your store.
 
 ```javascript
-import { createPaginator } from 'paginate-this'
+import { createPaginator } from '@orange-marmalade/paginate-this'
 import { combineReducers } from 'redux'
 import users from './users/reducer'
 import { fetch } from './recipes/actions'
@@ -214,7 +214,7 @@ from `redux`:
 
 ```javascript
 import { createStore, applyMiddleware } from 'redux'
-import { middleware } from 'paginate-this'
+import { middleware } from '@orange-marmalade/paginate-this'
 
 import reducers from './reducers'
 
@@ -228,7 +228,7 @@ the `initializeStore` function. All together now (with a little bell on it):
 
 ```javascript
 import { compose, createStore, applyMiddleware } from 'redux'
-import { initializeStore, configurePageParams, middleware } from 'paginate-this'
+import { initializeStore, configurePageParams, middleware } from '@orange-marmalade/paginate-this'
 
 import reducers from './reducers'
 
@@ -277,7 +277,7 @@ in order to find your list within the store. Some require additional props. Exam
 
 ```javascript
 import React from 'react'
-import { Paginator, DataTable } from 'paginate-this'
+import { Paginator, DataTable } from '@orange-marmalade/paginate-this'
 
 const headers = {
   return [{
@@ -314,7 +314,7 @@ Because different backends will use different property names for pagination and 
 fully configurable. Example config:
 
 ```javascript
-import { configurePageParams } from 'paginate-this'
+import { configurePageParams } from '@orange-marmalade/paginate-this'
 
 configurePageParams({
   perPage: 'results_per_page',
@@ -418,7 +418,7 @@ and then toggle the active state of the corresponding recipe within the list:
 
 ```javascript
 import api from 'ROOT/api'
-import { actionFactory } from 'paginate-this'
+import { actionFactory } from '@orange-marmalade/paginate-this'
 
 const pageActions = actionFactory('recipeGrid')
 
@@ -439,7 +439,7 @@ At this point you could attach your composed action to a custom checkbox in the 
 
 ```javascript
 import React, { PropTypes } from 'react'
-import { DataTable, Paginator } from 'paginate-this'
+import { DataTable, Paginator } from '@orange-marmalade/paginate-this'
 import * as actions from './actions'
 
 export function Recipes({ toggle })  {
@@ -482,7 +482,7 @@ function.
 
 ```javascript
 import api from 'ROOT/api'
-import { composables } from 'paginate-this'
+import { composables } from '@orange-marmalade/paginate-this'
 
 const pageActions = composables({ listId: 'recipeGrid' })
 
@@ -503,7 +503,7 @@ Now you can bring this action creator into your connected component using `conne
 
 ```javascript
 import React, { PropTypes } from 'react'
-import { DataTable, Paginator } from 'paginate-this'
+import { DataTable, Paginator } from '@orange-marmalade/paginate-this'
 import * as actions from './actions'
 
 export function Recipes({ toggle }) {
@@ -592,7 +592,7 @@ The only prop that callers need to supply to these components is
 a `listId`, and one or two additional props in some cases. Simply import our decorators into your custom component:
 
 ```javascript
-import { decorators } from 'paginate-this'
+import { decorators } from '@orange-marmalade/paginate-this'
 ```
 
 and you are ready to roll your own:
