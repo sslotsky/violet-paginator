@@ -8,7 +8,7 @@ export default function App() {
       <div className="alert">
         <center>
           <h1>PaginateThis</h1>
-          <a target="_blank" href="https://github.com/@orange-marmalade/paginate-this" className="btn">
+          <a target="_blank" href="https://github.com/orange-marmalade/paginate-this" className="btn">
             <span className="fa fa-github">
               View On Github
             </span>

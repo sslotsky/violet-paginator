@@ -36,13 +36,13 @@ export function Paginator(props) {
   )
 
   const begin = (
-    <li className={classNames({ current: currentPage === 1 })}>
+    <li className={classNames().withConditional({ current: currentPage === 1 }).load()}>
       <PageNumber {...props} page={1} />
     </li>
   )
 
   const end = totalPages > 1 && (
-    <li className={classNames({ current: currentPage === totalPages })}>
+    <li className={classNames().withConditional({ current: currentPage === totalPages }).load()}>
       <PageNumber {...props} page={totalPages} />
     </li>
   )
