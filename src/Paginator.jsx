@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import classNames from './lib/classNames'
 
 import paginate from './decorators/paginate'
-import range from './lib/range'
+import pageData from './pageData'
 import { PageNumber } from './PageNumber'
 import { Prev } from './Prev'
 import { Next } from './Next'
@@ -11,15 +11,12 @@ import { Next } from './Next'
 export function Paginator(props) {
   const { currentPage, totalPages } = props
 
-  const hasRightEllipsis = totalPages - currentPage >= 7
-  const hasLeftEllipsis = (totalPages > 7) && (currentPage > 2)
-  const minPage = hasLeftEllipsis ? Math.min(currentPage, totalPages - 6) : 2
-  const rangeSize = 7 - [hasRightEllipsis, hasLeftEllipsis].filter(h => h).length
-  const maxPage = Math.max(minPage + 1, Math.min(totalPages - 1, minPage + (rangeSize - 1)))
+  const { firstPage, hasLeftSeparator, middlePages, hasRightSeparator, lastPage } =
+    pageData(currentPage, totalPages)
 
-  const pageLinks = totalPages > 2 && [...range(minPage, maxPage)].map(page => {
+  const pageLinks = middlePages.map(({ page, current }) => {
     const pageLinkClass = classNames()
-      .withConditional({ current: page === currentPage })
+      .withConditional({ current })
       .load()
 
     return (
@@ -36,14 +33,14 @@ export function Paginator(props) {
   )
 
   const begin = (
-    <li className={classNames().withConditional({ current: currentPage === 1 }).load()}>
-      <PageNumber {...props} page={1} />
+    <li className={classNames().withConditional({ current: firstPage.current }).load()}>
+      <PageNumber {...props} page={firstPage.page} />
     </li>
   )
 
-  const end = totalPages > 1 && (
-    <li className={classNames().withConditional({ current: currentPage === totalPages }).load()}>
-      <PageNumber {...props} page={totalPages} />
+  const end = lastPage && (
+    <li className={classNames().withConditional({ current: lastPage.current }).load()}>
+      <PageNumber {...props} page={lastPage.page} />
     </li>
   )
 
@@ -53,9 +50,9 @@ export function Paginator(props) {
         <Prev {...props} />
       </li>
       {begin}
-      {hasLeftEllipsis && separator}
+      {hasLeftSeparator && separator}
       {pageLinks}
-      {hasRightEllipsis && separator}
+      {hasRightSeparator && separator}
       {end}
       <li>
         <Next {...props} />

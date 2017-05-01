@@ -1,0 +1,9 @@
+.babelrc
+src/
+examples/
+spec/
+coverage/
+.eslintrc
+.travis.yml
+.gitignore
+.nyc_output
