@@ -13,6 +13,7 @@ export default function connect(propSelect = () => ({}), actionSelect = {}) {
     componentDidMount() {
       this.unsubscribe = getFlux().subscribe(this.notify)
       this.shouldUpdate = true
+      this.forceUpdate()
     }
 
     componentWillUnmount() {
