@@ -66,7 +66,7 @@ function info(paginator) {
 export default function paginate(ComponentClass) {
   return connector(props => (
     <PaginationWrapper {...props}>
-      <ComponentClass {...props} {...info(props.paginator)} />
+      <ComponentClass {...info(props.paginator)} {...props} />
     </PaginationWrapper>
   ))
 }
