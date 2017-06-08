@@ -408,7 +408,7 @@ Inline updating is implemented through a technique that we call composing action
 `paginate-this` uses the flux pattern of dispatching actions to the store and then updating the views that depend on the state.
 To give you complete control of the pagination state, we expose these actions in two different ways. In standalone mode, import
 the [actionFactory](#tbd) function to generate a set of actions specific to your list. `redux` users will want to use the [composables](#tbd) function. 
-The most common use case for composing actions would be [updating an item within the list](#tbd), which we'll demonstrate by example.
+The most common use case for composing actions would be [updating an item within the list](docs/update-items), which we'll demonstrate by example.
 
 ##### actionFactory
 
