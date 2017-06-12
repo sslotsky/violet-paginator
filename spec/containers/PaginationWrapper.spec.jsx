@@ -3,6 +3,8 @@ import expect from 'expect'
 import { mount } from 'enzyme'
 import { PaginationWrapper } from '../../src/containers/PaginationWrapper'
 import { defaultPaginator } from '../../src/reducer'
+import '../specHelper'
+import { registerPaginator } from '../../src/lib/stateManagement'
 
 const MockComponent = () => false
 
@@ -17,6 +19,44 @@ function getProps(props = {}) {
 }
 
 describe('<PaginationWrapper />', () => {
+  context('when caching is used', () => {
+    beforeEach(() => {
+      registerPaginator({ listId: 'mockList', cache: true })
+    })
+
+    context('when stale', () => {
+      const props = getProps({ initialized: true, stale: true })
+
+      beforeEach(() => {
+        mount(
+          <PaginationWrapper {...props} listId="mockList">
+            <MockComponent />
+          </PaginationWrapper>
+        )
+      })
+
+      it('reloads', () => {
+        expect(props.pageActions.reload).toHaveBeenCalled()
+      })
+    })
+
+    context('when not stale', () => {
+      const props = getProps({ initialized: true, stale: false })
+
+      beforeEach(() => {
+        mount(
+          <PaginationWrapper {...props} listId="mockList">
+            <MockComponent />
+          </PaginationWrapper>
+        )
+      })
+
+      it('does not reload', () => {
+        expect(props.pageActions.reload).toNotHaveBeenCalled()
+      })
+    })
+  })
+
   context('when paginator is uninitialized', () => {
     const props = getProps()
     mount(
@@ -45,7 +85,7 @@ describe('<PaginationWrapper />', () => {
 
   context('when paginator is stale', () => {
     context('and there is no load error', () => {
-      const props = getProps({ stale: true })
+      const props = getProps({ stale: true, initialized: true })
       mount(
         <PaginationWrapper {...props}>
           <MockComponent />
