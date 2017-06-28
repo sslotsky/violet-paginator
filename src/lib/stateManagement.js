@@ -61,5 +61,5 @@ export function isRemoving(state, itemId) {
 }
 
 export function currentQuery(state, listId) {
-  return translate(getPaginator(state, listId))
+  return translate(getPaginator(listId, state))
 }
